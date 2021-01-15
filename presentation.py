@@ -151,11 +151,14 @@ def generateLeftBottomFrame(mainWidget):
 
     mainWidget.layoutLeftBottom = QVBoxLayout()
 
+    '''Model for QTreeView'''
     mainWidget.modelTree = QFileSystemModel()
     mainWidget.modelTree.setRootPath(QDir.currentPath())
+    mainWidget.modelTree.setFilter(QDir.Dirs) # Only directories
+
+    ''' QTreeView '''
     mainWidget.treeLeftBottom = QTreeView()
     mainWidget.treeLeftBottom.setModel(mainWidget.modelTree)
-
     mainWidget.treeLeftBottom.setAnimated(False)
     mainWidget.treeLeftBottom.setIndentation(20)
     mainWidget.treeLeftBottom.selectionModel().selectionChanged.connect(mainWidget.onSelectFolder)
@@ -184,11 +187,23 @@ def generateRightFrame(mainWidget, path):
         fullFilePath = os.path.join(path, file)
         if fullFilePath.endswith(".jpg"):
 
+            localWidget = QWidget()
+            localLayout = QHBoxLayout()
+            localLayout.setAlignment(Qt.AlignRight)
+            localWidget.setLayout(localLayout)
+
+            '''Local Left Widget'''
+            localLeftWidget = QWidget()
+            localLeftLayout = QFormLayout()
+            localLeftLayout.setAlignment(Qt.AlignRight)
+            localLeftWidget.setLayout(localLeftLayout)
+            localLayout.addWidget(localLeftWidget)
+
             ''' add image itself'''
             label = QLabel()
             pixmap = QPixmap(fullFilePath)
-            pixmapResize = pixmap.scaled(250, 250)
+            pixmapResize = pixmap.scaled(325, 323)
             label.setPixmap(pixmapResize)
-            mainWidget.scrollLayout.addWidget(label)
+            localLayout.addWidget(label)
 
-    mainWidget.rightWidget.setLayout(layout)
+            mainWidget.scrollLayout.addWidget(localWidget)
