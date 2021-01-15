@@ -16,12 +16,14 @@ from PyQt5.QtWidgets import QHBoxLayout, \
     QFileSystemModel, \
     QTreeView, \
     QScrollArea, \
-    QWidget
-
+    QWidget, \
+    QCheckBox
 from constants import VERTICAL_TOP_SIZE, \
     VERTICAL_BOTTOM_SIZE, \
     HORIZONTAL_LEFT_SIZE, \
-    HORIZONTAL_RIGHT_SIZE
+    HORIZONTAL_RIGHT_SIZE, \
+    WIDTH_WIDGET, \
+    IMAGE_DIMENSION
 
 
 '''
@@ -77,7 +79,7 @@ def generateLeftTopFrame(mainWidget):
     mainWidget.lblUserName = QLabel("Username: ")
     mainWidget.lblUserName.setAlignment(Qt.AlignLeft)
     mainWidget.lineEditUserName = QLineEdit()
-    mainWidget.lineEditUserName.setFixedWidth(200)
+    mainWidget.lineEditUserName.setFixedWidth(WIDTH_WIDGET)
     mainWidget.lineEditUserName.setAlignment(Qt.AlignLeft)
     mainWidget.lineEditUserName.setText("Benoît Prieur")
     mainWidget.layoutLeftTop.addRow(mainWidget.lblUserName, mainWidget.lineEditUserName)
@@ -85,7 +87,7 @@ def generateLeftTopFrame(mainWidget):
     mainWidget.lblPassword = QLabel("Password: ")
     mainWidget.lblPassword.setAlignment(Qt.AlignLeft)
     mainWidget.lineEditPassword = QLineEdit()
-    mainWidget.lineEditPassword.setFixedWidth(200)
+    mainWidget.lineEditPassword.setFixedWidth(WIDTH_WIDGET)
     mainWidget.lineEditPassword.setAlignment(Qt.AlignLeft)
     mainWidget.lineEditPassword.setEchoMode(QLineEdit.Password)
     mainWidget.layoutLeftTop.addRow(mainWidget.lblPassword, mainWidget.lineEditPassword)
@@ -93,7 +95,7 @@ def generateLeftTopFrame(mainWidget):
     mainWidget.lblWiki = QLabel("Wiki: ")
     mainWidget.lblWiki.setAlignment(Qt.AlignLeft)
     mainWidget.lineEditWiki = QLabel() #QLineEdit()
-    mainWidget.lineEditWiki.setFixedWidth(200)
+    mainWidget.lineEditWiki.setFixedWidth(WIDTH_WIDGET)
     mainWidget.lineEditWiki.setText("Wikimedia Commons")
     mainWidget.lineEditWiki.setAlignment(Qt.AlignLeft)
     mainWidget.layoutLeftTop.addRow(mainWidget.lblWiki, mainWidget.lineEditWiki)
@@ -101,7 +103,7 @@ def generateLeftTopFrame(mainWidget):
     mainWidget.lblSource = QLabel("Source: ")
     mainWidget.lblSource.setAlignment(Qt.AlignLeft)
     mainWidget.lineEditSource = QLineEdit()
-    mainWidget.lineEditSource.setFixedWidth(200)
+    mainWidget.lineEditSource.setFixedWidth(WIDTH_WIDGET)
     mainWidget.lineEditSource.setText("{{own}}")
     mainWidget.lineEditSource.setAlignment(Qt.AlignLeft)
     mainWidget.layoutLeftTop.addRow(mainWidget.lblSource, mainWidget.lineEditSource)
@@ -109,14 +111,14 @@ def generateLeftTopFrame(mainWidget):
     mainWidget.lblDate = QLabel("Date: ")
     mainWidget.lblDate.setAlignment(Qt.AlignLeft)
     mainWidget.lineEditDate = QLineEdit()
-    mainWidget.lineEditDate.setFixedWidth(200)
+    mainWidget.lineEditDate.setFixedWidth(WIDTH_WIDGET)
     mainWidget.lineEditDate.setAlignment(Qt.AlignLeft)
     mainWidget.layoutLeftTop.addRow(mainWidget.lblDate, mainWidget.lineEditDate)
 
     mainWidget.lblAuthor = QLabel("Author: ")
     mainWidget.lblAuthor.setAlignment(Qt.AlignLeft)
     mainWidget.lineEditAuthor = QLineEdit()
-    mainWidget.lineEditAuthor.setFixedWidth(200)
+    mainWidget.lineEditAuthor.setFixedWidth(WIDTH_WIDGET)
     mainWidget.lineEditAuthor.setText("{{User:Benoît Prieur/Credit}}")
     mainWidget.lineEditAuthor.setAlignment(Qt.AlignLeft)
     mainWidget.layoutLeftTop.addRow(mainWidget.lblAuthor, mainWidget.lineEditAuthor)
@@ -124,14 +126,14 @@ def generateLeftTopFrame(mainWidget):
     mainWidget.lblCategories = QLabel("Categories: ")
     mainWidget.lblCategories.setAlignment(Qt.AlignLeft)
     mainWidget.lineEditCategories = QLineEdit()
-    mainWidget.lineEditCategories.setFixedWidth(200)
+    mainWidget.lineEditCategories.setFixedWidth(WIDTH_WIDGET)
     mainWidget.lineEditCategories.setAlignment(Qt.AlignLeft)
     mainWidget.layoutLeftTop.addRow(mainWidget.lblCategories, mainWidget.lineEditCategories)
 
     mainWidget.lblLicense = QLabel("License: ")
     mainWidget.lblLicense.setAlignment(Qt.AlignLeft)
     mainWidget.lineEditLicense = QLineEdit()
-    mainWidget.lineEditLicense.setFixedWidth(200)
+    mainWidget.lineEditLicense.setFixedWidth(WIDTH_WIDGET)
     mainWidget.lineEditLicense.setText("{{self|cc-by-sa-4.0}}")
     mainWidget.lineEditLicense.setAlignment(Qt.AlignLeft)
     mainWidget.layoutLeftTop.addRow(mainWidget.lblLicense, mainWidget.lineEditLicense)
@@ -139,6 +141,7 @@ def generateLeftTopFrame(mainWidget):
     mainWidget.lblDescription = QLabel("Description: ")
     mainWidget.lblDescription.setAlignment(Qt.AlignLeft)
     mainWidget.lineEditDescription = QPlainTextEdit()
+    mainWidget.lineEditDescription.setFixedWidth(WIDTH_WIDGET)
     mainWidget.layoutLeftTop.addRow(mainWidget.lblDescription, mainWidget.lineEditDescription)
 
     mainWidget.leftTopFrame.setLayout(mainWidget.layoutLeftTop)
@@ -199,10 +202,38 @@ def generateRightFrame(mainWidget, path):
             localLeftWidget.setLayout(localLeftLayout)
             localLayout.addWidget(localLeftWidget)
 
+            ''' import? '''
+            cbImport = QCheckBox("Import")
+            localLeftLayout.addWidget(cbImport)
+
+            ''' File Name of picture '''
+            lblFileName = QLabel("Name: ")
+            lblFileName.setAlignment(Qt.AlignLeft)
+            lineEditFileName = QLineEdit()
+            lineEditFileName.setFixedWidth(WIDTH_WIDGET)
+            lineEditFileName.setText(file)
+            lineEditFileName.setAlignment(Qt.AlignLeft)
+            localLeftLayout.addRow(lblFileName, lineEditFileName)
+
+            ''' Description '''
+            lblDescription = QLabel("Description: ")
+            lblDescription.setAlignment(Qt.AlignLeft)
+            lineEditDescription = QPlainTextEdit()
+            lineEditDescription.setFixedWidth(WIDTH_WIDGET)
+            localLeftLayout.addRow(lblDescription, lineEditDescription)
+
+            ''' Categories '''
+            lblCategories = QLabel("Categories: ")
+            lblCategories.setAlignment(Qt.AlignLeft)
+            lineEditCategories = QLineEdit()
+            lineEditCategories.setFixedWidth(WIDTH_WIDGET)
+            lineEditCategories.setAlignment(Qt.AlignLeft)
+            localLeftLayout.addRow(lblCategories, lineEditCategories)
+            
             ''' add image itself'''
             label = QLabel()
             pixmap = QPixmap(fullFilePath)
-            pixmapResize = pixmap.scaled(325, 323)
+            pixmapResize = pixmap.scaled(IMAGE_DIMENSION, IMAGE_DIMENSION)
             label.setPixmap(pixmapResize)
             localLayout.addWidget(label)
 
