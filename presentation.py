@@ -1,5 +1,8 @@
-import os,sip
-from PyQt5.QtCore import Qt
+import os, sip
+from os import listdir
+from os.path import isfile, join
+
+from PyQt5.QtCore import Qt, QRect
 from PyQt5.Qt import QDir
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QHBoxLayout, \
@@ -11,7 +14,10 @@ from PyQt5.QtWidgets import QHBoxLayout, \
     QPlainTextEdit, \
     QVBoxLayout, \
     QFileSystemModel, \
-    QTreeView
+    QTreeView, \
+    QScrollArea, \
+    QWidget
+
 from constants import VERTICAL_TOP_SIZE, \
     VERTICAL_BOTTOM_SIZE, \
     HORIZONTAL_LEFT_SIZE, \
@@ -21,145 +27,160 @@ from constants import VERTICAL_TOP_SIZE, \
 '''
     generateSplitter
 '''
-def generateSplitter(widget):
+def generateSplitter(mainWidget):
 
-    widget.hbox = QHBoxLayout()
+    mainWidget.hbox = QHBoxLayout()
 
-    widget.leftTopFrame = QFrame()
-    widget.leftTopFrame.setFrameShape(QFrame.StyledPanel)
-    widget.rightFrame = QFrame()
-    widget.rightFrame.setFrameShape(QFrame.StyledPanel)
+    mainWidget.leftTopFrame = QFrame()
+    mainWidget.leftTopFrame.setFrameShape(QFrame.StyledPanel)
 
-    widget.splitterLeft = QSplitter(Qt.Vertical)
-    widget.leftBottonFrame = QFrame()
-    widget.leftBottonFrame.setFrameShape(QFrame.StyledPanel)
+    mainWidget.rightWidget = QWidget()
+    mainWidget.rightWidget.resize(300, 300)
+    mainWidget.layoutRight = QVBoxLayout()
+    mainWidget.rightWidget.setLayout(mainWidget.layoutRight)
 
-    widget.splitterLeft.addWidget(widget.leftTopFrame)
-    widget.splitterLeft.addWidget(widget.leftBottonFrame)
-    widget.splitterLeft.setSizes([VERTICAL_TOP_SIZE,VERTICAL_BOTTOM_SIZE])
+    mainWidget.scroll = QScrollArea()
+    mainWidget.layoutRight.addWidget(mainWidget.scroll)
+    mainWidget.scroll.setWidgetResizable(True)
+    mainWidget.scrollContent = QWidget(mainWidget.scroll)
 
-    widget.splitterCentral = QSplitter(Qt.Horizontal)
-    widget.splitterCentral.addWidget(widget.splitterLeft)
-    widget.splitterCentral.addWidget(widget.rightFrame)
-    widget.splitterCentral.setSizes([HORIZONTAL_LEFT_SIZE,HORIZONTAL_RIGHT_SIZE])
+    mainWidget.scrollLayout = QVBoxLayout(mainWidget.scrollContent)
+    mainWidget.scrollContent.setLayout(mainWidget.scrollLayout)
+    mainWidget.scroll.setWidget(mainWidget.scrollContent)
 
-    widget.hbox.addWidget(widget.splitterCentral)
+    mainWidget.splitterLeft = QSplitter(Qt.Vertical)
+    mainWidget.leftBottonFrame = QFrame()
+    mainWidget.leftBottonFrame.setFrameShape(QFrame.StyledPanel)
 
-    widget.setLayout(widget.hbox)
+    mainWidget.splitterLeft.addWidget(mainWidget.leftTopFrame)
+    mainWidget.splitterLeft.addWidget(mainWidget.leftBottonFrame)
+    mainWidget.splitterLeft.setSizes([VERTICAL_TOP_SIZE,VERTICAL_BOTTOM_SIZE])
+
+    mainWidget.splitterCentral = QSplitter(Qt.Horizontal)
+    mainWidget.splitterCentral.addWidget(mainWidget.splitterLeft)
+    mainWidget.splitterCentral.addWidget(mainWidget.rightWidget)
+    mainWidget.splitterCentral.setSizes([HORIZONTAL_LEFT_SIZE,HORIZONTAL_RIGHT_SIZE])
+
+    mainWidget.hbox.addWidget(mainWidget.splitterCentral)
+
+    mainWidget.setLayout(mainWidget.hbox)
 
 
 '''
     generateLeftTopFrame
 '''
-def generateLeftTopFrame(widget):
+def generateLeftTopFrame(mainWidget):
 
-    widget.layoutLeftTop = QFormLayout()
-    widget.layoutLeftTop.setFormAlignment(Qt.AlignTop)
+    mainWidget.layoutLeftTop = QFormLayout()
+    mainWidget.layoutLeftTop.setFormAlignment(Qt.AlignTop)
 
-    widget.lblUserName = QLabel("Username: ")
-    widget.lblUserName.setAlignment(Qt.AlignLeft)
-    widget.lineEditUserName = QLineEdit()
-    widget.lineEditUserName.setFixedWidth(200)
-    widget.lineEditUserName.setAlignment(Qt.AlignLeft)
-    widget.lineEditUserName.setText("Benoît Prieur")
-    widget.layoutLeftTop.addRow(widget.lblUserName, widget.lineEditUserName)
+    mainWidget.lblUserName = QLabel("Username: ")
+    mainWidget.lblUserName.setAlignment(Qt.AlignLeft)
+    mainWidget.lineEditUserName = QLineEdit()
+    mainWidget.lineEditUserName.setFixedWidth(200)
+    mainWidget.lineEditUserName.setAlignment(Qt.AlignLeft)
+    mainWidget.lineEditUserName.setText("Benoît Prieur")
+    mainWidget.layoutLeftTop.addRow(mainWidget.lblUserName, mainWidget.lineEditUserName)
 
-    widget.lblPassword = QLabel("Password: ")
-    widget.lblPassword.setAlignment(Qt.AlignLeft)
-    widget.lineEditPassword = QLineEdit()
-    widget.lineEditPassword.setFixedWidth(200)
-    widget.lineEditPassword.setAlignment(Qt.AlignLeft)
-    widget.lineEditPassword.setEchoMode(QLineEdit.Password)
-    widget.layoutLeftTop.addRow(widget.lblPassword, widget.lineEditPassword)
+    mainWidget.lblPassword = QLabel("Password: ")
+    mainWidget.lblPassword.setAlignment(Qt.AlignLeft)
+    mainWidget.lineEditPassword = QLineEdit()
+    mainWidget.lineEditPassword.setFixedWidth(200)
+    mainWidget.lineEditPassword.setAlignment(Qt.AlignLeft)
+    mainWidget.lineEditPassword.setEchoMode(QLineEdit.Password)
+    mainWidget.layoutLeftTop.addRow(mainWidget.lblPassword, mainWidget.lineEditPassword)
 
-    widget.lblWiki = QLabel("Wiki: ")
-    widget.lblWiki.setAlignment(Qt.AlignLeft)
-    widget.lineEditWiki = QLabel() #QLineEdit()
-    widget.lineEditWiki.setFixedWidth(200)
-    widget.lineEditWiki.setText("Wikimedia Commons")
-    widget.lineEditWiki.setAlignment(Qt.AlignLeft)
-    widget.layoutLeftTop.addRow(widget.lblWiki, widget.lineEditWiki)
+    mainWidget.lblWiki = QLabel("Wiki: ")
+    mainWidget.lblWiki.setAlignment(Qt.AlignLeft)
+    mainWidget.lineEditWiki = QLabel() #QLineEdit()
+    mainWidget.lineEditWiki.setFixedWidth(200)
+    mainWidget.lineEditWiki.setText("Wikimedia Commons")
+    mainWidget.lineEditWiki.setAlignment(Qt.AlignLeft)
+    mainWidget.layoutLeftTop.addRow(mainWidget.lblWiki, mainWidget.lineEditWiki)
 
-    widget.lblSource = QLabel("Source: ")
-    widget.lblSource.setAlignment(Qt.AlignLeft)
-    widget.lineEditSource = QLineEdit()
-    widget.lineEditSource.setFixedWidth(200)
-    widget.lineEditSource.setText("{{own}}")
-    widget.lineEditSource.setAlignment(Qt.AlignLeft)
-    widget.layoutLeftTop.addRow(widget.lblSource, widget.lineEditSource)
+    mainWidget.lblSource = QLabel("Source: ")
+    mainWidget.lblSource.setAlignment(Qt.AlignLeft)
+    mainWidget.lineEditSource = QLineEdit()
+    mainWidget.lineEditSource.setFixedWidth(200)
+    mainWidget.lineEditSource.setText("{{own}}")
+    mainWidget.lineEditSource.setAlignment(Qt.AlignLeft)
+    mainWidget.layoutLeftTop.addRow(mainWidget.lblSource, mainWidget.lineEditSource)
 
-    widget.lblDate = QLabel("Date: ")
-    widget.lblDate.setAlignment(Qt.AlignLeft)
-    widget.lineEditDate = QLineEdit()
-    widget.lineEditDate.setFixedWidth(200)
-    widget.lineEditDate.setAlignment(Qt.AlignLeft)
-    widget.layoutLeftTop.addRow(widget.lblDate, widget.lineEditDate)
+    mainWidget.lblDate = QLabel("Date: ")
+    mainWidget.lblDate.setAlignment(Qt.AlignLeft)
+    mainWidget.lineEditDate = QLineEdit()
+    mainWidget.lineEditDate.setFixedWidth(200)
+    mainWidget.lineEditDate.setAlignment(Qt.AlignLeft)
+    mainWidget.layoutLeftTop.addRow(mainWidget.lblDate, mainWidget.lineEditDate)
 
-    widget.lblAuthor = QLabel("Author: ")
-    widget.lblAuthor.setAlignment(Qt.AlignLeft)
-    widget.lineEditAuthor = QLineEdit()
-    widget.lineEditAuthor.setFixedWidth(200)
-    widget.lineEditAuthor.setText("{{User:Benoît Prieur/Credit}}")
-    widget.lineEditAuthor.setAlignment(Qt.AlignLeft)
-    widget.layoutLeftTop.addRow(widget.lblAuthor, widget.lineEditAuthor)
+    mainWidget.lblAuthor = QLabel("Author: ")
+    mainWidget.lblAuthor.setAlignment(Qt.AlignLeft)
+    mainWidget.lineEditAuthor = QLineEdit()
+    mainWidget.lineEditAuthor.setFixedWidth(200)
+    mainWidget.lineEditAuthor.setText("{{User:Benoît Prieur/Credit}}")
+    mainWidget.lineEditAuthor.setAlignment(Qt.AlignLeft)
+    mainWidget.layoutLeftTop.addRow(mainWidget.lblAuthor, mainWidget.lineEditAuthor)
 
-    widget.lblCategories = QLabel("Categories: ")
-    widget.lblCategories.setAlignment(Qt.AlignLeft)
-    widget.lineEditCategories = QLineEdit()
-    widget.lineEditCategories.setFixedWidth(200)
-    widget.lineEditCategories.setAlignment(Qt.AlignLeft)
-    widget.layoutLeftTop.addRow(widget.lblCategories, widget.lineEditCategories)
+    mainWidget.lblCategories = QLabel("Categories: ")
+    mainWidget.lblCategories.setAlignment(Qt.AlignLeft)
+    mainWidget.lineEditCategories = QLineEdit()
+    mainWidget.lineEditCategories.setFixedWidth(200)
+    mainWidget.lineEditCategories.setAlignment(Qt.AlignLeft)
+    mainWidget.layoutLeftTop.addRow(mainWidget.lblCategories, mainWidget.lineEditCategories)
 
-    widget.lblLicense = QLabel("License: ")
-    widget.lblLicense.setAlignment(Qt.AlignLeft)
-    widget.lineEditLicense = QLineEdit()
-    widget.lineEditLicense.setFixedWidth(200)
-    widget.lineEditLicense.setText("{{self|cc-by-sa-4.0}}")
-    widget.lineEditLicense.setAlignment(Qt.AlignLeft)
-    widget.layoutLeftTop.addRow(widget.lblLicense, widget.lineEditLicense)
+    mainWidget.lblLicense = QLabel("License: ")
+    mainWidget.lblLicense.setAlignment(Qt.AlignLeft)
+    mainWidget.lineEditLicense = QLineEdit()
+    mainWidget.lineEditLicense.setFixedWidth(200)
+    mainWidget.lineEditLicense.setText("{{self|cc-by-sa-4.0}}")
+    mainWidget.lineEditLicense.setAlignment(Qt.AlignLeft)
+    mainWidget.layoutLeftTop.addRow(mainWidget.lblLicense, mainWidget.lineEditLicense)
 
-    widget.lblDescription = QLabel("Description: ")
-    widget.lblDescription.setAlignment(Qt.AlignLeft)
-    widget.lineEditDescription = QPlainTextEdit()
-    widget.layoutLeftTop.addRow(widget.lblDescription, widget.lineEditDescription)
+    mainWidget.lblDescription = QLabel("Description: ")
+    mainWidget.lblDescription.setAlignment(Qt.AlignLeft)
+    mainWidget.lineEditDescription = QPlainTextEdit()
+    mainWidget.layoutLeftTop.addRow(mainWidget.lblDescription, mainWidget.lineEditDescription)
 
-    widget.leftTopFrame.setLayout(widget.layoutLeftTop)
+    mainWidget.leftTopFrame.setLayout(mainWidget.layoutLeftTop)
 
 
 '''
     generateLeftBottomFrame
 '''
-def generateLeftBottomFrame(widget):
+def generateLeftBottomFrame(mainWidget):
 
-    widget.layoutLeftBottom = QVBoxLayout()
+    mainWidget.layoutLeftBottom = QVBoxLayout()
 
-    widget.modelTree = QFileSystemModel()
-    widget.modelTree.setRootPath(QDir.currentPath())
-    widget.treeLeftBottom = QTreeView()
-    widget.treeLeftBottom.setModel(widget.modelTree)
+    mainWidget.modelTree = QFileSystemModel()
+    mainWidget.modelTree.setRootPath(QDir.currentPath())
+    mainWidget.treeLeftBottom = QTreeView()
+    mainWidget.treeLeftBottom.setModel(mainWidget.modelTree)
 
-    widget.treeLeftBottom.setAnimated(False)
-    widget.treeLeftBottom.setIndentation(20)
-    widget.treeLeftBottom.selectionModel().selectionChanged.connect(widget.onSelectFolder)
-    widget.layoutLeftBottom.addWidget(widget.treeLeftBottom)
-    widget.leftBottonFrame.setLayout(widget.layoutLeftBottom)
+    mainWidget.treeLeftBottom.setAnimated(False)
+    mainWidget.treeLeftBottom.setIndentation(20)
+    mainWidget.treeLeftBottom.selectionModel().selectionChanged.connect(mainWidget.onSelectFolder)
+    mainWidget.layoutLeftBottom.addWidget(mainWidget.treeLeftBottom)
+    mainWidget.leftBottonFrame.setLayout(mainWidget.layoutLeftBottom)
 
 
 '''
     generateRightFrame
 '''
-def generateRightFrame(widget, path):
+def generateRightFrame(mainWidget, path):
 
-    ''' Delete everything on right'''
-    layout = widget.rightFrame.layout()
-    if layout is not None:
-        deleteLayout(layout)
+    layout = mainWidget.scrollLayout
+    print(layout)
+    print(layout.count())
 
-    widget.layoutRight = QVBoxLayout()
-    widget.rightFrame.setLayout(widget.layoutRight)
-    layout = widget.rightFrame.layout()
+    while layout.count():
+        print("destroy")
+        child = layout.takeAt(0)
+        if child.widget():
+            child.widget().deleteLater()
 
-    for file in os.listdir(path):
+    files = [f for f in listdir(path) if isfile(join(path, f))]
+
+    for file in files:
         fullFilePath = os.path.join(path, file)
         if fullFilePath.endswith(".jpg"):
 
@@ -168,19 +189,6 @@ def generateRightFrame(widget, path):
             pixmap = QPixmap(fullFilePath)
             pixmapResize = pixmap.scaled(250, 250)
             label.setPixmap(pixmapResize)
-            layout.addWidget(label)
+            mainWidget.scrollLayout.addWidget(label)
 
-
-'''
-    deleteLayout
-'''
-def deleteLayout(layout):
-    if layout is not None:
-        while layout.count():
-            item = layout.takeAt(0)
-            widget = item.widget()
-            if widget is not None:
-                widget.deleteLater()
-            else:
-                self.deleteLayout(item.layout())
-        sip.delete(layout)
+    mainWidget.rightWidget.setLayout(layout)
