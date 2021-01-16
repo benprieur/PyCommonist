@@ -5,6 +5,9 @@ from os.path import isfile, join
 import exifread
 from gps_location import get_exif_location
 
+from ImageUpload import ImageUpload
+from Upload import Upload
+
 from PyQt5.QtCore import Qt, QRect
 from PyQt5.Qt import QDir
 from PyQt5.QtGui import QPixmap
@@ -26,6 +29,7 @@ from constants import VERTICAL_TOP_SIZE, \
     HORIZONTAL_LEFT_SIZE, \
     HORIZONTAL_RIGHT_SIZE, \
     WIDTH_WIDGET, \
+    WIDTH_WIDGET_RIGHT, \
     IMAGE_DIMENSION
 
 
@@ -187,8 +191,8 @@ def generateRightFrame(mainWidget, path):
         if child.widget():
             child.widget().deleteLater()
 
+    ''' Images to upload'''
     files = [f for f in listdir(path) if isfile(join(path, f))]
-
     for file in files:
         fullFilePath = os.path.join(path, file)
         if fullFilePath.endswith(".jpg"):
@@ -213,7 +217,7 @@ def generateRightFrame(mainWidget, path):
             lblFileName = QLabel("Name: ")
             lblFileName.setAlignment(Qt.AlignLeft)
             lineEditFileName = QLineEdit()
-            lineEditFileName.setFixedWidth(WIDTH_WIDGET)
+            lineEditFileName.setFixedWidth(WIDTH_WIDGET_RIGHT)
             lineEditFileName.setText(file)
             lineEditFileName.setAlignment(Qt.AlignLeft)
             localLeftLayout.addRow(lblFileName, lineEditFileName)
@@ -222,14 +226,14 @@ def generateRightFrame(mainWidget, path):
             lblDescription = QLabel("Description: ")
             lblDescription.setAlignment(Qt.AlignLeft)
             lineEditDescription = QPlainTextEdit()
-            lineEditDescription.setFixedWidth(WIDTH_WIDGET)
+            lineEditDescription.setFixedWidth(WIDTH_WIDGET_RIGHT)
             localLeftLayout.addRow(lblDescription, lineEditDescription)
 
             ''' Categories '''
             lblCategories = QLabel("Categories: ")
             lblCategories.setAlignment(Qt.AlignLeft)
             lineEditCategories = QLineEdit()
-            lineEditCategories.setFixedWidth(WIDTH_WIDGET)
+            lineEditCategories.setFixedWidth(WIDTH_WIDGET_RIGHT)
             lineEditCategories.setAlignment(Qt.AlignLeft)
             localLeftLayout.addRow(lblCategories, lineEditCategories)
 
@@ -245,7 +249,7 @@ def generateRightFrame(mainWidget, path):
             lblLocation = QLabel("Location: ")
             lblLocation.setAlignment(Qt.AlignLeft)
             lineEditLocation = QLineEdit()
-            lineEditLocation.setFixedWidth(WIDTH_WIDGET)
+            lineEditLocation.setFixedWidth(WIDTH_WIDGET_RIGHT)
             lineEditLocation.setText(str(lat) + ', ' + str(long))
             lineEditLocation.setAlignment(Qt.AlignLeft)
             localLeftLayout.addRow(lblLocation, lineEditLocation)
@@ -261,7 +265,7 @@ def generateRightFrame(mainWidget, path):
             lblDateTime = QLabel("Date Time: ")
             lblDateTime.setAlignment(Qt.AlignLeft)
             lineEditDateTime = QLineEdit()
-            lineEditDateTime.setFixedWidth(WIDTH_WIDGET)
+            lineEditDateTime.setFixedWidth(WIDTH_WIDGET_RIGHT)
             lineEditDateTime.setText(date + ' ' + time)
             lineEditDateTime.setAlignment(Qt.AlignLeft)
             localLeftLayout.addRow(lblDateTime, lineEditDateTime)
