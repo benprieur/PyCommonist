@@ -23,7 +23,8 @@ from PyQt5.QtWidgets import QHBoxLayout, \
     QTreeView, \
     QScrollArea, \
     QWidget, \
-    QCheckBox
+    QCheckBox, \
+    QPushButton
 from constants import VERTICAL_TOP_SIZE, \
     VERTICAL_BOTTOM_SIZE, \
     HORIZONTAL_LEFT_SIZE, \
@@ -151,6 +152,26 @@ def generateLeftTopFrame(mainWidget):
     mainWidget.lineEditDescription.setFixedWidth(WIDTH_WIDGET)
     mainWidget.layoutLeftTop.addRow(mainWidget.lblDescription, mainWidget.lineEditDescription)
 
+    separationLeftTopFrame = QLabel()
+    mainWidget.layoutLeftTop.addWidget(separationLeftTopFrame)
+
+    ''' Button Import & None/All checkboxes'''
+    importWidget = QWidget()
+    importLayout = QHBoxLayout()
+    importWidget.setLayout(importLayout)
+    mainWidget.cbImportNone = QCheckBox("None")
+    mainWidget.cbImportAll = QCheckBox("All")
+    mainWidget.btnImport = QPushButton("Import!")
+    importLayout.addWidget(mainWidget.cbImportNone)
+    importLayout.addWidget(mainWidget.cbImportAll)
+    importLayout.addWidget(mainWidget.btnImport)
+    mainWidget.layoutLeftTop.addWidget(importWidget)
+    importWidget.setStyleSheet("border:1px solid #808080;");
+    mainWidget.cbImportNone.setStyleSheet("border:0px;");
+    mainWidget.cbImportAll.setStyleSheet("border:0px;");
+    mainWidget.btnImport.setStyleSheet("border:0px; font-size: 24px; font-style: oblique; font-weight: bold;");
+
+    ''' Layout Association of the Left Top Frame'''
     mainWidget.leftTopFrame.setLayout(mainWidget.layoutLeftTop)
 
 
@@ -182,6 +203,7 @@ def generateLeftBottomFrame(mainWidget):
 def generateRightFrame(mainWidget, path):
 
     layout = mainWidget.scrollLayout
+
     print(layout)
     print(layout.count())
 
