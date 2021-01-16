@@ -191,13 +191,17 @@ def generateRightFrame(mainWidget, path):
         if child.widget():
             child.widget().deleteLater()
 
-    ''' Images to upload'''
+    ''' Current upload'''
+    mainWidget._currentUpload = Upload()
+    mainWidget._currentUpload.path = path
+
     files = [f for f in listdir(path) if isfile(join(path, f))]
     for file in files:
         fullFilePath = os.path.join(path, file)
         if fullFilePath.endswith(".jpg"):
 
-            localWidget = QWidget()
+            ''' Current image '''
+            localWidget = ImageUpload()
             localLayout = QHBoxLayout()
             localLayout.setAlignment(Qt.AlignRight)
             localWidget.setLayout(localLayout)
@@ -212,6 +216,7 @@ def generateRightFrame(mainWidget, path):
             ''' import? '''
             cbImport = QCheckBox("Import")
             localLeftLayout.addWidget(cbImport)
+            localWidget.cbImport = cbImport
 
             ''' File Name of picture '''
             lblFileName = QLabel("Name: ")
@@ -221,6 +226,7 @@ def generateRightFrame(mainWidget, path):
             lineEditFileName.setText(file)
             lineEditFileName.setAlignment(Qt.AlignLeft)
             localLeftLayout.addRow(lblFileName, lineEditFileName)
+            localWidget.lineEditFileName = lineEditFileName
 
             ''' Description '''
             lblDescription = QLabel("Description: ")
@@ -228,6 +234,7 @@ def generateRightFrame(mainWidget, path):
             lineEditDescription = QPlainTextEdit()
             lineEditDescription.setFixedWidth(WIDTH_WIDGET_RIGHT)
             localLeftLayout.addRow(lblDescription, lineEditDescription)
+            localWidget.lineEditDescription = lineEditDescription
 
             ''' Categories '''
             lblCategories = QLabel("Categories: ")
@@ -236,6 +243,7 @@ def generateRightFrame(mainWidget, path):
             lineEditCategories.setFixedWidth(WIDTH_WIDGET_RIGHT)
             lineEditCategories.setAlignment(Qt.AlignLeft)
             localLeftLayout.addRow(lblCategories, lineEditCategories)
+            localWidget.lineEditCategories = lineEditCategories
 
             ''' EXIF '''
             f_exif = open(fullFilePath, 'rb')
@@ -253,6 +261,7 @@ def generateRightFrame(mainWidget, path):
             lineEditLocation.setText(str(lat) + ', ' + str(long))
             lineEditLocation.setAlignment(Qt.AlignLeft)
             localLeftLayout.addRow(lblLocation, lineEditLocation)
+            localWidget.lineEditLocation = lineEditLocation
 
             ''' Date Time '''
             dt = tags['EXIF DateTimeOriginal'] # 2021:01:13 14:48:44
@@ -269,6 +278,7 @@ def generateRightFrame(mainWidget, path):
             lineEditDateTime.setText(date + ' ' + time)
             lineEditDateTime.setAlignment(Qt.AlignLeft)
             localLeftLayout.addRow(lblDateTime, lineEditDateTime)
+            localWidget.lineEditDateTime = lineEditDateTime
 
             ''' Image itself '''
             label = QLabel()
@@ -276,5 +286,7 @@ def generateRightFrame(mainWidget, path):
             pixmapResize = pixmap.scaled(IMAGE_DIMENSION, IMAGE_DIMENSION)
             label.setPixmap(pixmapResize)
             localLayout.addWidget(label)
+            localWidget.fullFilePath = fullFilePath
 
             mainWidget.scrollLayout.addWidget(localWidget)
+            mainWidget._currentUpload.listImageUpload.append(localWidget)

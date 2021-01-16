@@ -1,7 +1,7 @@
-class ImageUpload:
+from PyQt5.QtWidgets import QWidget
+
+class ImageUpload(QWidget):
+
     def __init__(self):
-        self.fileName = ''
-        self.description = ''
-        self.categories = ''
-        self.dateTime = ''
-        self.location = ''
+        super(ImageUpload, self).__init__()
+
