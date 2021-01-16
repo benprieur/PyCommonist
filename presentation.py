@@ -2,6 +2,9 @@ import os, sip
 from os import listdir
 from os.path import isfile, join
 
+import exifread
+from gps_location import get_exif_location
+
 from PyQt5.QtCore import Qt, QRect
 from PyQt5.Qt import QDir
 from PyQt5.QtGui import QPixmap
@@ -229,8 +232,41 @@ def generateRightFrame(mainWidget, path):
             lineEditCategories.setFixedWidth(WIDTH_WIDGET)
             lineEditCategories.setAlignment(Qt.AlignLeft)
             localLeftLayout.addRow(lblCategories, lineEditCategories)
-            
-            ''' add image itself'''
+
+            ''' EXIF '''
+            f_exif = open(fullFilePath, 'rb')
+            tags = exifread.process_file(f_exif)
+            #print(tags)
+
+            ''' Location'''
+            # 'GPS GPSLatitude', 'GPS GPSLongitude'] # [45, 49, 339/25] [4, 55, 716/25]
+            # 'GPS GPSImgDirection' 'GPS GPSLatitudeRef'
+            lat, long = get_exif_location(tags)
+            lblLocation = QLabel("Location: ")
+            lblLocation.setAlignment(Qt.AlignLeft)
+            lineEditLocation = QLineEdit()
+            lineEditLocation.setFixedWidth(WIDTH_WIDGET)
+            lineEditLocation.setText(str(lat) + ', ' + str(long))
+            lineEditLocation.setAlignment(Qt.AlignLeft)
+            localLeftLayout.addRow(lblLocation, lineEditLocation)
+
+            ''' Date Time '''
+            dt = tags['EXIF DateTimeOriginal'] # 2021:01:13 14:48:44
+            print (dt)
+            dt = str(dt)
+            indexSpace = dt.find(" ")
+            date = dt[0:indexSpace].replace(":", "-")
+            time = dt[indexSpace+1:]
+
+            lblDateTime = QLabel("Date Time: ")
+            lblDateTime.setAlignment(Qt.AlignLeft)
+            lineEditDateTime = QLineEdit()
+            lineEditDateTime.setFixedWidth(WIDTH_WIDGET)
+            lineEditDateTime.setText(date + ' ' + time)
+            lineEditDateTime.setAlignment(Qt.AlignLeft)
+            localLeftLayout.addRow(lblDateTime, lineEditDateTime)
+
+            ''' Image itself '''
             label = QLabel()
             pixmap = QPixmap(fullFilePath)
             pixmapResize = pixmap.scaled(IMAGE_DIMENSION, IMAGE_DIMENSION)
