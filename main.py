@@ -1,4 +1,5 @@
 import sys
+from UploadTool import UploadTool
 from PyQt5.QtWidgets import QApplication, QWidget
 from presentation import generateSplitter, \
     generateLeftTopFrame, \
@@ -38,6 +39,16 @@ class PyCommonist(QWidget):
             generateRightFrame(self, self.currentDirectoryPath)
 
         self.update()
+
+
+    '''
+        onClickImport
+    '''
+    def onClickImport(self):
+        tool = UploadTool(self.lineEditUserName.text(), self.lineEditPassword.text())
+        ret = tool.connect()
+        print(ret.content)
+
 
 def main():
     app = QApplication(sys.argv)

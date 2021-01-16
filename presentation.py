@@ -159,9 +159,13 @@ def generateLeftTopFrame(mainWidget):
     importWidget = QWidget()
     importLayout = QHBoxLayout()
     importWidget.setLayout(importLayout)
+
     mainWidget.cbImportNone = QCheckBox("None")
     mainWidget.cbImportAll = QCheckBox("All")
+
     mainWidget.btnImport = QPushButton("Import!")
+    mainWidget.btnImport.clicked.connect(mainWidget.onClickImport)
+
     importLayout.addWidget(mainWidget.cbImportNone)
     importLayout.addWidget(mainWidget.cbImportAll)
     importLayout.addWidget(mainWidget.btnImport)
