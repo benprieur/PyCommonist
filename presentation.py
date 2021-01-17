@@ -161,7 +161,10 @@ def generateLeftTopFrame(mainWidget):
     importWidget.setLayout(importLayout)
 
     mainWidget.cbImportNone = QCheckBox("None")
+    mainWidget.cbImportNone.stateChanged.connect(mainWidget.cbImportNoneStateChanged)
+
     mainWidget.cbImportAll = QCheckBox("All")
+    mainWidget.cbImportAll.stateChanged.connect(mainWidget.cbImportAllStateChanged)
 
     mainWidget.btnImport = QPushButton("Import!")
     mainWidget.btnImport.clicked.connect(mainWidget.onClickImport)
@@ -183,6 +186,9 @@ def generateLeftTopFrame(mainWidget):
     generateLeftBottomFrame
 '''
 def generateLeftBottomFrame(mainWidget):
+
+    ''' Current upload'''
+    mainWidget._currentUpload = Upload()
 
     mainWidget.layoutLeftBottom = QVBoxLayout()
 
@@ -216,10 +222,6 @@ def generateRightFrame(mainWidget, path):
         child = layout.takeAt(0)
         if child.widget():
             child.widget().deleteLater()
-
-    ''' Current upload'''
-    mainWidget._currentUpload = Upload()
-    mainWidget._currentUpload.path = path
 
     files = [f for f in listdir(path) if isfile(join(path, f))]
     for file in files:
