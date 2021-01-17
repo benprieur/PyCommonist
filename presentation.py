@@ -256,6 +256,12 @@ def generateRightFrame(mainWidget, path):
             localLeftLayout.addRow(lblFileName, lineEditFileName)
             localWidget.lineEditFileName = lineEditFileName
 
+            ''' Shadow Real FileName '''
+            lblRealFileName = QLineEdit()
+            lblRealFileName.setText(file)
+            localWidget.lblRealFileName = lblRealFileName
+            localWidget.lblRealFileName.isVisible = False
+
             ''' Description '''
             lblDescription = QLabel("Description: ")
             lblDescription.setAlignment(Qt.AlignLeft)

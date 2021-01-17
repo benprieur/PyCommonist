@@ -45,7 +45,6 @@ class PyCommonist(QWidget):
         except:
             print("Something bad happened inside onSelectFolder function.")
 
-
     '''
         cbImportNoneStateChanged
     '''
@@ -58,8 +57,6 @@ class PyCommonist(QWidget):
 
             for element in self._currentUpload.listImageUpload:
                 element.cbImport.setCheckState(False)
-
-
 
     '''
         cbImportAllStateChanged
@@ -78,10 +75,7 @@ class PyCommonist(QWidget):
     '''
     def onClickImport(self):
         tool = UploadTool(self.lineEditUserName.text(), self.lineEditPassword.text())
-        ret = tool.connect()
-        print(ret)
-        if (ret):
-            tool.uploadImages(self)
+        ret = tool.uploadImages(self)
 
 
 def main():
