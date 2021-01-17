@@ -116,13 +116,6 @@ def generateLeftTopFrame(mainWidget):
     mainWidget.lineEditSource.setAlignment(Qt.AlignLeft)
     mainWidget.layoutLeftTop.addRow(mainWidget.lblSource, mainWidget.lineEditSource)
 
-    mainWidget.lblDate = QLabel("Date: ")
-    mainWidget.lblDate.setAlignment(Qt.AlignLeft)
-    mainWidget.lineEditDate = QLineEdit()
-    mainWidget.lineEditDate.setFixedWidth(WIDTH_WIDGET)
-    mainWidget.lineEditDate.setAlignment(Qt.AlignLeft)
-    mainWidget.layoutLeftTop.addRow(mainWidget.lblDate, mainWidget.lineEditDate)
-
     mainWidget.lblAuthor = QLabel("Author: ")
     mainWidget.lblAuthor.setAlignment(Qt.AlignLeft)
     mainWidget.lineEditAuthor = QLineEdit()

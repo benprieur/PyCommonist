@@ -7,26 +7,6 @@ class UploadTool:
         self.password = password
 
     '''
-    def connect(self):
-        try:
-            ret = requests.get(URL_TOKEN)
-            retToken = json.loads(ret.content)
-            #print(retToken)
-            self.token = retToken['query']['tokens']['logintoken']
-            self.cookies = ret.cookies
-
-            urlLogin = URL_LOGIN + self.login + URL_LOGIN2
-            paramsLogin = {'password' : self.password, 'logintoken': self.token}
-            ret = requests.post(urlLogin, paramsLogin, cookies=self.cookies)
-            print(ret.json())
-
-            return True
-
-        except:
-            return False
-    '''
-
-    '''
         uploadImages
          https://www.mediawiki.org/wiki/API:Upload
     '''
@@ -53,8 +33,8 @@ class UploadTool:
         # Step 2: Send a post request to login
         PARAMS_2 = {
             'action': "clientlogin",
-            'username': login,
-            'password': password,
+            'username': self.login,
+            'password': self.password,
             'loginreturnurl': URL,
             'logintoken': LOGIN_TOKEN,
             'format': "json"
@@ -65,13 +45,15 @@ class UploadTool:
 
         for element in widget._currentUpload.listImageUpload:
                     if element.cbImport.isChecked():
-                        self.uploadImage(element, widget.currentDirectoryPath)
+                        text = self.getText(element, widget)
+
+                        self.uploadImage(element, widget.currentDirectoryPath, text)
 
     '''
         uploadImage
              https://www.mediawiki.org/wiki/API:Upload
     '''
-    def uploadImage(self, element, path):
+    def uploadImage(self, element, path, text):
 
         fileName = element.lineEditFileName.text()
         realFileName = element.lblRealFileName.text()
@@ -99,7 +81,9 @@ class UploadTool:
             "format": "json",
             "token": CSRF_TOKEN,
             "ignorewarnings": 1,
-            "comment": "PyCommonist image upload"
+            "comment": "PyCommonist image upload",
+            "text": text
+
         }
 
         FILE = {'file':(fileName, open(FILE_PATH, 'rb'), 'multipart/form-data')}
@@ -108,30 +92,31 @@ class UploadTool:
         DATA = R.json()
         print(DATA)
 
+    '''
+        getText
+    '''
+    def getText(self, element, widget):
 
+        location = element.lineEditLocation.text().split(", ")
 
+        catFinalText = ''
+        cat_text = widget.lineEditCategories.text() + '|' + element.lineEditCategories.text()
+        categories = cat_text.split('|')
+        for category in categories:
+            catFinalText = catFinalText + "[[Category:" + category + "]]\n"
 
+        text =  \
+'''== {{int:filedesc}} ==
+{{Information
+|Description = ''' + widget.lineEditDescription.toPlainText()  + element.lineEditDescription.toPlainText()  + "\n" + \
+'''|Source = ''' + widget.lineEditSource.text() + "\n" + \
+'''|Author = ''' + widget.lineEditAuthor.text() + "\n" \
+'''|Date = ''' + element.lineEditDateTime.text() + "\n" + \
+'''|Permission =
+|other_versions =
+}}
+{{Location dec|''' + location[0] + '|' + location[1] + '''}}\n''' + \
+'''== {{int:license-header}} == \n''' + \
+widget.lineEditLicense.text() + "\n\n" + catFinalText
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return text
