@@ -6,7 +6,6 @@ import exifread
 from gps_location import get_exif_location
 
 from ImageUpload import ImageUpload
-from Upload import Upload
 
 from PyQt5.QtCore import Qt, QRect
 from PyQt5.Qt import QDir
@@ -180,9 +179,6 @@ def generateLeftTopFrame(mainWidget):
 '''
 def generateLeftBottomFrame(mainWidget):
 
-    ''' Current upload'''
-    mainWidget._currentUpload = Upload()
-
     mainWidget.layoutLeftBottom = QVBoxLayout()
 
     '''Model for QTreeView'''
@@ -205,6 +201,9 @@ def generateLeftBottomFrame(mainWidget):
 '''
 def generateRightFrame(mainWidget, path):
 
+    ''' Current upload'''
+    mainWidget._currentUpload = []
+
     layout = mainWidget.scrollLayout
 
     print(layout)
@@ -219,7 +218,7 @@ def generateRightFrame(mainWidget, path):
     files = [f for f in listdir(path) if isfile(join(path, f))]
     for file in files:
         fullFilePath = os.path.join(path, file)
-        if fullFilePath.endswith(".jpg"):
+        if fullFilePath.endswith(".jpg") or fullFilePath.endswith(".png"):
 
             ''' Current image '''
             localWidget = ImageUpload()
@@ -316,4 +315,4 @@ def generateRightFrame(mainWidget, path):
             localWidget.fullFilePath = fullFilePath
 
             mainWidget.scrollLayout.addWidget(localWidget)
-            mainWidget._currentUpload.listImageUpload.append(localWidget)
+            mainWidget._currentUpload.append(localWidget)

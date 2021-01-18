@@ -12,7 +12,7 @@ class UploadTool:
     '''
     def uploadImages(self, widget):
 
-        if len(widget._currentUpload.listImageUpload) > 0:
+        if len(widget._currentUpload) > 0:
 
             self.S = requests.Session()
 
@@ -43,11 +43,10 @@ class UploadTool:
         R = self.S.post(URL, data=PARAMS_2)
         print(R.content)
 
-        for element in widget._currentUpload.listImageUpload:
-                    if element.cbImport.isChecked():
-                        text = self.getText(element, widget)
-
-                        self.uploadImage(element, widget.currentDirectoryPath, text)
+        for element in widget._currentUpload:
+            if element.cbImport.isChecked():
+                text = self.getText(element, widget)
+                self.uploadImage(element, widget.currentDirectoryPath, text)
 
     '''
         uploadImage
@@ -97,10 +96,16 @@ class UploadTool:
     '''
     def getText(self, element, widget):
 
-        location = element.lineEditLocation.text().split(", ")
+        editLocation = element.lineEditLocation.text().replace(" ", "")
+        location = editLocation.split(",")
 
         catFinalText = ''
         cat_text = widget.lineEditCategories.text() + '|' + element.lineEditCategories.text()
+        cat_text = cat_text.replace("| ", "|")
+        cat_text = cat_text.replace(" | ", "|")
+        cat_text = cat_text.strip()
+
+        cat_text += "Category:Uploaded with PyCommonist"
         categories = cat_text.split('|')
         for category in categories:
             catFinalText = catFinalText + "[[Category:" + category + "]]\n"

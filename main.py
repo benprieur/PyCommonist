@@ -1,6 +1,5 @@
 import sys
 from UploadTool import UploadTool
-from Upload import Upload
 from PyQt5.QtWidgets import QApplication, QWidget
 from presentation import generateSplitter, \
     generateLeftTopFrame, \
@@ -11,7 +10,7 @@ class PyCommonist(QWidget):
 
     def __init__(self):
         super(PyCommonist, self).__init__()
-        self._currentUpload = Upload()
+        self._currentUpload = []
         self.initUI()
 
     def initUI(self):
@@ -30,6 +29,7 @@ class PyCommonist(QWidget):
         onSelectFolder
     '''
     def onSelectFolder(self, selected, deselected):
+
         try:
             currentIndex = selected.indexes()[0]
             #print(currentIndex)
@@ -37,11 +37,11 @@ class PyCommonist(QWidget):
             currentDirectoryPath = self.modelTree.filePath(currentIndex)
             print(currentDirectoryPath)
 
-            if self.currentDirectoryPath != currentDirectoryPath:
-                self.currentDirectoryPath = currentDirectoryPath
-                generateRightFrame(self, self.currentDirectoryPath)
+            self.currentDirectoryPath = currentDirectoryPath
+            generateRightFrame(self, self.currentDirectoryPath)
 
             self.update()
+
         except:
             print("Something bad happened inside onSelectFolder function.")
 
@@ -51,11 +51,11 @@ class PyCommonist(QWidget):
     def cbImportNoneStateChanged(self):
 
         print (self.cbImportNone.isChecked())
-        print(len(self._currentUpload.listImageUpload))
+        print(len(self._currentUpload))
 
-        if self.cbImportNone.isChecked() and len(self._currentUpload.listImageUpload) > 0:
+        if self.cbImportNone.isChecked() and len(self._currentUpload) > 0:
 
-            for element in self._currentUpload.listImageUpload:
+            for element in self._currentUpload:
                 element.cbImport.setCheckState(False)
 
     '''
@@ -64,10 +64,10 @@ class PyCommonist(QWidget):
     def cbImportAllStateChanged(self):
 
         print (self.cbImportAll.isChecked())
-        print(len(self._currentUpload.listImageUpload))
-        if self.cbImportAll.isChecked() and len(self._currentUpload.listImageUpload) > 0:
+        print(len(self._currentUpload))
+        if self.cbImportAll.isChecked() and len(self._currentUpload) > 0:
 
-            for element in self._currentUpload.listImageUpload:
+            for element in self._currentUpload:
                 element.cbImport.setCheckState(True)
 
     '''
