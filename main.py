@@ -74,7 +74,7 @@ class PyCommonist(QWidget):
         onClickImport
     '''
     def onClickImport(self):
-        tool = UploadTool(self.lineEditUserName.text(), self.lineEditPassword.text())
+        tool = UploadTool()
         ret = tool.uploadImages(self)
 
 

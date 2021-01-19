@@ -2,9 +2,6 @@ import json, requests
 from constants import URL
 
 class UploadTool:
-    def __init__(self, login, password):
-        self.login = login
-        self.password = password
 
     '''
         uploadImages
@@ -12,9 +9,14 @@ class UploadTool:
     '''
     def uploadImages(self, widget):
 
+        self.login = widget.lineEditUserName.text()
+        self.password = widget.lineEditPassword.text()
+
         if len(widget._currentUpload) > 0:
 
             self.S = requests.Session()
+        else:
+            return
 
         # Step 1: Retrieve a login token
         PARAMS_1 = {
@@ -42,6 +44,8 @@ class UploadTool:
 
         R = self.S.post(URL, data=PARAMS_2)
         print(R.content)
+        if R.content.json()['clientlogin']['status'] != 'PASS':
+            return
 
         for element in widget._currentUpload:
             if element.cbImport.isChecked():
@@ -105,7 +109,7 @@ class UploadTool:
         cat_text = cat_text.replace(" | ", "|")
         cat_text = cat_text.strip()
 
-        cat_text += "Category:Uploaded with PyCommonist"
+        cat_text += "|Category:Uploaded with PyCommonist"
         categories = cat_text.split('|')
         for category in categories:
             catFinalText = catFinalText + "[[Category:" + category + "]]\n"

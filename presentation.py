@@ -30,7 +30,8 @@ from constants import VERTICAL_TOP_SIZE, \
     HORIZONTAL_RIGHT_SIZE, \
     WIDTH_WIDGET, \
     WIDTH_WIDGET_RIGHT, \
-    IMAGE_DIMENSION
+    IMAGE_DIMENSION, \
+    STYLE_IMPORT_BUTTON
 
 
 '''
@@ -99,14 +100,6 @@ def generateLeftTopFrame(mainWidget):
     mainWidget.lineEditPassword.setEchoMode(QLineEdit.Password)
     mainWidget.layoutLeftTop.addRow(mainWidget.lblPassword, mainWidget.lineEditPassword)
 
-    mainWidget.lblWiki = QLabel("Wiki: ")
-    mainWidget.lblWiki.setAlignment(Qt.AlignLeft)
-    mainWidget.lineEditWiki = QLabel() #QLineEdit()
-    mainWidget.lineEditWiki.setFixedWidth(WIDTH_WIDGET)
-    mainWidget.lineEditWiki.setText("Wikimedia Commons")
-    mainWidget.lineEditWiki.setAlignment(Qt.AlignLeft)
-    mainWidget.layoutLeftTop.addRow(mainWidget.lblWiki, mainWidget.lineEditWiki)
-
     mainWidget.lblSource = QLabel("Source: ")
     mainWidget.lblSource.setAlignment(Qt.AlignLeft)
     mainWidget.lineEditSource = QLineEdit()
@@ -126,6 +119,7 @@ def generateLeftTopFrame(mainWidget):
     mainWidget.lblCategories = QLabel("Categories: ")
     mainWidget.lblCategories.setAlignment(Qt.AlignLeft)
     mainWidget.lineEditCategories = QLineEdit()
+    mainWidget.lineEditCategories.setText("Photographs by Benoît Prieur|2021 images by Benoît Prieur|Images of Neyron by Benoît Prieur|Auvergne-Rhône-Alpes photographs taken on 2021-01-13")
     mainWidget.lineEditCategories.setFixedWidth(WIDTH_WIDGET)
     mainWidget.lineEditCategories.setAlignment(Qt.AlignLeft)
     mainWidget.layoutLeftTop.addRow(mainWidget.lblCategories, mainWidget.lineEditCategories)
@@ -159,6 +153,7 @@ def generateLeftTopFrame(mainWidget):
     mainWidget.cbImportAll.stateChanged.connect(mainWidget.cbImportAllStateChanged)
 
     mainWidget.btnImport = QPushButton("Import!")
+
     mainWidget.btnImport.clicked.connect(mainWidget.onClickImport)
 
     importLayout.addWidget(mainWidget.cbImportNone)
@@ -168,7 +163,8 @@ def generateLeftTopFrame(mainWidget):
     importWidget.setStyleSheet("border:1px solid #808080;");
     mainWidget.cbImportNone.setStyleSheet("border:0px;");
     mainWidget.cbImportAll.setStyleSheet("border:0px;");
-    mainWidget.btnImport.setStyleSheet("border:0px; font-size: 24px; font-style: oblique; font-weight: bold;");
+
+    mainWidget.btnImport.setStyleSheet(STYLE_IMPORT_BUTTON)
 
     ''' Layout Association of the Left Top Frame'''
     mainWidget.leftTopFrame.setLayout(mainWidget.layoutLeftTop)
