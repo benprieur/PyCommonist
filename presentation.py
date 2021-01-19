@@ -23,7 +23,8 @@ from PyQt5.QtWidgets import QHBoxLayout, \
     QScrollArea, \
     QWidget, \
     QCheckBox, \
-    QPushButton
+    QPushButton, \
+    QStatusBar
 from constants import VERTICAL_TOP_SIZE, \
     VERTICAL_BOTTOM_SIZE, \
     HORIZONTAL_LEFT_SIZE, \
@@ -39,7 +40,8 @@ from constants import VERTICAL_TOP_SIZE, \
 '''
 def generateSplitter(mainWidget):
 
-    mainWidget.hbox = QHBoxLayout()
+    vbox = QVBoxLayout()
+    hbox = QHBoxLayout()
 
     mainWidget.leftTopFrame = QFrame()
     mainWidget.leftTopFrame.setFrameShape(QFrame.StyledPanel)
@@ -66,14 +68,23 @@ def generateSplitter(mainWidget):
     mainWidget.splitterLeft.addWidget(mainWidget.leftBottonFrame)
     mainWidget.splitterLeft.setSizes([VERTICAL_TOP_SIZE,VERTICAL_BOTTOM_SIZE])
 
+    ''' Horizontal Splitter '''
     mainWidget.splitterCentral = QSplitter(Qt.Horizontal)
     mainWidget.splitterCentral.addWidget(mainWidget.splitterLeft)
     mainWidget.splitterCentral.addWidget(mainWidget.rightWidget)
     mainWidget.splitterCentral.setSizes([HORIZONTAL_LEFT_SIZE,HORIZONTAL_RIGHT_SIZE])
+    hbox.addWidget(mainWidget.splitterCentral)
 
-    mainWidget.hbox.addWidget(mainWidget.splitterCentral)
+    vbox.addLayout(hbox)
 
-    mainWidget.setLayout(mainWidget.hbox)
+    ''' Status Bar '''
+    mainWidget.statusBar = QStatusBar()
+    mainWidget.statusBar.setFixedSize(800, 40)
+    vbox.addWidget(mainWidget.statusBar)
+
+    mainWidget.setLayout(vbox)
+
+
 
 
 '''
@@ -186,7 +197,9 @@ def generateLeftBottomFrame(mainWidget):
     mainWidget.treeLeftBottom = QTreeView()
     mainWidget.treeLeftBottom.setModel(mainWidget.modelTree)
     mainWidget.treeLeftBottom.setAnimated(False)
-    mainWidget.treeLeftBottom.setIndentation(20)
+    mainWidget.treeLeftBottom.setIndentation(10)
+    mainWidget.treeLeftBottom.setColumnWidth(0, 300)
+    mainWidget.treeLeftBottom.expandAll()
     mainWidget.treeLeftBottom.selectionModel().selectionChanged.connect(mainWidget.onSelectFolder)
     mainWidget.layoutLeftBottom.addWidget(mainWidget.treeLeftBottom)
     mainWidget.leftBottonFrame.setLayout(mainWidget.layoutLeftBottom)
@@ -231,8 +244,10 @@ def generateRightFrame(mainWidget, path):
 
             ''' import? '''
             cbImport = QCheckBox("Import")
-            localLeftLayout.addWidget(cbImport)
+            lblUploadResult = QLabel()
+            localLeftLayout.addRow(cbImport, lblUploadResult)
             localWidget.cbImport = cbImport
+            localWidget.lblUploadResult = lblUploadResult
 
             ''' File Name of picture '''
             lblFileName = QLabel("Name: ")

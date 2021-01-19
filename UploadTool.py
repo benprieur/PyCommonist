@@ -12,11 +12,19 @@ class UploadTool:
         self.login = widget.lineEditUserName.text()
         self.password = widget.lineEditPassword.text()
 
-        if len(widget._currentUpload) > 0:
-
-            self.S = requests.Session()
-        else:
+        if len(self.login) == 0:
+            widget.statusBar.showMessage("          Login is not filled.",)
             return
+
+        if len(self.password) == 0:
+            widget.statusBar.showMessage("          Password is not filled.")
+            return
+
+        if len(widget._currentUpload) == 0:
+            widget.statusBar.showMessage("          No image is selected.")
+            return
+
+        self.S = requests.Session()
 
         # Step 1: Retrieve a login token
         PARAMS_1 = {
@@ -44,7 +52,9 @@ class UploadTool:
 
         R = self.S.post(URL, data=PARAMS_2)
         print(R.content)
-        if R.content.json()['clientlogin']['status'] != 'PASS':
+        print(R.json()['clientlogin']['status'])
+        if R.json()['clientlogin']['status'] != 'PASS':
+            widget.statusBar.showMessage("          Client login failed.")
             return
 
         for element in widget._currentUpload:
@@ -84,17 +94,15 @@ class UploadTool:
             "format": "json",
             "token": CSRF_TOKEN,
             "ignorewarnings": 1,
-            "comment": "PyCommonist image upload",
+            "comment": "PyCommonist image upload: " + fileName,
             "text": text
-
         }
 
         FILE = {'file':(fileName, open(FILE_PATH, 'rb'), 'multipart/form-data')}
 
         R = self.S.post(URL, files=FILE, data=PARAMS_4)
-        DATA = R.json()
-        print(DATA)
-
+        resultUploadImage = R.json()['upload']['result']
+        element.lblUploadResult.setText(resultUploadImage)
     '''
         getText
     '''
@@ -109,7 +117,7 @@ class UploadTool:
         cat_text = cat_text.replace(" | ", "|")
         cat_text = cat_text.strip()
 
-        cat_text += "|Category:Uploaded with PyCommonist"
+        cat_text += "|Uploaded with PyCommonist"
         categories = cat_text.split('|')
         for category in categories:
             catFinalText = catFinalText + "[[Category:" + category + "]]\n"

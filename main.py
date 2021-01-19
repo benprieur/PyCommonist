@@ -1,6 +1,6 @@
 import sys
 from UploadTool import UploadTool
-from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QApplication, QWidget, QStatusBar
 from presentation import generateSplitter, \
     generateLeftTopFrame, \
     generateLeftBottomFrame, \
