@@ -59,30 +59,39 @@ class UploadTool:
             widget.statusBar.showMessage("          Client login failed.")
             return
 
-        numberImages = len(widget._currentUpload)
-        widget.workers = ['']*numberImages
-        widget.threads = ['']*numberImages
+        self.numberImages = len(widget._currentUpload)
+        print(str(QThread.currentThreadId().__int__()))
 
-        for ii in range(numberImages):
+        self.numberImagesChecked = 0
+        for element in widget._currentUpload:
+            if element.cbImport.isChecked():
+                self.numberImagesChecked = self.numberImagesChecked + 1
 
-            element = widget._currentUpload[ii]
+        widget.threads = []
+        widget.workers = []
+
+        currentImageIndex = 0
+        for element in widget._currentUpload:
             if element.cbImport.isChecked():
                 path = widget.currentDirectoryPath
                 session = self.S
 
-                print(str(QThread.currentThreadId().__int__()))
-                widget.workers[ii] = ProcessImageUpload(element, widget, path, session)
-                widget.threads[ii] = QThread()
-                widget.workers[ii].moveToThread(widget.threads[ii])
-                widget.threads[ii].started.connect(widget.workers[ii].process)
-                #widget.threads[ii].finished.connect(self.terminateThread)
-                widget.threads[ii].start()
+                thread = QThread()
+                widget.threads.append(thread)
+                process = ProcessImageUpload(element, widget, path, session)
+                widget.workers.append(process)
+                widget.workers[currentImageIndex].moveToThread(widget.threads[currentImageIndex])
+                widget.threads[currentImageIndex].finished.connect(lambda widget=widget, ii=currentImageIndex: self.terminateThread(widget, currentImageIndex))
+                widget.threads[currentImageIndex].started.connect(widget.workers[currentImageIndex].process)
+                widget.threads[currentImageIndex].start()
+                currentImageIndex = currentImageIndex + 1
+
 
     '''
         terminateThread
     '''
+    @pyqtSlot()
     def terminateThread(self, widget, ii):
-        print("Terminating the current upload thread.")
-        widget.threads[ii].quit();
-        widget.threads[ii].wait();
-        widget.threads[ii].deleteLater();
+        print("Current upload thread deleting.")
+        widget.threads[ii].stop()
+        widget.threads[ii].deletelater()

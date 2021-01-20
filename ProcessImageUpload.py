@@ -80,17 +80,22 @@ class ProcessImageUpload(QObject):
         editLocation = element.lineEditLocation.text().replace(" ", "")
         location = editLocation.split(",")
 
-        catFinalText = ''
+        print(widget.lineEditCategories.text())
+        print(element.lineEditCategories.text())
         cat_text = widget.lineEditCategories.text() + '|' + element.lineEditCategories.text()
         cat_text = cat_text.replace("| ", "|")
         cat_text = cat_text.replace(" | ", "|")
         cat_text = cat_text.strip()
-
         if cat_text == "|":
             cat_text = "Uploaded with PyCommonist"
         else:
             cat_text += "|Uploaded with PyCommonist"
+        cat_text = cat_text.replace("||", "|")
+        print (cat_text)
+
         categories = cat_text.split('|')
+
+        catFinalText = ''
         for category in categories:
             catFinalText = catFinalText + "[[Category:" + category + "]]\n"
 
