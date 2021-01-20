@@ -66,7 +66,7 @@ class ProcessImageUpload(QObject):
             print(resultUploadImage)
             element.lblUploadResult.setText(resultUploadImage)
         except:
-            print("Something bad from the return value of the upload.")
+            print("Something bad from the return value of the upload")
             element.lblUploadResult.setText("FAILED")
 
         self.runNextThread()
@@ -76,8 +76,11 @@ class ProcessImageUpload(QObject):
     '''
     def runNextThread(self):
         if self.index < self.widget.numberImagesChecked - 1:
-            print("Start next process.")
+            print("Start next process")
             self.widget.threads[self.index + 1].start()
+        elif self.index == self.widget.numberImagesChecked - 1:
+            print("Clean threads")
+            self.widget.cleanThreads()
 
     '''
         getText

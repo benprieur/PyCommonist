@@ -12,6 +12,9 @@ class PyCommonist(QWidget):
         super(PyCommonist, self).__init__()
         self._currentUpload = []
         self.initUI()
+        self.threads = []
+        self.workers = []
+
 
     def initUI(self):
 
@@ -43,7 +46,7 @@ class PyCommonist(QWidget):
             self.update()
 
         except:
-            print("Something bad happened inside onSelectFolder function.")
+            print("Something bad happened inside onSelectFolder function")
 
     '''
         cbImportNoneStateChanged
@@ -76,6 +79,18 @@ class PyCommonist(QWidget):
     def onClickImport(self):
         tool = UploadTool()
         ret = tool.uploadImages(self)
+
+    '''
+        cleanThreads
+    '''
+    def cleanThreads(self):
+        print("Clean threads")
+        for thread in self.threads:
+            print("Thread deletion")
+            thread.wait()
+            thread.terminate()
+        self.threads.clear()
+        self.workers.clear()
 
 
 def main():

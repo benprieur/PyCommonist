@@ -15,15 +15,15 @@ class UploadTool:
         self.password = widget.lineEditPassword.text()
 
         if len(self.login) == 0:
-            widget.statusBar.showMessage("          Login is not filled.",)
+            widget.statusBar.showMessage("          Login is not filled",)
             return
 
         if len(self.password) == 0:
-            widget.statusBar.showMessage("          Password is not filled.")
+            widget.statusBar.showMessage("          Password is not filled")
             return
 
         if len(widget._currentUpload) == 0:
-            widget.statusBar.showMessage("          No image is selected.")
+            widget.statusBar.showMessage("          No image is selected")
             return
 
         self.S = requests.Session()
@@ -56,7 +56,7 @@ class UploadTool:
         print(R.content)
         print(R.json()['clientlogin']['status'])
         if R.json()['clientlogin']['status'] != 'PASS':
-            widget.statusBar.showMessage("          Client login failed.")
+            widget.statusBar.showMessage("          Client login failed")
             return
 
         self.numberImages = len(widget._currentUpload)
