@@ -32,7 +32,8 @@ from constants import VERTICAL_TOP_SIZE, \
     WIDTH_WIDGET, \
     WIDTH_WIDGET_RIGHT, \
     IMAGE_DIMENSION, \
-    STYLE_IMPORT_BUTTON
+    STYLE_IMPORT_BUTTON, \
+    STYLE_IMPORT_STATUS
 
 
 '''
@@ -242,9 +243,10 @@ def generateRightFrame(mainWidget, path):
             localLeftWidget.setLayout(localLeftLayout)
             localLayout.addWidget(localLeftWidget)
 
-            ''' import? '''
+            ''' import? + Import Status '''
             cbImport = QCheckBox("Import")
             lblUploadResult = QLabel()
+            lblUploadResult.setStyleSheet(STYLE_IMPORT_STATUS)
             localLeftLayout.addRow(cbImport, lblUploadResult)
             localWidget.cbImport = cbImport
             localWidget.lblUploadResult = lblUploadResult
