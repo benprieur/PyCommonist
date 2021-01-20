@@ -62,36 +62,27 @@ class UploadTool:
         self.numberImages = len(widget._currentUpload)
         print(str(QThread.currentThreadId().__int__()))
 
-        self.numberImagesChecked = 0
+        widget.numberImagesChecked = 0
         for element in widget._currentUpload:
             if element.cbImport.isChecked():
-                self.numberImagesChecked = self.numberImagesChecked + 1
+                widget.numberImagesChecked = widget.numberImagesChecked + 1
 
         widget.threads = []
         widget.workers = []
 
-        currentImageIndex = 0
+        widget.currentImageIndex = 0
         for element in widget._currentUpload:
             if element.cbImport.isChecked():
                 path = widget.currentDirectoryPath
                 session = self.S
+                index = widget.currentImageIndex
 
                 thread = QThread()
                 widget.threads.append(thread)
-                process = ProcessImageUpload(element, widget, path, session)
+                process = ProcessImageUpload(element, widget, path, session, index)
                 widget.workers.append(process)
-                widget.workers[currentImageIndex].moveToThread(widget.threads[currentImageIndex])
-                widget.threads[currentImageIndex].finished.connect(lambda widget=widget, ii=currentImageIndex: self.terminateThread(widget, currentImageIndex))
-                widget.threads[currentImageIndex].started.connect(widget.workers[currentImageIndex].process)
-                widget.threads[currentImageIndex].start()
-                currentImageIndex = currentImageIndex + 1
+                widget.workers[index].moveToThread(widget.threads[index])
+                widget.threads[index].started.connect(widget.workers[index].process)
+                widget.currentImageIndex = widget.currentImageIndex + 1
 
-
-    '''
-        terminateThread
-    '''
-    @pyqtSlot()
-    def terminateThread(self, widget, ii):
-        print("Current upload thread deleting.")
-        widget.threads[ii].stop()
-        widget.threads[ii].deletelater()
+        widget.threads[0].start()

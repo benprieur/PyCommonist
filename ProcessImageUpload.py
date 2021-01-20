@@ -7,14 +7,13 @@ from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
 '''
 class ProcessImageUpload(QObject):
 
-    finished = pyqtSignal()
-
-    def __init__(self, element, widget, path, session):
+    def __init__(self, element, widget, path, session, index):
         QObject.__init__(self)
         self.element = element
         self.widget = widget
         self.path = path
         self.S = session
+        self.index = index
 
     @pyqtSlot()
     def process(self):
@@ -70,7 +69,15 @@ class ProcessImageUpload(QObject):
             print("Something bad from the return value of the upload.")
             element.lblUploadResult.setText("FAILED")
 
-        self.finished.emit()
+        self.runNextThread()
+
+    '''
+        terminateThread
+    '''
+    def runNextThread(self):
+        if self.index < self.widget.numberImagesChecked - 1:
+            print("Start next process.")
+            self.widget.threads[self.index + 1].start()
 
     '''
         getText
