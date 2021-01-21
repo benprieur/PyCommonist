@@ -205,6 +205,22 @@ def generateLeftBottomFrame(mainWidget):
     mainWidget.layoutLeftBottom.addWidget(mainWidget.treeLeftBottom)
     mainWidget.leftBottonFrame.setLayout(mainWidget.layoutLeftBottom)
 
+'''
+    get_files
+'''
+def get_files(path):
+    import os
+    if os.path.exists(path):
+        os.chdir(path)
+        files = (os.listdir(path))
+        items = {}
+        def get_file_details(f):
+            return {f:os.path.getmtime(f)}
+        results = [get_file_details(f) for f in files]
+        for result in results:
+            for key, value in result.items():
+                items[key] = value
+    return items
 
 '''
     generateRightFrame
@@ -225,7 +241,8 @@ def generateRightFrame(mainWidget, path):
         if child.widget():
             child.widget().deleteLater()
 
-    files = [f for f in listdir(path) if isfile(join(path, f))]
+    list_dir = os.listdir(path)
+    files = [f for f in sorted(list_dir) if isfile(join(path, f))]
     for file in files:
         fullFilePath = os.path.join(path, file)
         if fullFilePath.endswith(".jpg") or fullFilePath.endswith(".png"):

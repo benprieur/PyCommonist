@@ -5,6 +5,8 @@ from ProcessImageUpload import ProcessImageUpload
 
 class UploadTool:
 
+    S = None
+
     '''
         uploadImages
          https://www.mediawiki.org/wiki/API:Upload
@@ -26,38 +28,39 @@ class UploadTool:
             widget.statusBar.showMessage("          No image is selected")
             return
 
-        self.S = requests.Session()
+        if (self.S == None):
+            self.S = requests.Session()
 
-        # Step 1: Retrieve a login token
-        PARAMS_1 = {
-            "action": "query",
-            "meta": "tokens",
-            "type": "login",
-            "format": "json"
-        }
-        R = self.S.get(url=URL, params=PARAMS_1)
-        DATA = R.json()
-        print(DATA)
+            # Step 1: Retrieve a login token
+            PARAMS_1 = {
+                "action": "query",
+                "meta": "tokens",
+                "type": "login",
+                "format": "json"
+            }
+            R = self.S.get(url=URL, params=PARAMS_1)
+            DATA = R.json()
+            print(DATA)
 
-        LOGIN_TOKEN = DATA["query"]["tokens"]["logintoken"]
-        print(LOGIN_TOKEN)
+            LOGIN_TOKEN = DATA["query"]["tokens"]["logintoken"]
+            print(LOGIN_TOKEN)
 
-        # Step 2: Send a post request to login
-        PARAMS_2 = {
-            'action': "clientlogin",
-            'username': self.login,
-            'password': self.password,
-            'loginreturnurl': URL,
-            'logintoken': LOGIN_TOKEN,
-            'format': "json"
-        }
+            # Step 2: Send a post request to login
+            PARAMS_2 = {
+                'action': "clientlogin",
+                'username': self.login,
+                'password': self.password,
+                'loginreturnurl': URL,
+                'logintoken': LOGIN_TOKEN,
+                'format': "json"
+            }
 
-        R = self.S.post(URL, data=PARAMS_2)
-        print(R.content)
-        print(R.json()['clientlogin']['status'])
-        if R.json()['clientlogin']['status'] != 'PASS':
-            widget.statusBar.showMessage("          Client login failed")
-            return
+            R = self.S.post(URL, data=PARAMS_2)
+            print(R.content)
+            print(R.json()['clientlogin']['status'])
+            if R.json()['clientlogin']['status'] != 'PASS':
+                widget.statusBar.showMessage("          Client login failed")
+                return
 
         self.numberImages = len(widget._currentUpload)
         print(str(QThread.currentThreadId().__int__()))
@@ -67,9 +70,6 @@ class UploadTool:
             if element.cbImport.isChecked():
                 widget.numberImagesChecked = widget.numberImagesChecked + 1
 
-        for thread in widget.threads:
-            thread.wait()
-            thread.quit()
         widget.threads.clear()
         widget.workers.clear()
 

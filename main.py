@@ -8,6 +8,8 @@ from presentation import generateSplitter, \
 
 class PyCommonist(QWidget):
 
+    tool = None
+
     def __init__(self):
         super(PyCommonist, self).__init__()
         self._currentUpload = []
@@ -77,8 +79,9 @@ class PyCommonist(QWidget):
         onClickImport
     '''
     def onClickImport(self):
-        tool = UploadTool()
-        ret = tool.uploadImages(self)
+        if (self.tool == None):
+            self.tool = UploadTool()
+        ret = self.tool.uploadImages(self)
 
     '''
         cleanThreads
