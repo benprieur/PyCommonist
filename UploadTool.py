@@ -67,8 +67,11 @@ class UploadTool:
             if element.cbImport.isChecked():
                 widget.numberImagesChecked = widget.numberImagesChecked + 1
 
-        widget.threads = []
-        widget.workers = []
+        for thread in widget.threads:
+            thread.wait()
+            thread.quit()
+        widget.threads.clear()
+        widget.workers.clear()
 
         widget.currentImageIndex = 0
         for element in widget._currentUpload:

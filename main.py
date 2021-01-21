@@ -88,7 +88,7 @@ class PyCommonist(QWidget):
         for thread in self.threads:
             print("Thread deletion")
             thread.wait()
-            thread.terminate()
+            thread.quit()
         self.threads.clear()
         self.workers.clear()
 

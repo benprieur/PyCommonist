@@ -1,6 +1,6 @@
 import json, requests
 from constants import URL
-from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot, QTimer
 
 '''
     class ProcessImageUpload
@@ -77,9 +77,12 @@ class ProcessImageUpload(QObject):
     def runNextThread(self):
         if self.index < self.widget.numberImagesChecked - 1:
             print("Start next process")
+            timer = QTimer()
+            timer.setInterval(6); # To avoid a 502 error (first test ok with 10)
+            timer.start()
             self.widget.threads[self.index + 1].start()
         elif self.index == self.widget.numberImagesChecked - 1:
-            print("Clean threads")
+            print("Call Clean threads")
             self.widget.cleanThreads()
 
     '''
