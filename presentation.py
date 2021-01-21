@@ -309,12 +309,15 @@ def generateRightFrame(mainWidget, path):
             ''' Location'''
             # 'GPS GPSLatitude', 'GPS GPSLongitude'] # [45, 49, 339/25] [4, 55, 716/25]
             # 'GPS GPSImgDirection' 'GPS GPSLatitudeRef'
-            lat, long = get_exif_location(tags)
+            lat, long, heading = get_exif_location(tags)
             lblLocation = QLabel("Location: ")
             lblLocation.setAlignment(Qt.AlignLeft)
             lineEditLocation = QLineEdit()
             lineEditLocation.setFixedWidth(WIDTH_WIDGET_RIGHT)
-            lineEditLocation.setText(str(lat) + ', ' + str(long))
+            if lat == None or long == None:
+                lineEditLocation.setText('')
+            else:
+                lineEditLocation.setText(str(lat) + '|' + str(long) + "|heading:" + str(heading))
             lineEditLocation.setAlignment(Qt.AlignLeft)
             localLeftLayout.addRow(lblLocation, lineEditLocation)
             localWidget.lineEditLocation = lineEditLocation

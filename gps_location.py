@@ -29,11 +29,14 @@ def get_exif_location(exif_data):
     """
     lat = None
     lon = None
+    heading = 0
 
     gps_latitude = _get_if_exist(exif_data, 'GPS GPSLatitude')
     gps_latitude_ref = _get_if_exist(exif_data, 'GPS GPSLatitudeRef')
     gps_longitude = _get_if_exist(exif_data, 'GPS GPSLongitude')
     gps_longitude_ref = _get_if_exist(exif_data, 'GPS GPSLongitudeRef')
+    gps_direction = _get_if_exist(exif_data, 'GPS GPSImgDirection')
+    gps_direction_ref = _get_if_exist(exif_data, 'GPS GPSImgDirectionRef')
 
     if gps_latitude and gps_latitude_ref and gps_longitude and gps_longitude_ref:
         lat = _convert_to_degress(gps_latitude)
@@ -44,4 +47,14 @@ def get_exif_location(exif_data):
         if gps_longitude_ref.values[0] != 'E':
             lon = 0 - lon
 
-    return lat, lon
+    if str(gps_direction_ref) == "T": # Real North
+        try:
+            tab = str(gps_direction).split('/')
+            print(tab)
+            tab[0] = int(tab[0])
+            tab[1] = int(tab[1])
+            heading = tab[0]/tab[1]
+        except:
+            print("Problem with gps_direction")
+
+    return lat, lon, heading

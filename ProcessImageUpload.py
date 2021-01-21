@@ -90,8 +90,9 @@ class ProcessImageUpload(QObject):
     '''
     def getText(self, element, widget):
 
-        editLocation = element.lineEditLocation.text().replace(" ", "")
-        location = editLocation.split(",")
+        location = element.lineEditLocation.text()
+        if location != '':
+            location = '{{Location dec|''' + location + '''}}\n'''
 
         print(widget.lineEditCategories.text())
         print(element.lineEditCategories.text())
@@ -121,8 +122,7 @@ class ProcessImageUpload(QObject):
 '''|Date = ''' + element.lineEditDateTime.text() + "\n" + \
 '''|Permission =
 |other_versions =
-}}
-{{Location dec|''' + location[0] + '|' + location[1] + '''}}\n''' + \
+}}\n''' + location + "\n" + \
 '''== {{int:license-header}} == \n''' + widget.lineEditLicense.text() + "\n\n" + catFinalText
 
         return text
