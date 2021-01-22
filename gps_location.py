@@ -55,6 +55,6 @@ def get_exif_location(exif_data):
             tab[1] = int(tab[1])
             heading = tab[0]/tab[1]
         except:
-            print("Problem with gps_direction")
+            traceback.print_exc()
 
     return lat, lon, heading

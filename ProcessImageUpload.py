@@ -1,4 +1,4 @@
-import json, requests
+import json, requests, traceback
 from constants import URL
 from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot, QTimer
 
@@ -53,20 +53,21 @@ class ProcessImageUpload(QObject):
             "format": "json",
             "token": CSRF_TOKEN,
             "ignorewarnings": 1,
-            "comment": "PyCommonist image upload: " + fileName,
+            "comment": "PyCommonist upload: " + fileName,
             "text": text
         }
 
+        # Here test if the file is still there...
         FILE = {'file':(fileName, open(FILE_PATH, 'rb'), 'multipart/form-data')}
 
         R = self.S.post(URL, files=FILE, data=PARAMS_4)
-        print(R)
+        print(R.json())
         try:
             resultUploadImage = R.json()['upload']['result']
             print(resultUploadImage)
             element.lblUploadResult.setText(resultUploadImage)
         except:
-            print("Something bad from the return value of the upload")
+            traceback.print_exc()
             element.lblUploadResult.setText("FAILED")
 
         self.runNextThread()

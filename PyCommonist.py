@@ -81,6 +81,7 @@ class PyCommonist(QWidget):
 
         except:
             print("Something bad happened inside onSelectFolder function")
+            traceback.print_exc()
 
     '''
         cbImportNoneStateChanged

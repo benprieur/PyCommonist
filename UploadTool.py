@@ -1,4 +1,4 @@
-import json, requests
+import json, requests, traceback
 from constants import URL
 from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
 from ProcessImageUpload import ProcessImageUpload
@@ -28,9 +28,10 @@ class UploadTool:
             widget.statusBar.showMessage("          No image is selected")
             return
 
+        print(self.S)
+
         if (self.S == None):
             self.S = requests.Session()
-
             # Step 1: Retrieve a login token
             PARAMS_1 = {
                 "action": "query",
@@ -63,29 +64,31 @@ class UploadTool:
                 return
 
         self.numberImages = len(widget._currentUpload)
-        print(str(QThread.currentThreadId().__int__()))
 
         widget.numberImagesChecked = 0
         for element in widget._currentUpload:
             if element.cbImport.isChecked():
                 widget.numberImagesChecked = widget.numberImagesChecked + 1
 
-        widget.threads.clear()
-        widget.workers.clear()
+        try:
+            widget.threads.clear()
+            widget.workers.clear()
 
-        widget.currentImageIndex = 0
-        for element in widget._currentUpload:
-            if element.cbImport.isChecked():
-                path = widget.currentDirectoryPath
-                session = self.S
-                index = widget.currentImageIndex
+            widget.currentImageIndex = 0
+            for element in widget._currentUpload:
+                if element.cbImport.isChecked():
+                    path = widget.currentDirectoryPath
+                    session = self.S
+                    index = widget.currentImageIndex
 
-                thread = QThread()
-                widget.threads.append(thread)
-                process = ProcessImageUpload(element, widget, path, session, index)
-                widget.workers.append(process)
-                widget.workers[index].moveToThread(widget.threads[index])
-                widget.threads[index].started.connect(widget.workers[index].process)
-                widget.currentImageIndex = widget.currentImageIndex + 1
+                    thread = QThread()
+                    widget.threads.append(thread)
+                    process = ProcessImageUpload(element, widget, path, session, index)
+                    widget.workers.append(process)
+                    widget.workers[index].moveToThread(widget.threads[index])
+                    widget.threads[index].started.connect(widget.workers[index].process)
+                    widget.currentImageIndex = widget.currentImageIndex + 1
 
-        widget.threads[0].start()
+            widget.threads[0].start()
+        except:
+            traceback.print_exc()
