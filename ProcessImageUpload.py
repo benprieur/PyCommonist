@@ -20,6 +20,7 @@ class ProcessImageUpload(QObject):
 
         print("process is running")
         print(str(QThread.currentThreadId().__int__()))
+        self.widget.statusBar.showMessage("")
 
         element = self.element
         path = self.path
