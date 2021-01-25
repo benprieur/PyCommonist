@@ -1,4 +1,4 @@
-import sys
+import sys, traceback
 from UploadTool import UploadTool
 from PyQt5.QtWidgets import QWidget, QStatusBar
 import os, sip

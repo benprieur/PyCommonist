@@ -12,26 +12,27 @@ class UploadTool:
          https://www.mediawiki.org/wiki/API:Upload
     '''
     def uploadImages(self, widget):
+        try:
+            self.login = widget.lineEditUserName.text()
+            self.password = widget.lineEditPassword.text()
 
-        self.login = widget.lineEditUserName.text()
-        self.password = widget.lineEditPassword.text()
+            if len(self.login) == 0:
+                widget.statusBar.showMessage("          Login is not filled",)
+                return
 
-        if len(self.login) == 0:
-            widget.statusBar.showMessage("          Login is not filled",)
-            return
+            if len(self.password) == 0:
+                widget.statusBar.showMessage("          Password is not filled")
+                return
 
-        if len(self.password) == 0:
-            widget.statusBar.showMessage("          Password is not filled")
-            return
+            if len(widget._currentUpload) == 0:
+                widget.statusBar.showMessage("          No image is selected")
+                return
 
-        if len(widget._currentUpload) == 0:
-            widget.statusBar.showMessage("          No image is selected")
-            return
-
-        print(self.S)
-
-        if (self.S == None):
+            #print(self.S)
+            #
             self.S = requests.Session()
+            print(self.S)
+
             # Step 1: Retrieve a login token
             PARAMS_1 = {
                 "action": "query",
@@ -63,17 +64,21 @@ class UploadTool:
                 widget.statusBar.showMessage("          Client login failed")
                 return
 
-        self.numberImages = len(widget._currentUpload)
+            self.numberImages = len(widget._currentUpload)
 
-        widget.numberImagesChecked = 0
-        for element in widget._currentUpload:
-            if element.cbImport.isChecked():
-                widget.numberImagesChecked = widget.numberImagesChecked + 1
+            widget.numberImagesChecked = 0
+            for element in widget._currentUpload:
+                if element.cbImport.isChecked():
+                    widget.numberImagesChecked = widget.numberImagesChecked + 1
 
-        try:
+            print('''Cleaning previous threads''')
+            for thread in widget.threads:
+                thread.wait()
+                thread.quit()
             widget.threads.clear()
             widget.workers.clear()
 
+            print('''For each image''')
             widget.currentImageIndex = 0
             for element in widget._currentUpload:
                 if element.cbImport.isChecked():
@@ -90,5 +95,6 @@ class UploadTool:
                     widget.currentImageIndex = widget.currentImageIndex + 1
 
             widget.threads[0].start()
+
         except:
             traceback.print_exc()

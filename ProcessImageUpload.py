@@ -61,8 +61,8 @@ class ProcessImageUpload(QObject):
         FILE = {'file':(fileName, open(FILE_PATH, 'rb'), 'multipart/form-data')}
 
         R = self.S.post(URL, files=FILE, data=PARAMS_4)
-        print(R.json())
         try:
+            print(R)
             resultUploadImage = R.json()['upload']['result']
             print(resultUploadImage)
             element.lblUploadResult.setText(resultUploadImage)
