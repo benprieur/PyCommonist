@@ -11,7 +11,3 @@ Pour l'installer et le lancer (utilisation ici d'un environnement virtuel) :
 * `python3 main.py`
 
 Au 26 janvier 2021, il a été testé sur MacOS et sur Linux Ubuntu.
-
-[logo]:  "Logo Title Text 2"
-
-![Copie d'écran le 26 janvier 2021](https://commons.wikimedia.org/wiki/File:PyCommonist,_copie_d%27%C3%A9cran_le_26_janvier_2021.png "Copie d'écran le 26 janvier 2021")
