@@ -315,7 +315,7 @@ class PyCommonist(QWidget):
         files = [f for f in sorted(list_dir) if isfile(join(path, f))]
         for file in files:
             fullFilePath = os.path.join(path, file)
-            if fullFilePath.endswith(".jpg") or fullFilePath.endswith(".png"):
+            if fullFilePath.endswith(".jpeg") or fullFilePath.endswith(".jpg") or fullFilePath.endswith(".png"):
 
                 ''' Current image '''
                 localWidget = ImageUpload()
