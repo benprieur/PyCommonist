@@ -371,15 +371,26 @@ class PyCommonist(QWidget):
                 localLeftLayout.addRow(lblCategories, lineEditCategories)
                 localWidget.lineEditCategories = lineEditCategories
 
-                ''' EXIF '''
-                f_exif = open(fullFilePath, 'rb')
-                tags = exifread.process_file(f_exif)
-                #print(tags)
+                tags = None
+                try:
+                    ''' EXIF '''
+                    f_exif = open(fullFilePath, 'rb')
+                    tags = exifread.process_file(f_exif)
+                    #print(tags)
+                except:
+                    print("A problem with EXIF data reading")
 
                 ''' Location'''
                 # 'GPS GPSLatitude', 'GPS GPSLongitude'] # [45, 49, 339/25] [4, 55, 716/25]
                 # 'GPS GPSImgDirection' 'GPS GPSLatitudeRef'
-                lat, long, heading = get_exif_location(tags)
+                lat = ''
+                long = ''
+                1theheading = ''
+                try:
+                    lat, long, heading = get_exif_location(tags)
+                except:
+                    print("A problem with EXIF data reading")
+
                 lblLocation = QLabel("Location: ")
                 lblLocation.setAlignment(Qt.AlignLeft)
                 lineEditLocation = QLineEdit()
@@ -392,8 +403,13 @@ class PyCommonist(QWidget):
                 localLeftLayout.addRow(lblLocation, lineEditLocation)
                 localWidget.lineEditLocation = lineEditLocation
 
-                ''' Date Time '''
-                dt = tags['EXIF DateTimeOriginal'] # 2021:01:13 14:48:44
+                dt = None
+                try:
+                    ''' Date Time '''
+                    dt = tags['EXIF DateTimeOriginal'] # 2021:01:13 14:48:44
+                except:
+                    print("A problem with EXIF data reading")
+
                 print (dt)
                 dt = str(dt)
                 indexSpace = dt.find(" ")

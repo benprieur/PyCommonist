@@ -9,5 +9,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-''' https://docs.python.org/fr/3/library/venv.html '''
