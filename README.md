@@ -10,4 +10,4 @@ Pour l'installer et le lancer (utilisation ici d'un environnement virtuel) :
 * `pip install -r requirements.txt`
 * `python3 main.py`
 
-Il a été testé sur MacOS et sur Linux Ubuntu (par encore sur Windows).
+Il a été testé sur MacOS et sur Linux Ubuntu.
