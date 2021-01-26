@@ -385,7 +385,7 @@ class PyCommonist(QWidget):
                 # 'GPS GPSImgDirection' 'GPS GPSLatitudeRef'
                 lat = ''
                 long = ''
-                1theheading = ''
+                heading = ''
                 try:
                     lat, long, heading = get_exif_location(tags)
                 except:
