@@ -1,31 +1,33 @@
-import json, requests, traceback
+import json, requests, traceback, time
 from constants import URL
-from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot, QTimer
 from ProcessImageUpload import ProcessImageUpload
 
 class UploadTool:
 
     S = None
+    widget = None
 
     '''
         uploadImages
          https://www.mediawiki.org/wiki/API:Upload
     '''
-    def uploadImages(self, widget):
+    def uploadImages(self, w):
         try:
-            self.login = widget.lineEditUserName.text()
-            self.password = widget.lineEditPassword.text()
+            self.widget = w
+            self.login = self.widget.lineEditUserName.text()
+            self.password = self.widget.lineEditPassword.text()
 
             if len(self.login) == 0:
-                widget.statusBar.showMessage("          Login is not filled",)
+                self.widget.statusBar.setText("Login is not filled",)
                 return
 
             if len(self.password) == 0:
-                widget.statusBar.showMessage("          Password is not filled")
+                self.widget.statusBar.setText("Password is not filled")
                 return
 
-            if len(widget._currentUpload) == 0:
-                widget.statusBar.showMessage("          No image is selected")
+            if len(self.widget._currentUpload) == 0:
+                self.widget.statusBar.setText("No image is selected")
                 return
 
             #print(self.S)
@@ -61,40 +63,64 @@ class UploadTool:
             print(R.content)
             print(R.json()['clientlogin']['status'])
             if R.json()['clientlogin']['status'] != 'PASS':
-                widget.statusBar.showMessage("          Client login failed")
+                self.widget.statusBar.setText("Client login failed")
                 return
 
-            self.numberImages = len(widget._currentUpload)
+            self.numberImages = len(self.widget._currentUpload)
 
-            widget.numberImagesChecked = 0
-            for element in widget._currentUpload:
+            self.widget.numberImagesChecked = 0
+            for element in self.widget._currentUpload:
                 if element.cbImport.isChecked():
-                    widget.numberImagesChecked = widget.numberImagesChecked + 1
+                    self.widget.numberImagesChecked = self.widget.numberImagesChecked + 1
+
+            self.widget.alreadyUploaded = 0
 
             print('''Cleaning previous threads''')
-            for thread in widget.threads:
+            for thread in self.widget.threads:
                 thread.wait()
                 thread.quit()
-            widget.threads.clear()
-            widget.workers.clear()
+            self.widget.threads.clear()
+            self.widget.workers.clear()
+
+            self.checkThreadTimer = QTimer()
+            self.checkThreadTimer.setInterval(500)
+            self.checkThreadTimer.timeout.connect(self.updateStatusBar)
+            self.checkThreadTimer.start(500)
+
+            self.widget.numberImages = 0
+            for element in self.widget._currentUpload:
+                if element.cbImport.isChecked():
+                    self.widget.numberImages = self.widget.numberImages + 1
 
             print('''For each image''')
-            widget.currentImageIndex = 0
-            for element in widget._currentUpload:
+            self.widget.currentImageIndex = 0
+
+            for element in self.widget._currentUpload:
                 if element.cbImport.isChecked():
-                    path = widget.currentDirectoryPath
+                    path = self.widget.currentDirectoryPath
                     session = self.S
-                    index = widget.currentImageIndex
+                    index = self.widget.currentImageIndex
 
                     thread = QThread()
-                    widget.threads.append(thread)
-                    process = ProcessImageUpload(element, widget, path, session, index)
-                    widget.workers.append(process)
-                    widget.workers[index].moveToThread(widget.threads[index])
-                    widget.threads[index].started.connect(widget.workers[index].process)
-                    widget.currentImageIndex = widget.currentImageIndex + 1
+                    self.widget.threads.append(thread)
+                    process = ProcessImageUpload(element, self.widget, path, session, index)
+                    self.widget.workers.append(process)
+                    self.widget.workers[index].moveToThread(self.widget.threads[index])
+                    self.widget.threads[index].started.connect(self.widget.workers[index].process)
+                    self.widget.currentImageIndex = self.widget.currentImageIndex + 1
 
-            widget.threads[0].start()
+            self.widget.threads[0].start()
 
         except:
             traceback.print_exc()
+
+    '''
+        updateStatusBar
+    '''
+    def updateStatusBar(self):
+        print("updateStatusBar")
+        if (self.widget.alreadyUploaded >= self.widget.numberImagesChecked):
+            self.checkThreadTimer.stop()
+        else:
+            current = self.widget.statusBar.text()
+            self.widget.statusBar.setText(current + ".")

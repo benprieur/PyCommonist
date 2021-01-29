@@ -20,7 +20,7 @@ class ProcessImageUpload(QObject):
 
         print("process is running")
         print(str(QThread.currentThreadId().__int__()))
-        self.widget.statusBar.showMessage("")
+        self.widget.statusBar.setText("")
 
         element = self.element
         path = self.path
@@ -67,6 +67,10 @@ class ProcessImageUpload(QObject):
             resultUploadImage = R.json()['upload']['result']
             print(resultUploadImage)
             element.lblUploadResult.setText(resultUploadImage)
+            self.widget.alreadyUploaded = self.widget.alreadyUploaded + 1
+            self.widget.statusBar.setText("..." + str(self.widget.alreadyUploaded) + "/" + str(self.widget.numberImagesChecked) + " image(s) are successfully uploaded")
+
+
         except:
             traceback.print_exc()
             element.lblUploadResult.setText("FAILED")

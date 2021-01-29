@@ -36,7 +36,8 @@ from constants import VERTICAL_TOP_SIZE, \
     WIDTH_WIDGET_RIGHT, \
     IMAGE_DIMENSION, \
     STYLE_IMPORT_BUTTON, \
-    STYLE_IMPORT_STATUS
+    STYLE_IMPORT_STATUS, \
+    STYLE_STATUSBAR
 
 class PyCommonist(QWidget):
 
@@ -76,8 +77,6 @@ class PyCommonist(QWidget):
 
             self.currentDirectoryPath = currentDirectoryPath
             self.generateRightFrame()
-
-            self.update()
 
         except:
             print("Something bad happened inside onSelectFolder function")
@@ -169,8 +168,8 @@ class PyCommonist(QWidget):
         vbox.addLayout(hbox)
 
         ''' Status Bar '''
-        self.statusBar = QStatusBar()
-        self.statusBar.setFixedSize(800, 40)
+        self.statusBar = QLabel()
+        self.statusBar.setStyleSheet(STYLE_STATUSBAR)
         vbox.addWidget(self.statusBar)
 
         self.setLayout(vbox)
@@ -322,6 +321,8 @@ class PyCommonist(QWidget):
                 localLayout = QHBoxLayout()
                 localLayout.setAlignment(Qt.AlignRight)
                 localWidget.setLayout(localLayout)
+                self.scrollLayout.addWidget(localWidget)
+                self._currentUpload.append(localWidget)
 
                 '''Local Left Widget'''
                 localLeftWidget = QWidget()
@@ -433,5 +434,6 @@ class PyCommonist(QWidget):
                 localLayout.addWidget(label)
                 localWidget.fullFilePath = fullFilePath
 
-                self.scrollLayout.addWidget(localWidget)
-                self._currentUpload.append(localWidget)
+                #self.scrollLayout.addWidget(localWidget)
+                #self._currentUpload.append(localWidget)
+                #self.update()
