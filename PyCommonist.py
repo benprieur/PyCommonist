@@ -1,6 +1,5 @@
 import sys, traceback
 from UploadTool import UploadTool
-from EXIFImage import EXIFImage
 import os, sip
 from os import listdir
 from os.path import isfile, join
@@ -8,6 +7,7 @@ from os.path import isfile, join
 import exifread
 from gps_location import get_exif_location
 from ImageUpload import ImageUpload
+from EXIFImage import EXIFImage
 
 from PyQt5.QtCore import Qt, QRect, QThread, pyqtSlot
 from PyQt5.Qt import QDir

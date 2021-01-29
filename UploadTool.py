@@ -15,6 +15,7 @@ class UploadTool:
     def uploadImages(self, w):
         try:
             self.widget = w
+            self.widget.statusBar.setText("")
             self.login = self.widget.lineEditUserName.text()
             self.password = self.widget.lineEditPassword.text()
 
