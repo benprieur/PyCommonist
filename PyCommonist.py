@@ -71,20 +71,9 @@ class PyCommonist(QWidget):
             currentIndex = selected.indexes()[0]
             #print(currentIndex)
             #print(currentIndex.row())
-            currentDirectoryPath = self.modelTree.filePath(currentIndex)
-            print(currentDirectoryPath)
+            self.currentDirectoryPath = self.modelTree.filePath(currentIndex)
+            print(self.currentDirectoryPath)
 
-            layout = self.scrollLayout
-            print(layout)
-            print(layout.count())
-
-            while layout.count():
-                print("destroy")
-                child = layout.takeAt(0)
-                if child.widget():
-                    child.widget().deleteLater()
-
-            self.currentDirectoryPath = currentDirectoryPath
             self.exifImageCollection = []
 
             list_dir = os.listdir(self.currentDirectoryPath)
@@ -356,9 +345,17 @@ class PyCommonist(QWidget):
     '''
     def generateRightFrame(self):
 
-       layout = self.scrollLayout
+        layout = self.scrollLayout
+        print(layout)
+        print(layout.count())
 
-       for currentExifImage in self.exifImageCollection:
+        while layout.count():
+            print("destroy")
+            child = layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
+
+        for currentExifImage in self.exifImageCollection:
 
             ''' Current image '''
             localWidget = ImageUpload()

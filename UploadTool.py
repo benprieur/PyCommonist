@@ -7,6 +7,7 @@ class UploadTool:
 
     S = None
     widget = None
+    checkThreadTimer = None
 
     '''
         uploadImages
@@ -83,7 +84,9 @@ class UploadTool:
             self.widget.threads.clear()
             self.widget.workers.clear()
 
-            self.checkThreadTimer = QTimer()
+            if self.checkThreadTimer == None:
+                self.checkThreadTimer = QTimer()
+            self.checkThreadTimer.stop()
             self.checkThreadTimer.setInterval(500)
             self.checkThreadTimer.timeout.connect(self.updateStatusBar)
             self.checkThreadTimer.start(500)
