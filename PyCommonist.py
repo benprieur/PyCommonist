@@ -1,19 +1,18 @@
 import sys, traceback
 from UploadTool import UploadTool
-from PyQt5.QtWidgets import QWidget, QStatusBar
+from EXIFImage import EXIFImage
 import os, sip
 from os import listdir
 from os.path import isfile, join
 
 import exifread
 from gps_location import get_exif_location
-
 from ImageUpload import ImageUpload
 
-from PyQt5.QtCore import Qt, QRect
+from PyQt5.QtCore import Qt, QRect, QThread, pyqtSlot
 from PyQt5.Qt import QDir
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QHBoxLayout, \
+from PyQt5.QtWidgets import QWidget, QStatusBar, QHBoxLayout, \
     QFrame, \
     QSplitter, \
     QFormLayout, \
@@ -75,12 +74,72 @@ class PyCommonist(QWidget):
             currentDirectoryPath = self.modelTree.filePath(currentIndex)
             print(currentDirectoryPath)
 
+            layout = self.scrollLayout
+            print(layout)
+            print(layout.count())
+
+            while layout.count():
+                print("destroy")
+                child = layout.takeAt(0)
+                if child.widget():
+                    child.widget().deleteLater()
+
             self.currentDirectoryPath = currentDirectoryPath
+            self.exifImageCollection = []
+
+            list_dir = os.listdir(self.currentDirectoryPath)
+            files = [f for f in sorted(list_dir) if isfile(join(self.currentDirectoryPath, f))]
+            for file in files:
+                fullFilePath = os.path.join(self.currentDirectoryPath, file)
+                if fullFilePath.endswith(".jpeg") or fullFilePath.endswith(".jpg") or fullFilePath.endswith(".png"):
+
+                    currentExifImage  = EXIFImage()
+                    currentExifImage.fullFilePath = fullFilePath
+                    currentExifImage.filename = file
+                    tags = None
+
+                    try:
+                        ''' EXIF '''
+                        f_exif = open(fullFilePath, 'rb')
+                        tags = exifread.process_file(f_exif)
+                        #print(tags)
+                    except:
+                        print("A problem with EXIF data reading")
+
+                    ''' Location'''
+                    # 'GPS GPSLatitude', 'GPS GPSLongitude'] # [45, 49, 339/25] [4, 55, 716/25]
+                    # 'GPS GPSImgDirection' 'GPS GPSLatitudeRef'
+                    lat = ''
+                    long = ''
+                    heading = ''
+                    try:
+                        currentExifImage.lat, currentExifImage.long, currentExifImage.heading = get_exif_location(tags)
+                    except:
+                        print("A problem with EXIF data reading")
+
+                    dt = None
+                    try:
+                        ''' Date Time '''
+                        dt = tags['EXIF DateTimeOriginal'] # 2021:01:13 14:48:44
+                    except:
+                        print("A problem with EXIF data reading")
+
+                    print (dt)
+                    dt = str(dt)
+                    indexSpace = dt.find(" ")
+                    currentExifImage.date = dt[0:indexSpace].replace(":", "-")
+                    currentExifImage.time = dt[indexSpace+1:]
+
+                    self.exifImageCollection.append(currentExifImage)
+                    print(currentExifImage)
+
             self.generateRightFrame()
+
 
         except:
             print("Something bad happened inside onSelectFolder function")
             traceback.print_exc()
+
 
     '''
         cbImportNoneStateChanged
@@ -297,143 +356,91 @@ class PyCommonist(QWidget):
     '''
     def generateRightFrame(self):
 
-        path = self.currentDirectoryPath
-        self._currentUpload = []
-        layout = self.scrollLayout
+       layout = self.scrollLayout
 
-        print(layout)
-        print(layout.count())
+       for currentExifImage in self.exifImageCollection:
 
-        while layout.count():
-            print("destroy")
-            child = layout.takeAt(0)
-            if child.widget():
-                child.widget().deleteLater()
+            ''' Current image '''
+            localWidget = ImageUpload()
+            localLayout = QHBoxLayout()
+            localLayout.setAlignment(Qt.AlignRight)
+            localWidget.setLayout(localLayout)
+            self.scrollLayout.addWidget(localWidget)
+            self._currentUpload.append(localWidget)
 
-        list_dir = os.listdir(path)
-        files = [f for f in sorted(list_dir) if isfile(join(path, f))]
-        for file in files:
-            fullFilePath = os.path.join(path, file)
-            if fullFilePath.endswith(".jpeg") or fullFilePath.endswith(".jpg") or fullFilePath.endswith(".png"):
+            '''Local Left Widget'''
+            localLeftWidget = QWidget()
+            localLeftLayout = QFormLayout()
+            localLeftLayout.setAlignment(Qt.AlignRight)
+            localLeftWidget.setLayout(localLeftLayout)
+            localLayout.addWidget(localLeftWidget)
 
-                ''' Current image '''
-                localWidget = ImageUpload()
-                localLayout = QHBoxLayout()
-                localLayout.setAlignment(Qt.AlignRight)
-                localWidget.setLayout(localLayout)
-                self.scrollLayout.addWidget(localWidget)
-                self._currentUpload.append(localWidget)
+            ''' import? + Import Status '''
+            cbImport = QCheckBox("Import")
+            lblUploadResult = QLabel()
+            lblUploadResult.setStyleSheet(STYLE_IMPORT_STATUS)
+            localLeftLayout.addRow(cbImport, lblUploadResult)
+            localWidget.cbImport = cbImport
+            localWidget.lblUploadResult = lblUploadResult
 
-                '''Local Left Widget'''
-                localLeftWidget = QWidget()
-                localLeftLayout = QFormLayout()
-                localLeftLayout.setAlignment(Qt.AlignRight)
-                localLeftWidget.setLayout(localLeftLayout)
-                localLayout.addWidget(localLeftWidget)
+            ''' File Name of picture '''
+            lblFileName = QLabel("Name: ")
+            lblFileName.setAlignment(Qt.AlignLeft)
+            lineEditFileName = QLineEdit()
+            lineEditFileName.setFixedWidth(WIDTH_WIDGET_RIGHT)
+            lineEditFileName.setText(currentExifImage.filename)
+            lineEditFileName.setAlignment(Qt.AlignLeft)
+            localLeftLayout.addRow(lblFileName, lineEditFileName)
+            localWidget.lineEditFileName = lineEditFileName
 
-                ''' import? + Import Status '''
-                cbImport = QCheckBox("Import")
-                lblUploadResult = QLabel()
-                lblUploadResult.setStyleSheet(STYLE_IMPORT_STATUS)
-                localLeftLayout.addRow(cbImport, lblUploadResult)
-                localWidget.cbImport = cbImport
-                localWidget.lblUploadResult = lblUploadResult
+            ''' Shadow Real FileName '''
+            lblRealFileName = QLineEdit()
+            lblRealFileName.setText(currentExifImage.filename)
+            localWidget.lblRealFileName = lblRealFileName
+            localWidget.lblRealFileName.isVisible = False
 
-                ''' File Name of picture '''
-                lblFileName = QLabel("Name: ")
-                lblFileName.setAlignment(Qt.AlignLeft)
-                lineEditFileName = QLineEdit()
-                lineEditFileName.setFixedWidth(WIDTH_WIDGET_RIGHT)
-                lineEditFileName.setText(file)
-                lineEditFileName.setAlignment(Qt.AlignLeft)
-                localLeftLayout.addRow(lblFileName, lineEditFileName)
-                localWidget.lineEditFileName = lineEditFileName
+            ''' Description '''
+            lblDescription = QLabel("Description: ")
+            lblDescription.setAlignment(Qt.AlignLeft)
+            lineEditDescription = QPlainTextEdit()
+            lineEditDescription.setFixedWidth(WIDTH_WIDGET_RIGHT)
+            localLeftLayout.addRow(lblDescription, lineEditDescription)
+            localWidget.lineEditDescription = lineEditDescription
 
-                ''' Shadow Real FileName '''
-                lblRealFileName = QLineEdit()
-                lblRealFileName.setText(file)
-                localWidget.lblRealFileName = lblRealFileName
-                localWidget.lblRealFileName.isVisible = False
+            ''' Categories '''
+            lblCategories = QLabel("Categories: ")
+            lblCategories.setAlignment(Qt.AlignLeft)
+            lineEditCategories = QLineEdit()
+            lineEditCategories.setFixedWidth(WIDTH_WIDGET_RIGHT)
+            lineEditCategories.setAlignment(Qt.AlignLeft)
+            localLeftLayout.addRow(lblCategories, lineEditCategories)
+            localWidget.lineEditCategories = lineEditCategories
 
-                ''' Description '''
-                lblDescription = QLabel("Description: ")
-                lblDescription.setAlignment(Qt.AlignLeft)
-                lineEditDescription = QPlainTextEdit()
-                lineEditDescription.setFixedWidth(WIDTH_WIDGET_RIGHT)
-                localLeftLayout.addRow(lblDescription, lineEditDescription)
-                localWidget.lineEditDescription = lineEditDescription
+            lblLocation = QLabel("Location: ")
+            lblLocation.setAlignment(Qt.AlignLeft)
+            lineEditLocation = QLineEdit()
+            lineEditLocation.setFixedWidth(WIDTH_WIDGET_RIGHT)
+            if currentExifImage.lat == None or currentExifImage.long == None:
+                lineEditLocation.setText('')
+            else:
+                lineEditLocation.setText(str(currentExifImage.lat) + '|' + str(currentExifImage.long) + "|heading:" + str(currentExifImage.heading))
+            lineEditLocation.setAlignment(Qt.AlignLeft)
+            localLeftLayout.addRow(lblLocation, lineEditLocation)
+            localWidget.lineEditLocation = lineEditLocation
 
-                ''' Categories '''
-                lblCategories = QLabel("Categories: ")
-                lblCategories.setAlignment(Qt.AlignLeft)
-                lineEditCategories = QLineEdit()
-                lineEditCategories.setFixedWidth(WIDTH_WIDGET_RIGHT)
-                lineEditCategories.setAlignment(Qt.AlignLeft)
-                localLeftLayout.addRow(lblCategories, lineEditCategories)
-                localWidget.lineEditCategories = lineEditCategories
+            lblDateTime = QLabel("Date Time: ")
+            lblDateTime.setAlignment(Qt.AlignLeft)
+            lineEditDateTime = QLineEdit()
+            lineEditDateTime.setFixedWidth(WIDTH_WIDGET_RIGHT)
+            lineEditDateTime.setText(currentExifImage.date + ' ' + currentExifImage.time)
+            lineEditDateTime.setAlignment(Qt.AlignLeft)
+            localLeftLayout.addRow(lblDateTime, lineEditDateTime)
+            localWidget.lineEditDateTime = lineEditDateTime
 
-                tags = None
-                try:
-                    ''' EXIF '''
-                    f_exif = open(fullFilePath, 'rb')
-                    tags = exifread.process_file(f_exif)
-                    #print(tags)
-                except:
-                    print("A problem with EXIF data reading")
-
-                ''' Location'''
-                # 'GPS GPSLatitude', 'GPS GPSLongitude'] # [45, 49, 339/25] [4, 55, 716/25]
-                # 'GPS GPSImgDirection' 'GPS GPSLatitudeRef'
-                lat = ''
-                long = ''
-                heading = ''
-                try:
-                    lat, long, heading = get_exif_location(tags)
-                except:
-                    print("A problem with EXIF data reading")
-
-                lblLocation = QLabel("Location: ")
-                lblLocation.setAlignment(Qt.AlignLeft)
-                lineEditLocation = QLineEdit()
-                lineEditLocation.setFixedWidth(WIDTH_WIDGET_RIGHT)
-                if lat == None or long == None:
-                    lineEditLocation.setText('')
-                else:
-                    lineEditLocation.setText(str(lat) + '|' + str(long) + "|heading:" + str(heading))
-                lineEditLocation.setAlignment(Qt.AlignLeft)
-                localLeftLayout.addRow(lblLocation, lineEditLocation)
-                localWidget.lineEditLocation = lineEditLocation
-
-                dt = None
-                try:
-                    ''' Date Time '''
-                    dt = tags['EXIF DateTimeOriginal'] # 2021:01:13 14:48:44
-                except:
-                    print("A problem with EXIF data reading")
-
-                print (dt)
-                dt = str(dt)
-                indexSpace = dt.find(" ")
-                date = dt[0:indexSpace].replace(":", "-")
-                time = dt[indexSpace+1:]
-
-                lblDateTime = QLabel("Date Time: ")
-                lblDateTime.setAlignment(Qt.AlignLeft)
-                lineEditDateTime = QLineEdit()
-                lineEditDateTime.setFixedWidth(WIDTH_WIDGET_RIGHT)
-                lineEditDateTime.setText(date + ' ' + time)
-                lineEditDateTime.setAlignment(Qt.AlignLeft)
-                localLeftLayout.addRow(lblDateTime, lineEditDateTime)
-                localWidget.lineEditDateTime = lineEditDateTime
-
-                ''' Image itself '''
-                label = QLabel()
-                pixmap = QPixmap(fullFilePath)
-                pixmapResize = pixmap.scaled(IMAGE_DIMENSION, IMAGE_DIMENSION)
-                label.setPixmap(pixmapResize)
-                localLayout.addWidget(label)
-                localWidget.fullFilePath = fullFilePath
-
-                #self.scrollLayout.addWidget(localWidget)
-                #self._currentUpload.append(localWidget)
-                #self.update()
+            ''' Image itself '''
+            label = QLabel()
+            pixmap = QPixmap(currentExifImage.fullFilePath)
+            pixmapResize = pixmap.scaledToWidth(IMAGE_DIMENSION, Qt.FastTransformation)
+            label.setPixmap(pixmapResize)
+            localLayout.addWidget(label)
+            localWidget.fullFilePath = currentExifImage.fullFilePath
