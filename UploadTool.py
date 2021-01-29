@@ -68,7 +68,12 @@ class UploadTool:
                 self.widget.statusBar.setText("Client login failed")
                 return
 
-            self.numberImages = len(self.widget._currentUpload)
+            print('''Cleaning previous threads''')
+            for thread in self.widget.threads:
+                thread.wait()
+                thread.quit()
+            self.widget.threads.clear()
+            self.widget.workers.clear()
 
             self.widget.numberImagesChecked = 0
             for element in self.widget._currentUpload:
@@ -77,24 +82,12 @@ class UploadTool:
 
             self.widget.alreadyUploaded = 0
 
-            print('''Cleaning previous threads''')
-            for thread in self.widget.threads:
-                thread.wait()
-                thread.quit()
-            self.widget.threads.clear()
-            self.widget.workers.clear()
-
             if self.checkThreadTimer == None:
                 self.checkThreadTimer = QTimer()
             self.checkThreadTimer.stop()
             self.checkThreadTimer.setInterval(500)
             self.checkThreadTimer.timeout.connect(self.updateStatusBar)
             self.checkThreadTimer.start(500)
-
-            self.widget.numberImages = 0
-            for element in self.widget._currentUpload:
-                if element.cbImport.isChecked():
-                    self.widget.numberImages = self.widget.numberImages + 1
 
             print('''For each image''')
             self.widget.currentImageIndex = 0
