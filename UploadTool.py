@@ -21,7 +21,7 @@ class UploadTool:
             self.password = self.widget.lineEditPassword.text()
 
             if len(self.login) == 0:
-                self.widget.statusBar.setText("Login is not filled",)
+                self.widget.statusBar.setText("Login is not filled")
                 return
 
             if len(self.password) == 0:
@@ -77,8 +77,11 @@ class UploadTool:
 
             self.widget.numberImagesChecked = 0
             for element in self.widget._currentUpload:
-                if element.cbImport.isChecked():
-                    self.widget.numberImagesChecked = self.widget.numberImagesChecked + 1
+                try:
+                    if element.cbImport.isChecked():
+                        self.widget.numberImagesChecked = self.widget.numberImagesChecked + 1
+                except:
+                    print("element.cbImport.isChecked() => pb")
 
             self.widget.alreadyUploaded = 0
 
