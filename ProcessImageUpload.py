@@ -58,19 +58,17 @@ class ProcessImageUpload(QObject):
             "text": text
         }
 
-        # Here test if the file is still there...
-        FILE = {'file':(fileName, open(FILE_PATH, 'rb'), 'multipart/form-data')}
-
-        R = self.S.post(URL, files=FILE, data=PARAMS_4)
         try:
+            # Here test if the file is still there...
+            FILE = {'file':(fileName, open(FILE_PATH, 'rb'), 'multipart/form-data')}
+
+            R = self.S.post(URL, files=FILE, data=PARAMS_4)
             print(R)
             resultUploadImage = R.json()['upload']['result']
             print(resultUploadImage)
             element.lblUploadResult.setText(resultUploadImage)
             self.widget.alreadyUploaded = self.widget.alreadyUploaded + 1
             self.widget.statusBar.setText("..." + str(self.widget.alreadyUploaded) + "/" + str(self.widget.numberImagesChecked) + " image(s) are successfully uploaded")
-
-
         except:
             traceback.print_exc()
             element.lblUploadResult.setText("FAILED")

@@ -69,9 +69,9 @@ class UploadTool:
                 return
 
             print('''Cleaning previous threads''')
-            for thread in self.widget.threads:
-                thread.wait()
-                thread.quit()
+            #for thread in self.widget.threads:
+            #    thread.wait()
+            #    thread.quit()
             self.widget.threads.clear()
             self.widget.workers.clear()
 

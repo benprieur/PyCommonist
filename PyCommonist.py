@@ -44,7 +44,6 @@ class PyCommonist(QWidget):
 
     def __init__(self):
         super(PyCommonist, self).__init__()
-        self._currentUpload = []
         self.initUI()
         self.threads = []
         self.workers = []
@@ -345,6 +344,8 @@ class PyCommonist(QWidget):
     '''
     def generateRightFrame(self):
 
+        self._currentUpload = []
+
         layout = self.scrollLayout
         print(layout)
         print(layout.count())
@@ -441,3 +442,5 @@ class PyCommonist(QWidget):
             label.setPixmap(pixmapResize)
             localLayout.addWidget(label)
             localWidget.fullFilePath = currentExifImage.fullFilePath
+
+            self.update()
