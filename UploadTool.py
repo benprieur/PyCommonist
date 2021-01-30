@@ -73,8 +73,8 @@ class UploadTool:
             #for thread in self.widget.threads:
             #    thread.wait()
             #    thread.quit()
-            self.widget.threads.clear()
-            self.widget.workers.clear()
+            #self.widget.threads.clear()
+            #self.widget.workers.clear()
 
             self.widget.numberImagesChecked = 0
             for element in self.widget._currentUpload:

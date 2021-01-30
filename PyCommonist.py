@@ -171,6 +171,8 @@ class PyCommonist(QWidget):
             print("Thread deletion")
             thread.wait()
             thread.quit()
+        self.threads.clear()
+        self.workers.clear()
 
     '''
         generateSplitter
