@@ -19,3 +19,5 @@ STYLE_IMPORT_BUTTON = \
 STYLE_IMPORT_STATUS = "font-style: oblique; font-weight: bold; "
 
 STYLE_STATUSBAR = "border: 1px solid black;"
+
+TIMESTAMP_STATUSBAR = 2000 # 2 seconds

@@ -2,6 +2,7 @@ import json, requests, traceback, time
 from constants import URL
 from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot, QTimer
 from ProcessImageUpload import ProcessImageUpload
+from constants import TIMESTAMP_STATUSBAR
 
 class UploadTool:
 
@@ -88,9 +89,9 @@ class UploadTool:
             if self.checkThreadTimer == None:
                 self.checkThreadTimer = QTimer()
             self.checkThreadTimer.stop()
-            self.checkThreadTimer.setInterval(500)
+            self.checkThreadTimer.setInterval(TIMESTAMP_STATUSBAR)
             self.checkThreadTimer.timeout.connect(self.updateStatusBar)
-            self.checkThreadTimer.start(500)
+            self.checkThreadTimer.start(TIMESTAMP_STATUSBAR)
 
             print('''For each image''')
             self.widget.currentImageIndex = 0
