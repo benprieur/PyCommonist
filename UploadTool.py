@@ -33,8 +33,10 @@ class UploadTool:
                 self.widget.statusBar.setText("No image is selected")
                 return
 
-            #print(self.S)
-            #
+            print("Clean lists")
+            self.threads.clear()
+            self.workers.clear()
+
             self.S = requests.Session()
             print(self.S)
 
@@ -69,12 +71,7 @@ class UploadTool:
                 self.widget.statusBar.setText("Client login failed")
                 return
 
-            print('''Cleaning previous threads''')
-            #for thread in self.widget.threads:
-            #    thread.wait()
-            #    thread.quit()
-            #self.widget.threads.clear()
-            #self.widget.workers.clear()
+
 
             self.widget.numberImagesChecked = 0
             for element in self.widget._currentUpload:
@@ -98,6 +95,7 @@ class UploadTool:
 
             for element in self.widget._currentUpload:
                 if element.cbImport.isChecked():
+                    print("for element in self.widget._currentUpload:")
                     path = self.widget.currentDirectoryPath
                     session = self.S
                     index = self.widget.currentImageIndex

@@ -72,6 +72,8 @@ class ProcessImageUpload(QObject):
         except:
             traceback.print_exc()
             element.lblUploadResult.setText("FAILED")
+            self.widget.alreadyUploaded = self.widget.alreadyUploaded + 1
+            self.widget.statusBar.setText("..." + str(self.widget.alreadyUploaded) + "/" + str(self.widget.numberImagesChecked) + " image(s) are successfully uploaded")
 
         self.runNextThread()
 

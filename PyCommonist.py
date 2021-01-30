@@ -68,11 +68,9 @@ class PyCommonist(QWidget):
 
         try:
             currentIndex = selected.indexes()[0]
-            #print(currentIndex)
-            #print(currentIndex.row())
             self.currentDirectoryPath = self.modelTree.filePath(currentIndex)
             print(self.currentDirectoryPath)
-
+            self.statusBar.setText("")
             self.exifImageCollection = []
 
             list_dir = os.listdir(self.currentDirectoryPath)
@@ -166,13 +164,17 @@ class PyCommonist(QWidget):
         cleanThreads
     '''
     def cleanThreads(self):
-        print("Clean threads")
-        for thread in self.threads:
-            print("Thread deletion")
-            thread.wait()
-            thread.quit()
-        self.threads.clear()
-        self.workers.clear()
+        try:
+            print("Clean properly threads")
+
+            for thread in self.threads:
+                print("One thread proper deletion")
+                thread.quit()
+                thread.wait()
+                thread.deleteLater()
+
+        except:
+            print("A problem with cleanThreads")
 
     '''
         generateSplitter
