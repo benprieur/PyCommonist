@@ -34,8 +34,8 @@ class UploadTool:
                 return
 
             print("Clean lists")
-            self.threads.clear()
-            self.workers.clear()
+            self.widget.threads.clear()
+            self.widget.workers.clear()
 
             self.S = requests.Session()
             print(self.S)

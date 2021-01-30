@@ -171,7 +171,7 @@ class PyCommonist(QWidget):
                 print("One thread proper deletion")
                 thread.quit()
                 thread.wait()
-                thread.deleteLater()
+                #thread.deleteLater()
 
         except:
             print("A problem with cleanThreads")
