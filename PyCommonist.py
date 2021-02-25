@@ -77,7 +77,12 @@ class PyCommonist(QWidget):
             files = [f for f in sorted(list_dir) if isfile(join(self.currentDirectoryPath, f))]
             for file in files:
                 fullFilePath = os.path.join(self.currentDirectoryPath, file)
-                if fullFilePath.endswith(".jpeg") or fullFilePath.endswith(".jpg") or fullFilePath.endswith(".png"):
+                if fullFilePath.endswith(".jpeg") or \
+                   fullFilePath.endswith(".JPEG") or \
+                   fullFilePath.endswith(".jpg") or \
+                   fullFilePath.endswith(".JPG") or \
+                   fullFilePath.endswith(".png") or \
+                   fullFilePath.endswith(".PNG"):
 
                     currentExifImage  = EXIFImage()
                     currentExifImage.fullFilePath = fullFilePath
