@@ -117,9 +117,11 @@ class UploadTool:
         updateStatusBar
     '''
     def updateStatusBar(self):
-        print("updateStatusBar")
+        #print("updateStatusBar")
         if (self.widget.alreadyUploaded >= self.widget.numberImagesChecked):
             self.checkThreadTimer.stop()
         else:
             current = self.widget.statusBar.text()
+            if len(current) > 180:
+                current = "."
             self.widget.statusBar.setText(current + ".")

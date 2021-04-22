@@ -5,6 +5,8 @@ from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot, QTimer
 '''
     class ProcessImageUpload
 '''
+
+
 class ProcessImageUpload(QObject):
 
     def __init__(self, element, widget, path, session, index):
@@ -73,9 +75,10 @@ class ProcessImageUpload(QObject):
             traceback.print_exc()
             element.lblUploadResult.setText("FAILED")
             self.widget.alreadyUploaded = self.widget.alreadyUploaded + 1
-            self.widget.statusBar.setText("..." + str(self.widget.alreadyUploaded) + "/" + str(self.widget.numberImagesChecked) + " image(s) are successfully uploaded")
+            self.widget.statusBar.setText("..." + " something bad :(")
 
         self.runNextThread()
+
 
     '''
         terminateThread
