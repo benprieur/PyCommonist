@@ -101,7 +101,7 @@ class ProcessImageUpload(QObject):
 
         location = element.lineEditLocation.text()
         if location != '':
-            location = '{{Location dec|""" + location + """}}\n"""
+            location = '{{Location dec|''' + location + '''}}\n'''
 
         print(widget.lineEditCategories.text())
         print(element.lineEditCategories.text())
