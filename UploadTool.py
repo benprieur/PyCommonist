@@ -10,10 +10,10 @@ class UploadTool:
     widget = None
     checkThreadTimer = None
 
-    '''
+    """
         uploadImages
          https://www.mediawiki.org/wiki/API:Upload
-    '''
+    """
     def uploadImages(self, w):
         try:
             self.widget = w
@@ -90,7 +90,7 @@ class UploadTool:
             self.checkThreadTimer.timeout.connect(self.updateStatusBar)
             self.checkThreadTimer.start(TIMESTAMP_STATUSBAR)
 
-            print('''For each image''')
+            print("""For each image""")
             self.widget.currentImageIndex = 0
 
             for element in self.widget._currentUpload:
@@ -113,9 +113,9 @@ class UploadTool:
         except:
             traceback.print_exc()
 
-    '''
+    """
         updateStatusBar
-    '''
+    """
     def updateStatusBar(self):
         #print("updateStatusBar")
         if (self.widget.alreadyUploaded >= self.widget.numberImagesChecked):

@@ -1,6 +1,6 @@
-'''
+"""
     class EXIFImage
-'''
+"""
 class EXIFImage:
     lat = None
     long = None

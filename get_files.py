@@ -1,6 +1,6 @@
-'''
+"""
     get_files
-'''
+"""
 def get_files(path):
     import os
     if os.path.exists(path):

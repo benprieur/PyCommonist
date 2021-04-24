@@ -10,9 +10,9 @@ IMAGE_DIMENSION = 250
 
 URL = "https://commons.wikimedia.org/w/api.php"
 
-'''
+"""
     Styles
-'''
+"""
 STYLE_IMPORT_BUTTON = \
     "QPushButton { border:0px; font-size: 24px; font-style: oblique; font-weight: bold; }" \
     "QPushButton:pressed { background-color: lightgray }"

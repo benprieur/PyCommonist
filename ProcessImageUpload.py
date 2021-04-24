@@ -2,9 +2,9 @@ import json, requests, traceback
 from constants import URL
 from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot, QTimer
 
-'''
+"""
     class ProcessImageUpload
-'''
+"""
 
 
 class ProcessImageUpload(QObject):
@@ -80,9 +80,9 @@ class ProcessImageUpload(QObject):
         self.runNextThread()
 
 
-    '''
+    """
         terminateThread
-    '''
+    """
     def runNextThread(self):
         if self.index < self.widget.numberImagesChecked - 1:
             print("Start next process")
@@ -94,14 +94,14 @@ class ProcessImageUpload(QObject):
             print("Call Clean threads")
             self.widget.cleanThreads()
 
-    '''
+    """
         getText
-    '''
+    """
     def getText(self, element, widget):
 
         location = element.lineEditLocation.text()
         if location != '':
-            location = '{{Location dec|''' + location + '''}}\n'''
+            location = '{{Location dec|""" + location + """}}\n"""
 
         print(widget.lineEditCategories.text())
         print(element.lineEditCategories.text())
@@ -123,16 +123,16 @@ class ProcessImageUpload(QObject):
             catFinalText = catFinalText + "[[Category:" + category + "]]\n"
 
         text = \
-'''== {{int:filedesc}} ==
+"""== {{int:filedesc}} ==
 {{Information
-|Description = ''' + widget.lineEditDescription.toPlainText()  + element.lineEditDescription.toPlainText()  + "\n" + \
-'''|Source = ''' + widget.lineEditSource.text() + "\n" + \
-'''|Author = ''' + widget.lineEditAuthor.text() + "\n" \
-'''|Date = ''' + element.lineEditDateTime.text() + "\n" + \
-'''|Permission =
+|Description = """ + widget.lineEditDescription.toPlainText()  + element.lineEditDescription.toPlainText()  + "\n" + \
+"""|Source = """ + widget.lineEditSource.text() + "\n" + \
+"""|Author = """ + widget.lineEditAuthor.text() + "\n" \
+"""|Date = """ + element.lineEditDateTime.text() + "\n" + \
+"""|Permission =
 |other_versions =
-}}\n''' + location + "\n" + \
-'''== {{int:license-header}} == \n''' + widget.lineEditLicense.text() + "\n\n" + catFinalText
+}}\n""" + location + "\n" + \
+"""== {{int:license-header}} == \n""" + widget.lineEditLicense.text() + "\n\n" + catFinalText
 
         return text
 

@@ -1,8 +1,8 @@
 from PyQt5.QtWidgets import QWidget
 
-'''
+"""
     class ImageUpload
-'''
+"""
 
 
 class ImageUpload(QWidget):
