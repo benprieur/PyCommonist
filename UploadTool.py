@@ -4,6 +4,7 @@ from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot, QTimer
 from ProcessImageUpload import ProcessImageUpload
 from constants import TIMESTAMP_STATUSBAR
 
+
 class UploadTool:
 
     S = None
@@ -71,8 +72,6 @@ class UploadTool:
                 self.widget.statusBar.setText("Client login failed")
                 return
 
-
-
             self.widget.numberImagesChecked = 0
             for element in self.widget._currentUpload:
                 try:
@@ -113,11 +112,7 @@ class UploadTool:
         except:
             traceback.print_exc()
 
-    """
-        updateStatusBar
-    """
     def updateStatusBar(self):
-        #print("updateStatusBar")
         if (self.widget.alreadyUploaded >= self.widget.numberImagesChecked):
             self.checkThreadTimer.stop()
         else:

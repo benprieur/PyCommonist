@@ -1,7 +1,6 @@
-import sys, traceback
+import traceback
 from UploadTool import UploadTool
-import os, sip
-from os import listdir
+import os
 from os.path import isfile, join
 
 from completer import SearchBox
@@ -11,10 +10,10 @@ from ImageUpload import ImageUpload
 from config import LeftFrameConfig
 from EXIFImage import EXIFImage
 
-from PyQt5.QtCore import Qt, QRect, QThread, pyqtSlot
+from PyQt5.QtCore import Qt
 from PyQt5.Qt import QDir
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QWidget, QStatusBar, QHBoxLayout, \
+from PyQt5.QtWidgets import QHBoxLayout, \
     QFrame, \
     QSplitter, \
     QFormLayout, \
@@ -27,8 +26,8 @@ from PyQt5.QtWidgets import QWidget, QStatusBar, QHBoxLayout, \
     QScrollArea, \
     QWidget, \
     QCheckBox, \
-    QPushButton, \
-    QStatusBar
+    QPushButton
+
 from constants import VERTICAL_TOP_SIZE, \
     VERTICAL_BOTTOM_SIZE, \
     HORIZONTAL_LEFT_SIZE, \
@@ -61,11 +60,9 @@ class PyCommonist(QWidget):
 
         self.showMaximized()
         self.setWindowTitle('PyCommonist - Wikimedia Commons')
+
         self.show()
 
-    """
-        onSelectFolder
-    """
     def onSelectFolder(self, selected, deselected):
 
         try:
