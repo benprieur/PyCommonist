@@ -4,6 +4,7 @@ import os, sip
 from os import listdir
 from os.path import isfile, join
 
+from completer import SearchBox
 import exifread
 from gps_location import get_exif_location
 from ImageUpload import ImageUpload
@@ -132,10 +133,6 @@ class PyCommonist(QWidget):
             print("Something bad happened inside onSelectFolder function")
             traceback.print_exc()
 
-
-    """
-        cbImportNoneStateChanged
-    """
     def cbImportNoneStateChanged(self):
 
         print (self.cbImportNone.isChecked())
@@ -146,9 +143,6 @@ class PyCommonist(QWidget):
             for element in self._currentUpload:
                 element.cbImport.setCheckState(False)
 
-    """
-        cbImportAllStateChanged
-    """
     def cbImportAllStateChanged(self):
 
         print (self.cbImportAll.isChecked())
@@ -158,17 +152,11 @@ class PyCommonist(QWidget):
             for element in self._currentUpload:
                 element.cbImport.setCheckState(True)
 
-    """
-        onClickImport
-    """
     def onClickImport(self):
         if (self.tool == None):
             self.tool = UploadTool()
         ret = self.tool.uploadImages(self)
 
-    """
-        cleanThreads
-    """
     def cleanThreads(self):
         try:
             print("Clean properly threads")
@@ -181,9 +169,6 @@ class PyCommonist(QWidget):
         except:
             print("A problem with cleanThreads")
 
-    """
-        generateSplitter
-    """
     def generateSplitter(self):
 
         vbox = QVBoxLayout()
@@ -214,7 +199,6 @@ class PyCommonist(QWidget):
         self.splitterLeft.addWidget(self.leftBottonFrame)
         self.splitterLeft.setSizes([VERTICAL_TOP_SIZE,VERTICAL_BOTTOM_SIZE])
 
-        """ Horizontal Splitter """
         self.splitterCentral = QSplitter(Qt.Horizontal)
         self.splitterCentral.addWidget(self.splitterLeft)
         self.splitterCentral.addWidget(self.rightWidget)
@@ -223,16 +207,12 @@ class PyCommonist(QWidget):
 
         vbox.addLayout(hbox)
 
-        """ Status Bar """
         self.statusBar = QLabel()
         self.statusBar.setStyleSheet(STYLE_STATUSBAR)
         vbox.addWidget(self.statusBar)
 
         self.setLayout(vbox)
 
-    """
-        generateLeftTopFrame
-    """
     def generateLeftTopFrame(self):
 
         self.layoutLeftTop = QFormLayout()
@@ -243,7 +223,6 @@ class PyCommonist(QWidget):
         self.lineEditUserName = QLineEdit()
         self.lineEditUserName.setFixedWidth(WIDTH_WIDGET)
         self.lineEditUserName.setAlignment(Qt.AlignLeft)
-        self.lineEditUserName.setText("Benoît Prieur")
         self.layoutLeftTop.addRow(self.lblUserName, self.lineEditUserName)
 
         self.lblPassword = QLabel("Password: ")
@@ -295,7 +274,6 @@ class PyCommonist(QWidget):
         separationLeftTopFrame = QLabel()
         self.layoutLeftTop.addWidget(separationLeftTopFrame)
 
-        """ Button Import & None/All checkboxes"""
         importWidget = QWidget()
         importLayout = QHBoxLayout()
         importWidget.setLayout(importLayout)
@@ -323,20 +301,14 @@ class PyCommonist(QWidget):
         """ Layout Association of the Left Top Frame"""
         self.leftTopFrame.setLayout(self.layoutLeftTop)
 
-
-    """
-        generateLeftBottomFrame
-    """
     def generateLeftBottomFrame(self):
 
         self.layoutLeftBottom = QVBoxLayout()
 
-        """Model for QTreeView"""
         self.modelTree = QFileSystemModel()
         self.modelTree.setRootPath(QDir.currentPath())
         self.modelTree.setFilter(QDir.Dirs) # Only directories
 
-        """ QTreeView """
         self.treeLeftBottom = QTreeView()
         self.treeLeftBottom.setModel(self.modelTree)
         self.treeLeftBottom.setAnimated(False)
@@ -347,10 +319,6 @@ class PyCommonist(QWidget):
         self.layoutLeftBottom.addWidget(self.treeLeftBottom)
         self.leftBottonFrame.setLayout(self.layoutLeftBottom)
 
-
-    """
-        generateRightFrame
-    """
     def generateRightFrame(self):
 
         self._currentUpload = []
@@ -367,7 +335,6 @@ class PyCommonist(QWidget):
 
         for currentExifImage in self.exifImageCollection:
 
-            """ Current image """
             localWidget = ImageUpload()
             localLayout = QHBoxLayout()
             localLayout.setAlignment(Qt.AlignRight)
@@ -375,14 +342,12 @@ class PyCommonist(QWidget):
             self.scrollLayout.addWidget(localWidget)
             self._currentUpload.append(localWidget)
 
-            """Local Left Widget"""
             localLeftWidget = QWidget()
             localLeftLayout = QFormLayout()
             localLeftLayout.setAlignment(Qt.AlignRight)
             localLeftWidget.setLayout(localLeftLayout)
             localLayout.addWidget(localLeftWidget)
 
-            """ import? + Import Status """
             cbImport = QCheckBox("Import")
             lblUploadResult = QLabel()
             lblUploadResult.setStyleSheet(STYLE_IMPORT_STATUS)
@@ -390,7 +355,6 @@ class PyCommonist(QWidget):
             localWidget.cbImport = cbImport
             localWidget.lblUploadResult = lblUploadResult
 
-            """ File Name of picture """
             lblFileName = QLabel("Name: ")
             lblFileName.setAlignment(Qt.AlignLeft)
             lineEditFileName = QLineEdit()
@@ -400,13 +364,11 @@ class PyCommonist(QWidget):
             localLeftLayout.addRow(lblFileName, lineEditFileName)
             localWidget.lineEditFileName = lineEditFileName
 
-            """ Shadow Real FileName """
             lblRealFileName = QLineEdit()
             lblRealFileName.setText(currentExifImage.filename)
             localWidget.lblRealFileName = lblRealFileName
             localWidget.lblRealFileName.isVisible = False
 
-            """ Description """
             lblDescription = QLabel("Description: ")
             lblDescription.setAlignment(Qt.AlignLeft)
             lineEditDescription = QPlainTextEdit()
@@ -414,14 +376,17 @@ class PyCommonist(QWidget):
             localLeftLayout.addRow(lblDescription, lineEditDescription)
             localWidget.lineEditDescription = lineEditDescription
 
-            """ Categories """
             lblCategories = QLabel("Categories: ")
-            lblCategories.setAlignment(Qt.AlignLeft)
+            searchBoxCategory = SearchBox()
+            localLeftLayout.addRow(lblCategories, searchBoxCategory)
+            localWidget.searchBoxCategory = searchBoxCategory
+
             lineEditCategories = QLineEdit()
             lineEditCategories.setFixedWidth(WIDTH_WIDGET_RIGHT)
-            lineEditCategories.setAlignment(Qt.AlignLeft)
-            localLeftLayout.addRow(lblCategories, lineEditCategories)
+            localLeftLayout.addRow(QLabel(""), lineEditCategories)
             localWidget.lineEditCategories = lineEditCategories
+
+            localWidget.searchBoxCategory.returnPressed.connect(localWidget.onPressed)
 
             lblLocation = QLabel("Location: ")
             lblLocation.setAlignment(Qt.AlignLeft)
@@ -444,7 +409,6 @@ class PyCommonist(QWidget):
             localLeftLayout.addRow(lblDateTime, lineEditDateTime)
             localWidget.lineEditDateTime = lineEditDateTime
 
-            """ Image itself """
             label = QLabel()
             pixmap = QPixmap(currentExifImage.fullFilePath)
             pixmapResize = pixmap.scaledToWidth(IMAGE_DIMENSION, Qt.FastTransformation)

@@ -13,3 +13,8 @@ Pour l'installer et le lancer (utilisation ici d'un environnement virtuel) :
 Au 26 janvier 2021, il a été testé sur MacOS et sur Linux Ubuntu. Ci-dessous une copie d'écran à cette date.
 
 ![Screenshot](img/screenshot0.png "Screenshot")
+
+Dernières améliorations :
+
+* 20 avril 2021 : ajout d'un fichier externe de configuration (largement inspiré par le code de User:Deansfa, merci à lui).
+* 2 mai 2021 : ajout d'une auto-suggestion des catégories (idée de User:Romainbehar, merci à lui).
