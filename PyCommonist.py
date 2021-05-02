@@ -221,6 +221,7 @@ class PyCommonist(QWidget):
         self.lblUserName = QLabel("Username: ")
         self.lblUserName.setAlignment(Qt.AlignLeft)
         self.lineEditUserName = QLineEdit()
+        self.lineEditUserName.setText(LeftFrameConfig.username)
         self.lineEditUserName.setFixedWidth(WIDTH_WIDGET)
         self.lineEditUserName.setAlignment(Qt.AlignLeft)
         self.layoutLeftTop.addRow(self.lblUserName, self.lineEditUserName)
