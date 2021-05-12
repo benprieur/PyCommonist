@@ -101,6 +101,8 @@ class ProcessImageUpload(QObject):
 
         location = element.lineEditLocation.text()
         if location != '':
+            # replace comma with pipe when copying address from OSM
+            location = location.replace(",", "|")
             location = '{{Location dec|''' + location + '''}}\n'''
 
         print(widget.lineEditCategories.text())

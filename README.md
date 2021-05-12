@@ -17,4 +17,7 @@ Au 26 janvier 2021, il a été testé sur MacOS et sur Linux Ubuntu. Ci-dessous 
 Dernières améliorations :
 
 * 20 avril 2021 : ajout d'un fichier externe de configuration (largement inspiré par le code de User:Deansfa, merci à lui).
-* 2 mai 2021 : ajout d'une auto-suggestion des catégories (idée de User:Romainbehar, merci à lui).
+* 2 mai 2021 : ajout d'une auto-suggestion des catégories (idée de User:Romainbar, merci à lui).
+* 12 mai 2021 : User:Romainbar
+ - support des adresses copiées depuis OSM
+
