@@ -122,7 +122,9 @@ class ProcessImageUpload(QObject):
 
         catFinalText = ''
         for category in categories:
-            catFinalText = catFinalText + "[[Category:" + category + "]]\n"
+            # default category field can be empty
+            if category:
+                catFinalText = catFinalText + "[[Category:" + category + "]]\n"
 
         text = \
 """== {{int:filedesc}} ==
