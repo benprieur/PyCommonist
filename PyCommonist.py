@@ -125,25 +125,27 @@ class PyCommonist(QWidget):
 
             self.generateRightFrame()
 
-
         except:
             print("Something bad happened inside onSelectFolder function")
             traceback.print_exc()
 
+
     def cbImportNoneStateChanged(self):
 
-        print (self.cbImportNone.isChecked())
-        print(len(self._currentUpload))
+        if hasattr(self, '_currentUpload') is False:
+            return
 
         if self.cbImportNone.isChecked() and len(self._currentUpload) > 0:
 
             for element in self._currentUpload:
                 element.cbImport.setCheckState(False)
 
+
     def cbImportAllStateChanged(self):
 
-        print (self.cbImportAll.isChecked())
-        print(len(self._currentUpload))
+        if hasattr(self, '_currentUpload') is False:
+            return
+
         if self.cbImportAll.isChecked() and len(self._currentUpload) > 0:
 
             for element in self._currentUpload:
