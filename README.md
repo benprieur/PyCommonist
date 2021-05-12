@@ -19,6 +19,7 @@ Dernières améliorations :
 * 20 avril 2021 : ajout d'un fichier externe de configuration (largement inspiré par le code de User:Deansfa, merci à lui).
 * 2 mai 2021 : ajout d'une auto-suggestion des catégories (idée de User:Romainbar, merci à lui).
 * 12 mai 2021 : User:Romainbar
-** support des adresses copiées depuis OSM
-** si la case des catégories par défaut est vide, la ligne n'est pas créée dans la page
+ * support des adresses copiées depuis OSM
+ * si la case des catégories par défaut est vide, la ligne n'est pas créée dans la page
+ * ajout du code langue pour la description
 

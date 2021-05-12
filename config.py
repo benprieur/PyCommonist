@@ -15,4 +15,5 @@ class LeftFrameConfig:
     source = _config["source"]
     author = _config["author"]
     categories = _config["categories"]
-    licence = _config["licence"]
+    license = _config["license"]
+    language = _config["language"]

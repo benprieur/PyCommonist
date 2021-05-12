@@ -255,13 +255,21 @@ class PyCommonist(QWidget):
         self.lineEditCategories.setAlignment(Qt.AlignLeft)
         self.layoutLeftTop.addRow(self.lblCategories, self.lineEditCategories)
 
-        self.lblLicense = QLabel("License: ")
+        self.lblLicense = QLabel("Licence: ")
         self.lblLicense.setAlignment(Qt.AlignLeft)
         self.lineEditLicense = QLineEdit()
         self.lineEditLicense.setFixedWidth(WIDTH_WIDGET)
-        self.lineEditLicense.setText(LeftFrameConfig.licence)
+        self.lineEditLicense.setText(LeftFrameConfig.license)
         self.lineEditLicense.setAlignment(Qt.AlignLeft)
         self.layoutLeftTop.addRow(self.lblLicense, self.lineEditLicense)
+
+        self.lblLanguage = QLabel("Code langue: ")
+        self.lblLanguage.setAlignment(Qt.AlignLeft)
+        self.lineEditLanguage = QLineEdit()
+        self.lineEditLanguage.setFixedWidth(WIDTH_WIDGET)
+        self.lineEditLanguage.setText(LeftFrameConfig.language)
+        self.lineEditLanguage.setAlignment(Qt.AlignLeft)
+        self.layoutLeftTop.addRow(self.lblLanguage, self.lineEditLanguage)
 
         self.lblDescription = QLabel("Description: ")
         self.lblDescription.setAlignment(Qt.AlignLeft)

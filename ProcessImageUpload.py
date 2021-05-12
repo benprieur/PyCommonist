@@ -126,15 +126,22 @@ class ProcessImageUpload(QObject):
             if category:
                 catFinalText = catFinalText + "[[Category:" + category + "]]\n"
 
+        description = widget.lineEditDescription.toPlainText()  + element.lineEditDescription.toPlainText()
+
+        language = widget.lineEditLanguage.text()
+        if language:
+            # set language for description
+            description = "{{" + language + "|1=" + description + "}}"
+
         text = \
 """== {{int:filedesc}} ==
 {{Information
-|Description = """ + widget.lineEditDescription.toPlainText()  + element.lineEditDescription.toPlainText()  + "\n" + \
+|Description = """ + description + "\n" + \
 """|Source = """ + widget.lineEditSource.text() + "\n" + \
 """|Author = """ + widget.lineEditAuthor.text() + "\n" \
 """|Date = """ + element.lineEditDateTime.text() + "\n" + \
 """|Permission =
-|other_versions =
+|other versions =
 }}\n""" + location + "\n" + \
 """== {{int:license-header}} == \n""" + widget.lineEditLicense.text() + "\n\n" + catFinalText
 
