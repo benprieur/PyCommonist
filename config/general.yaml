@@ -5,3 +5,7 @@ left_frame:
     categories: "Photographs by Benoît Prieur|2021 images by Benoît Prieur|Auvergne-Rhône-Alpes photographs taken on 2021-04-25|Images of Pérouges by Benoît Prieur|2021 in Pérouges|April 2021 in Ain"
     license:    "{{self|cc-by-sa-4.0}}"
     language:   "fr"
+
+right_frame:
+    default_image_sort:   "file_name"
+

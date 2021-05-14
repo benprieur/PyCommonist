@@ -7,7 +7,7 @@ from completer import SearchBox
 import exifread
 from gps_location import get_exif_location
 from ImageUpload import ImageUpload
-from config import LeftFrameConfig
+from config import LeftFrameConfig, RightFrameConfig
 from EXIFImage import EXIFImage
 
 from PyQt5.QtCore import Qt
@@ -53,6 +53,7 @@ class PyCommonist(QWidget):
     def initUI(self):
 
         self.currentDirectoryPath = ''
+        self.imageSortOrder = RightFrameConfig.default_image_sort
 
         self.generateSplitter()
         self.generateLeftTopFrame()
@@ -83,7 +84,7 @@ class PyCommonist(QWidget):
                    fullFilePath.endswith(".png") or \
                    fullFilePath.endswith(".PNG"):
 
-                    currentExifImage  = EXIFImage()
+                    currentExifImage = EXIFImage()
                     currentExifImage.fullFilePath = fullFilePath
                     currentExifImage.filename = file
                     tags = None
@@ -130,23 +131,38 @@ class PyCommonist(QWidget):
             traceback.print_exc()
 
 
-    def cbImportNoneStateChanged(self):
+    def btnToggleImageSortOrder(self):
 
         if hasattr(self, '_currentUpload') is False:
             return
 
-        if self.cbImportNone.isChecked() and len(self._currentUpload) > 0:
+        if len(self._currentUpload) > 0:
+
+            if self.imageSortOrder == "file_name":
+                self.imageSortOrder = "exif_date"
+            else:
+                self.imageSortOrder = "file_name"
+
+            self.generateRightFrame()
+
+
+    def btnSelectNoImage(self):
+
+        if hasattr(self, '_currentUpload') is False:
+            return
+
+        if len(self._currentUpload) > 0:
 
             for element in self._currentUpload:
                 element.cbImport.setCheckState(False)
 
 
-    def cbImportAllStateChanged(self):
+    def btnSelectAllImages(self):
 
         if hasattr(self, '_currentUpload') is False:
             return
 
-        if self.cbImportAll.isChecked() and len(self._currentUpload) > 0:
+        if len(self._currentUpload) > 0:
 
             for element in self._currentUpload:
                 element.cbImport.setCheckState(True)
@@ -180,6 +196,8 @@ class PyCommonist(QWidget):
         self.rightWidget.resize(300, 300)
         self.layoutRight = QVBoxLayout()
         self.rightWidget.setLayout(self.layoutRight)
+
+        self.generateRightFrameButtons()
 
         self.scroll = QScrollArea()
         self.layoutRight.addWidget(self.scroll)
@@ -257,7 +275,7 @@ class PyCommonist(QWidget):
         self.lineEditCategories.setAlignment(Qt.AlignLeft)
         self.layoutLeftTop.addRow(self.lblCategories, self.lineEditCategories)
 
-        self.lblLicense = QLabel("Licence: ")
+        self.lblLicense = QLabel("License: ")
         self.lblLicense.setAlignment(Qt.AlignLeft)
         self.lineEditLicense = QLineEdit()
         self.lineEditLicense.setFixedWidth(WIDTH_WIDGET)
@@ -265,7 +283,7 @@ class PyCommonist(QWidget):
         self.lineEditLicense.setAlignment(Qt.AlignLeft)
         self.layoutLeftTop.addRow(self.lblLicense, self.lineEditLicense)
 
-        self.lblLanguage = QLabel("Code langue: ")
+        self.lblLanguage = QLabel("Language code: ")
         self.lblLanguage.setAlignment(Qt.AlignLeft)
         self.lineEditLanguage = QLineEdit()
         self.lineEditLanguage.setFixedWidth(WIDTH_WIDGET)
@@ -286,23 +304,13 @@ class PyCommonist(QWidget):
         importLayout = QHBoxLayout()
         importWidget.setLayout(importLayout)
 
-        self.cbImportNone = QCheckBox("None")
-        self.cbImportNone.stateChanged.connect(self.cbImportNoneStateChanged)
-
-        self.cbImportAll = QCheckBox("All")
-        self.cbImportAll.stateChanged.connect(self.cbImportAllStateChanged)
-
         self.btnImport = QPushButton("Import!")
 
         self.btnImport.clicked.connect(self.onClickImport)
 
-        importLayout.addWidget(self.cbImportNone)
-        importLayout.addWidget(self.cbImportAll)
         importLayout.addWidget(self.btnImport)
         self.layoutLeftTop.addWidget(importWidget)
         importWidget.setStyleSheet("border:1px solid #808080;");
-        self.cbImportNone.setStyleSheet("border:0px;");
-        self.cbImportAll.setStyleSheet("border:0px;");
 
         self.btnImport.setStyleSheet(STYLE_IMPORT_BUTTON)
 
@@ -327,6 +335,31 @@ class PyCommonist(QWidget):
         self.layoutLeftBottom.addWidget(self.treeLeftBottom)
         self.leftBottonFrame.setLayout(self.layoutLeftBottom)
 
+
+    def generateRightFrameButtons(self):
+
+        importCommandWidget = QWidget()
+        importCommandLayout = QHBoxLayout()
+        importCommandWidget.setLayout(importCommandLayout)
+
+        self.btnToggleImageSort = QPushButton("Images sorted by name")
+        self.btnToggleImageSort.clicked.connect(self.btnToggleImageSortOrder)
+
+        self.btnImportCheckNone = QPushButton("Check None")
+        self.btnImportCheckNone.clicked.connect(self.btnSelectNoImage)
+
+        self.btnImportCheckAll = QPushButton("Check All")
+        self.btnImportCheckAll.clicked.connect(self.btnSelectAllImages)
+
+        importCommandLayout.addWidget(self.btnToggleImageSort)
+        importCommandLayout.addWidget(self.btnImportCheckNone)
+        importCommandLayout.addWidget(self.btnImportCheckAll)
+
+        importCommandWidget.setStyleSheet("border:1px solid #808080;");
+
+        self.layoutRight.addWidget(importCommandWidget)
+
+
     def generateRightFrame(self):
 
         self._currentUpload = []
@@ -340,6 +373,13 @@ class PyCommonist(QWidget):
             child = layout.takeAt(0)
             if child.widget():
                 child.widget().deleteLater()
+
+        if self.imageSortOrder == "exif_date":
+            self.exifImageCollection.sort(key=lambda image: image.date + ' ' + image.time)
+            self.btnToggleImageSort.setText("Images sorted by date")
+        else:
+            self.exifImageCollection.sort(key=lambda image: image.filename)
+            self.btnToggleImageSort.setText("Images sorted by name")
 
         for currentExifImage in self.exifImageCollection:
 
@@ -425,3 +465,4 @@ class PyCommonist(QWidget):
             localWidget.fullFilePath = currentExifImage.fullFilePath
 
             self.update()
+

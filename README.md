@@ -22,4 +22,7 @@ Dernières améliorations :
   * support des adresses copiées depuis OSM
   * si la case des catégories par défaut est vide, la ligne n'est pas créée dans la page
   * ajout du code langue pour la description
+* 14 mai 2021 : User:Romainbar
+  * bouton pour modifier l'ordre de tri des images, entre nom de fichier (par défaut) et date Exif
+  * transformation des cases à cocher en boutons pour les images à importer, et déplacement dans la frame de droite
 
