@@ -355,8 +355,6 @@ class PyCommonist(QWidget):
         importCommandLayout.addWidget(self.btnImportCheckNone)
         importCommandLayout.addWidget(self.btnImportCheckAll)
 
-        importCommandWidget.setStyleSheet("border:1px solid #808080;");
-
         self.layoutRight.addWidget(importCommandWidget)
 
 
@@ -409,6 +407,9 @@ class PyCommonist(QWidget):
             lineEditFileName.setFixedWidth(WIDTH_WIDGET_RIGHT)
             lineEditFileName.setText(currentExifImage.filename)
             lineEditFileName.setAlignment(Qt.AlignLeft)
+
+            lineEditFileName.textChanged.connect(lambda state, w=cbImport: w.setCheckState(True))
+
             localLeftLayout.addRow(lblFileName, lineEditFileName)
             localWidget.lineEditFileName = lineEditFileName
 
