@@ -6,7 +6,7 @@ from PyQt5.QtGui import QIcon
 
 def main():
     app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon('img/PyCommonist.png'))
+    app.setWindowIcon(QIcon('img/Logo PyCommonist.svg'))
 
     ex = PyCommonist()
     sys.exit(app.exec_())
