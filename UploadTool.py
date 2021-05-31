@@ -80,7 +80,8 @@ class UploadTool:
                 except:
                     print("element.cbImport.isChecked() => pb")
 
-            self.widget.alreadyUploaded = 0
+            self.widget.uploadSuccesses = 0
+            self.widget.uploadFailures = 0
 
             if self.checkThreadTimer == None:
                 self.checkThreadTimer = QTimer()
@@ -113,10 +114,12 @@ class UploadTool:
             traceback.print_exc()
 
     def updateStatusBar(self):
-        if (self.widget.alreadyUploaded >= self.widget.numberImagesChecked):
+        total = self.widget.uploadSuccesses + self.widget.uploadFailures
+        if (total >= self.widget.numberImagesChecked):
             self.checkThreadTimer.stop()
         else:
             current = self.widget.statusBar.text()
             if len(current) > 180:
                 current = "."
             self.widget.statusBar.setText(current + ".")
+

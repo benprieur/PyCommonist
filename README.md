@@ -26,4 +26,6 @@ Dernières améliorations :
   * bouton pour modifier l'ordre de tri des images, entre nom de fichier (par défaut) et date Exif
   * transformation des cases à cocher en boutons pour les images à importer, et déplacement dans la frame de droite
   * case à cocher Import automatiquement à True quand on modifie le nom de l'image
+* 31 mai 2021 : User:Romainbar
+  * affichage du bon total des uploads réussis et ratés
 

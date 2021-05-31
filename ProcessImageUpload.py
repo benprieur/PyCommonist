@@ -69,13 +69,25 @@ class ProcessImageUpload(QObject):
             resultUploadImage = R.json()['upload']['result']
             print(resultUploadImage)
             element.lblUploadResult.setText(resultUploadImage)
-            self.widget.alreadyUploaded = self.widget.alreadyUploaded + 1
-            self.widget.statusBar.setText("..." + str(self.widget.alreadyUploaded) + "/" + str(self.widget.numberImagesChecked) + " image(s) are successfully uploaded")
+            self.widget.uploadSuccesses = self.widget.uploadSuccesses + 1
         except:
             traceback.print_exc()
             element.lblUploadResult.setText("FAILED")
-            self.widget.alreadyUploaded = self.widget.alreadyUploaded + 1
-            self.widget.statusBar.setText("..." + " something bad :(")
+            self.widget.uploadFailures = self.widget.uploadFailures + 1
+
+        message = ""
+        successes = self.widget.uploadSuccesses
+        failures = self.widget.uploadFailures
+        total = self.widget.numberImagesChecked
+
+        if successes > 0:
+            message = message + "... {}/{} image(s) successfully uploaded".format(successes, total)
+        if failures > 0:
+            if successes > 0:
+                message = message + "; "
+            message = message + "{} upload(s) failed!".format(failures)
+
+        self.widget.statusBar.setText(message)
 
         self.runNextThread()
 
