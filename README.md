@@ -28,4 +28,6 @@ Dernières améliorations :
   * case à cocher Import automatiquement à True quand on modifie le nom de l'image
 * 31 mai 2021 : User:Romainbar
   * affichage du bon total des uploads réussis et ratés
+* 2 juin 2021 : User:Romainbar
+  * bouton pour recharger la liste des images à partir du dernier dossier sélectionné
 

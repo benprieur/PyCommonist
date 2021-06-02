@@ -64,12 +64,23 @@ class PyCommonist(QWidget):
 
         self.show()
 
-    def onSelectFolder(self, selected, deselected):
+    def onSelectFolder(self, selected):
 
         try:
             currentIndex = selected.indexes()[0]
             self.currentDirectoryPath = self.modelTree.filePath(currentIndex)
             print(self.currentDirectoryPath)
+
+        except:
+            print("Something bad happened inside onSelectFolder function")
+            traceback.print_exc()
+
+        self.loadMediaFromCurrentFolder()
+
+
+    def loadMediaFromCurrentFolder(self):
+
+        try:
             self.statusBar.setText("")
             self.exifImageCollection = []
 
@@ -125,7 +136,7 @@ class PyCommonist(QWidget):
             self.generateRightFrame()
 
         except:
-            print("Something bad happened inside onSelectFolder function")
+            print("Something bad happened inside loadMediaFromCurrentFolder function")
             traceback.print_exc()
 
 
@@ -349,9 +360,13 @@ class PyCommonist(QWidget):
         self.btnImportCheckAll = QPushButton("Check All")
         self.btnImportCheckAll.clicked.connect(self.btnSelectAllImages)
 
+        self.btnReloadFolder = QPushButton("Reload Folder")
+        self.btnReloadFolder.clicked.connect(self.loadMediaFromCurrentFolder)
+
         importCommandLayout.addWidget(self.btnToggleImageSort)
         importCommandLayout.addWidget(self.btnImportCheckNone)
         importCommandLayout.addWidget(self.btnImportCheckAll)
+        importCommandLayout.addWidget(self.btnReloadFolder)
 
         self.layoutRight.addWidget(importCommandWidget)
 
