@@ -2,6 +2,7 @@ import traceback
 from UploadTool import UploadTool
 import os
 from os.path import isfile, join
+import re
 
 from completer import SearchBox
 import exifread
@@ -26,7 +27,8 @@ from PyQt5.QtWidgets import QHBoxLayout, \
     QScrollArea, \
     QWidget, \
     QCheckBox, \
-    QPushButton
+    QPushButton, \
+    QMenu
 
 from constants import VERTICAL_TOP_SIZE, \
     VERTICAL_BOTTOM_SIZE, \
@@ -48,6 +50,11 @@ class PyCommonist(QWidget):
         self.initUI()
         self.threads = []
         self.workers = []
+
+        # copied image information
+        self.copiedName = ''
+        self.copiedDescription = ''
+        self.copiedCategories = ''
 
 
     def initUI(self):
@@ -410,9 +417,21 @@ class PyCommonist(QWidget):
             cbImport = QCheckBox("Import")
             lblUploadResult = QLabel()
             lblUploadResult.setStyleSheet(STYLE_IMPORT_STATUS)
-            localLeftLayout.addRow(cbImport, lblUploadResult)
+            btnCopyPaste = QPushButton("Copy/Paste")
+            resultLabelAndButtonsLayout = QHBoxLayout()
+            resultLabelAndButtonsLayout.addWidget(lblUploadResult, 3)
+            resultLabelAndButtonsLayout.addWidget(btnCopyPaste, 1)
+            # create menu here, connect actions after widget creations
+            copyPasteMenu = QMenu()
+            copyAction = copyPasteMenu.addAction("Copy")
+            pasteAction = copyPasteMenu.addAction("Paste name, description and categories")
+            pasteWithNumberingAction = copyPasteMenu.addAction("Paste name with numbering, description and categories")
+            btnCopyPaste.setMenu(copyPasteMenu)
+
+            localLeftLayout.addRow(cbImport, resultLabelAndButtonsLayout)
             localWidget.cbImport = cbImport
             localWidget.lblUploadResult = lblUploadResult
+            localWidget.btnCopyPaste = btnCopyPaste
 
             lblFileName = QLabel("Name: ")
             lblFileName.setAlignment(Qt.AlignLeft)
@@ -471,6 +490,10 @@ class PyCommonist(QWidget):
             localLeftLayout.addRow(lblDateTime, lineEditDateTime)
             localWidget.lineEditDateTime = lineEditDateTime
 
+            copyAction.triggered.connect(lambda state, w=localWidget: self.copyImageInfo(w))
+            pasteAction.triggered.connect(lambda state, w=localWidget: self.pasteImageInfo(w, False))
+            pasteWithNumberingAction.triggered.connect(lambda state, w=localWidget: self.pasteImageInfo(w, True))
+
             label = QLabel()
             pixmap = QPixmap(currentExifImage.fullFilePath)
             pixmapResize = pixmap.scaledToWidth(IMAGE_DIMENSION, Qt.FastTransformation)
@@ -479,4 +502,34 @@ class PyCommonist(QWidget):
             localWidget.fullFilePath = currentExifImage.fullFilePath
 
             self.update()
+
+
+    def copyImageInfo(self, imageWidget):
+        # copy image information
+        self.copiedName = imageWidget.lineEditFileName.text()
+        self.copiedDescription = imageWidget.lineEditDescription.toPlainText()
+        self.copiedCategories = imageWidget.lineEditCategories.text()
+
+    def pasteImageInfo(self, imageWidget, increaseNumber):
+        # paste image information
+        name = self.copiedName
+        if increaseNumber:
+            # increment last number found in name
+            numberList = re.findall(r'\d+', name)
+            if len(numberList) > 0:
+                val = numberList[-1]
+                nextVal = str(int(val) + 1)
+                # pad with 0s if needed
+                if len(nextVal) < len(val):
+                    nextVal = nextVal.zfill(len(val))
+                # replace last number in the string with increased number
+                removeLastNumber = name.rsplit(val, 1)
+                name = nextVal.join(removeLastNumber)
+                # save name with new number
+                self.copiedName = name
+
+        imageWidget.lineEditFileName.setText(name)
+        imageWidget.lineEditDescription.setPlainText(self.copiedDescription)
+        imageWidget.lineEditCategories.setText(self.copiedCategories)
+
 

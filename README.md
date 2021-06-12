@@ -30,4 +30,7 @@ Dernières améliorations :
   * affichage du bon total des uploads réussis et ratés
 * 2 juin 2021 : User:Romainbar
   * bouton pour recharger la liste des images à partir du dernier dossier sélectionné
+* 12 juin 2021 : User:Romainbar
+  * bouton pour copier et coller les nom, description et catégories d'une image à l'autre
+  * possibilité d'incrémenter automatiquement le dernier numéro contenu dans le nom
 
