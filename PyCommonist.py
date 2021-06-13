@@ -28,7 +28,9 @@ from PyQt5.QtWidgets import QHBoxLayout, \
     QWidget, \
     QCheckBox, \
     QPushButton, \
-    QMenu
+    QMenu, \
+    QMessageBox
+
 
 from constants import VERTICAL_TOP_SIZE, \
     VERTICAL_BOTTOM_SIZE, \
@@ -183,14 +185,51 @@ class PyCommonist(QWidget):
             for element in self._currentUpload:
                 element.cbImport.setCheckState(True)
 
+
     def onClickImport(self):
+
+        if hasattr(self, '_currentUpload') is False:
+            return
+
+        if len(self._currentUpload) == 0:
+            return
+
+        # verify all fields are set
+        emptyDescriptions = 0
+        emptyCategories = 0
+        for element in self._currentUpload:
+
+            if not element.cbImport.isChecked():
+                continue;
+
+            # test descriptions (main and element's)
+            desc = self.lineEditDescription.toPlainText() + element.lineEditDescription.toPlainText()
+            if not (desc and desc.strip()):
+                emptyDescriptions = emptyDescriptions + 1
+
+            # test categories (main and element's)
+            categs = self.lineEditCategories.text() + element.lineEditCategories.text()
+            if not (categs and categs.strip()):
+                emptyCategories = emptyCategories + 1
+
+        if emptyDescriptions > 0:
+            confirmation = QMessageBox.question(self, 'Incomplete Descriptions', 'There are %s image(s) without description, continue upload?' % emptyDescriptions, QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if confirmation == QMessageBox.No:
+                return
+
+        if emptyCategories > 0:
+            confirmation = QMessageBox.question(self, 'Incomplete Categories', 'There are %s image(s) without category, continue upload?' % emptyCategories, QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if confirmation == QMessageBox.No:
+                return
+
         if (self.tool == None):
             self.tool = UploadTool()
         ret = self.tool.uploadImages(self)
 
+
     def cleanThreads(self):
         try:
-            print("Clean properly threads")
+            print("Clean threads properly")
 
             for thread in self.threads:
                 print("Current thread proper deletion")
@@ -440,7 +479,7 @@ class PyCommonist(QWidget):
             lineEditFileName.setText(currentExifImage.filename)
             lineEditFileName.setAlignment(Qt.AlignLeft)
 
-            lineEditFileName.textChanged.connect(lambda state, w=cbImport: w.setCheckState(True))
+            lineEditFileName.textChanged.connect(lambda state, w=cbImport: w.setChecked(True))
 
             localLeftLayout.addRow(lblFileName, lineEditFileName)
             localWidget.lineEditFileName = lineEditFileName

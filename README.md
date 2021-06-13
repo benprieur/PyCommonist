@@ -33,4 +33,6 @@ Dernières améliorations :
 * 12 juin 2021 : User:Romainbar
   * bouton pour copier et coller les nom, description et catégories d'une image à l'autre
   * possibilité d'incrémenter automatiquement le dernier numéro contenu dans le nom
+* 13 juin 2021 : User:Romainbar
+  * dialogue de confirmation d'upload quand aucune description ou aucune catégorie n'est entrée
 
