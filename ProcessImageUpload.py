@@ -70,6 +70,10 @@ class ProcessImageUpload(QObject):
             print(resultUploadImage)
             element.lblUploadResult.setText(resultUploadImage)
             self.widget.uploadSuccesses = self.widget.uploadSuccesses + 1
+
+            # uncheck import checkbox
+            element.cbImport.setChecked(False)
+
         except:
             traceback.print_exc()
             element.lblUploadResult.setText("FAILED")

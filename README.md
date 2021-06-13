@@ -35,4 +35,5 @@ Dernières améliorations :
   * possibilité d'incrémenter automatiquement le dernier numéro contenu dans le nom
 * 13 juin 2021 : User:Romainbar
   * dialogue de confirmation d'upload quand aucune description ou aucune catégorie n'est entrée
+  * décochage des images uploadées avec succès
 
