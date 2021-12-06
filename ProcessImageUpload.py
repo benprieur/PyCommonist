@@ -22,7 +22,7 @@ class ProcessImageUpload(QObject):
 
         print("process is running")
         print(str(QThread.currentThreadId().__int__()))
-        self.widget.statusBar.setText("")
+        self.widget.clearStatus()
 
         element = self.element
         path = self.path
@@ -69,7 +69,7 @@ class ProcessImageUpload(QObject):
             resultUploadImage = R.json()['upload']['result']
             print(resultUploadImage)
             element.lblUploadResult.setText(resultUploadImage)
-            self.widget.uploadSuccesses = self.widget.uploadSuccesses + 1
+            self.widget.setUploadStatus(True)
 
             # uncheck import checkbox
             element.cbImport.setChecked(False)
@@ -77,21 +77,7 @@ class ProcessImageUpload(QObject):
         except:
             traceback.print_exc()
             element.lblUploadResult.setText("FAILED")
-            self.widget.uploadFailures = self.widget.uploadFailures + 1
-
-        message = ""
-        successes = self.widget.uploadSuccesses
-        failures = self.widget.uploadFailures
-        total = self.widget.numberImagesChecked
-
-        if successes > 0:
-            message = message + "... {}/{} image(s) successfully uploaded".format(successes, total)
-        if failures > 0:
-            if successes > 0:
-                message = message + "; "
-            message = message + "{} upload(s) failed!".format(failures)
-
-        self.widget.statusBar.setText(message)
+            self.widget.setUploadStatus(False)
 
         self.runNextThread()
 
@@ -100,13 +86,13 @@ class ProcessImageUpload(QObject):
         terminateThread
     """
     def runNextThread(self):
-        if self.index < self.widget.numberImagesChecked - 1:
+        if self.index < self.widget.numberOfImagesChecked - 1:
             print("Start next process")
             timer = QTimer()
             timer.setInterval(6); # To avoid a 502 error (first test ok with 10)
             timer.start()
             self.widget.threads[self.index + 1].start()
-        elif self.index == self.widget.numberImagesChecked - 1:
+        elif self.index == self.widget.numberOfImagesChecked - 1:
             print("Call Clean threads")
             self.widget.cleanThreads()
 

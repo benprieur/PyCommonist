@@ -58,6 +58,9 @@ class PyCommonist(QWidget):
         self.copiedDescription = ''
         self.copiedCategories = ''
 
+        # upload status
+        self.initUpload(0)
+
 
     def initUI(self):
 
@@ -90,7 +93,7 @@ class PyCommonist(QWidget):
     def loadMediaFromCurrentFolder(self):
 
         try:
-            self.statusBar.setText("")
+            self.clearStatus()
             self.exifImageCollection = []
 
             list_dir = os.listdir(self.currentDirectoryPath)
@@ -426,7 +429,6 @@ class PyCommonist(QWidget):
         print(layout.count())
 
         while layout.count():
-            print("destroy")
             child = layout.takeAt(0)
             if child.widget():
                 child.widget().deleteLater()
@@ -571,4 +573,52 @@ class PyCommonist(QWidget):
         imageWidget.lineEditDescription.setPlainText(self.copiedDescription)
         imageWidget.lineEditCategories.setText(self.copiedCategories)
 
+
+    def clearStatus(self):
+        self.statusBar.setText("")
+
+    def setStatus(self, message):
+        self.statusBar.setText(message)
+
+
+    def initUpload(self, imageCount):
+        self.numberOfImagesChecked = imageCount
+        self.uploadSuccesses = 0
+        self.uploadFailures = 0
+        self.uploadStatusDots = 0
+
+    def updateUploadingStatus(self):
+        total = self.uploadSuccesses + self.uploadFailures
+        if total >= self.numberOfImagesChecked:
+            return False
+
+        self.uploadStatusDots = self.uploadStatusDots + 1
+        if self.uploadStatusDots > 10:
+            self.uploadStatusDots = 0
+
+        message = "{}/{} ".format(total, self.numberOfImagesChecked)
+        message = message + "." * self.uploadStatusDots
+        self.setStatus(message)
+
+        return True
+
+    def setUploadStatus(self, success):
+        if success:
+            self.uploadSuccesses = self.uploadSuccesses + 1
+        else:
+            self.uploadFailures = self.uploadFailures + 1
+
+        message = ""
+        successes = self.uploadSuccesses
+        failures = self.uploadFailures
+        total = self.numberOfImagesChecked
+
+        if successes > 0:
+            message = message + " {}/{} image(s) successfully uploaded".format(successes, total)
+        if failures > 0:
+            if successes > 0:
+                message = message + "; "
+            message = message + "{} upload(s) failed!".format(failures)
+
+        self.setStatus(message)
 

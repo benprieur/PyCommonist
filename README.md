@@ -36,4 +36,6 @@ Dernières améliorations :
 * 13 juin 2021 : User:Romainbar
   * dialogue de confirmation d'upload quand aucune description ou aucune catégorie n'est entrée
   * décochage des images uploadées avec succès
+* 6 décembre 2021 : User:Romainbar
+  * affichage du nombre d'images traitées pendant l'upload
 
