@@ -41,7 +41,10 @@ from constants import VERTICAL_TOP_SIZE, \
     IMAGE_DIMENSION, \
     STYLE_IMPORT_BUTTON, \
     STYLE_IMPORT_STATUS, \
-    STYLE_STATUSBAR
+    STYLE_STATUSBAR, \
+    IMPORT_BUTTON_NO_IMAGE, \
+    IMPORT_BUTTON_N_IMAGES
+
 
 class PyCommonist(QWidget):
 
@@ -187,6 +190,22 @@ class PyCommonist(QWidget):
 
             for element in self._currentUpload:
                 element.cbImport.setCheckState(True)
+
+
+    def onToggleImport(self):
+
+        # count selected imports
+        selectedImports = 0
+        for element in self._currentUpload:
+            if element.cbImport.isChecked():
+                selectedImports = selectedImports + 1;
+
+        # update selected import counter
+        if selectedImports == 0:
+            self.btnImport.setText(IMPORT_BUTTON_NO_IMAGE)
+        else:
+            self.btnImport.setText(IMPORT_BUTTON_N_IMAGES.format(selectedImports))
+
 
 
     def onClickImport(self):
@@ -362,7 +381,7 @@ class PyCommonist(QWidget):
         importLayout = QHBoxLayout()
         importWidget.setLayout(importLayout)
 
-        self.btnImport = QPushButton("Import!")
+        self.btnImport = QPushButton(IMPORT_BUTTON_NO_IMAGE)
 
         self.btnImport.clicked.connect(self.onClickImport)
 
@@ -456,6 +475,8 @@ class PyCommonist(QWidget):
             localLayout.addWidget(localLeftWidget)
 
             cbImport = QCheckBox("Import")
+            cbImport.toggled.connect(self.onToggleImport)
+
             lblUploadResult = QLabel()
             lblUploadResult.setStyleSheet(STYLE_IMPORT_STATUS)
             btnCopyPaste = QPushButton("Copy/Paste")

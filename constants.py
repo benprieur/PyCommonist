@@ -21,3 +21,8 @@ STYLE_IMPORT_STATUS = "font-style: oblique; font-weight: bold; "
 STYLE_STATUSBAR = "border: 1px solid black;"
 
 TIMESTAMP_STATUSBAR = 2000 # 2 seconds
+
+IMPORT_BUTTON_NO_IMAGE="No Import Selected"
+IMPORT_BUTTON_N_IMAGES="Import {0} Images"
+
+

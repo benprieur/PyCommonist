@@ -131,7 +131,7 @@ class SearchBox(QLineEdit):
     def __init__(self, parent=None):
         super(SearchBox, self).__init__(parent)
         self._completer = SuggestCompletion(self);
-        self.setFixedWidth(WIDTH_WIDGET_RIGHT / 2)
+        self.setFixedWidth(round(WIDTH_WIDGET_RIGHT / 2))
         #self.setStyleSheet("background-color: lightgray; color: black ")
         self.setClearButtonEnabled(True)
 
