@@ -1,6 +1,6 @@
-"""
+'''
     class EXIFImage
-"""
+'''
 class EXIFImage:
     lat = None
     long = None
@@ -8,4 +8,4 @@ class EXIFImage:
     filename = ''
     date = ''
     time = ''
-    fullFilePath = ''
+    full_file_path = ''

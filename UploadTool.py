@@ -1,118 +1,113 @@
-import json, requests, traceback, time
+'''
+    UploadTool.py
+'''
+import traceback
+import requests
+from PyQt5.QtCore import QThread
+from PyQt5.QtCore import QObject
+from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import QTimer
 from constants import URL
-from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot, QTimer
 from ProcessImageUpload import ProcessImageUpload
 from constants import TIMESTAMP_STATUSBAR
 
 
+'''
+    class UploadTool
+'''
 class UploadTool:
-
-    S = None
+    session = None
     widget = None
-    checkThreadTimer = None
+    check_thread_timer = None
+    login = ""
+    password = ""
 
-    """
-        uploadImages
-         https://www.mediawiki.org/wiki/API:Upload
-    """
-    def uploadImages(self, w):
+    '''
+        def upload_images
+    '''
+    def upload_images(self, w):
         try:
             self.widget = w
-            self.widget.clearStatus()
-            self.login = self.widget.lineEditUserName.text()
-            self.password = self.widget.lineEditPassword.text()
-
+            self.widget.clear_status()
+            self.login = self.widget.line_edit_user_name.text()
+            self.password = self.widget.line_edit_password.text()
             if len(self.login) == 0:
-                self.widget.setStatus("Login is not filled")
+                self.widget.set_status("Login is not filled")
                 return
-
             if len(self.password) == 0:
-                self.widget.setStatus("Password is not filled")
+                self.widget.set_status("Password is not filled")
                 return
-
-            if len(self.widget._currentUpload) == 0:
-                self.widget.setStatus("No image selected for upload")
+            if len(self.widget.current_upload) == 0:
+                self.widget.set_status("No image selected for upload")
                 return
-
             print("Clean lists")
             self.widget.threads.clear()
             self.widget.workers.clear()
-
-            self.S = requests.Session()
-            print(self.S)
-
-            # Step 1: Retrieve a login token
-            PARAMS_1 = {
+            self.session = requests.Session()
+            print(self.session)
+            params_1 = {
                 "action": "query",
                 "meta": "tokens",
                 "type": "login",
                 "format": "json"
             }
-            R = self.S.get(url=URL, params=PARAMS_1)
-            DATA = R.json()
-            print(DATA)
-
-            LOGIN_TOKEN = DATA["query"]["tokens"]["logintoken"]
-            print(LOGIN_TOKEN)
-
-            # Step 2: Send a post request to login
-            PARAMS_2 = {
+            http_ret = self.session.get(url=URL, params=params_1)
+            data = http_ret.json()
+            print(data)
+            login_token = data["query"]["tokens"]["logintoken"]
+            print(login_token)
+            params_2 = {
                 'action': "clientlogin",
                 'username': self.login,
                 'password': self.password,
                 'loginreturnurl': URL,
-                'logintoken': LOGIN_TOKEN,
+                'logintoken': login_token,
                 'format': "json"
             }
-
-            R = self.S.post(URL, data=PARAMS_2)
-            print(R.content)
-            print(R.json()['clientlogin']['status'])
-            if R.json()['clientlogin']['status'] != 'PASS':
-                self.widget.setStatus("Client login failed")
+            http_ret = self.session.post(URL, data=params_2)
+            print(http_ret.content)
+            print(http_ret.json()['clientlogin']['status'])
+            if http_ret.json()['clientlogin']['status'] != 'PASS':
+                self.widget.set_status("Client login failed")
                 return
-
-            checkedImageCount = 0
-            for element in self.widget._currentUpload:
+            checked_image_count = 0
+            for element in self.widget.current_upload:
                 try:
-                    if element.cbImport.isChecked():
-                        checkedImageCount = checkedImageCount + 1
-                except:
-                    print("element.cbImport.isChecked() => pb")
-
-            self.widget.initUpload(checkedImageCount)
-
-            if self.checkThreadTimer == None:
-                self.checkThreadTimer = QTimer()
-            self.checkThreadTimer.stop()
-            self.checkThreadTimer.setInterval(TIMESTAMP_STATUSBAR)
-            self.checkThreadTimer.timeout.connect(self.updateStatusBar)
-            self.checkThreadTimer.start(TIMESTAMP_STATUSBAR)
-
-            print("""For each image""")
-            self.widget.currentImageIndex = 0
-
-            for element in self.widget._currentUpload:
-                if element.cbImport.isChecked():
-                    print("for element in self.widget._currentUpload:")
-                    path = self.widget.currentDirectoryPath
-                    session = self.S
-                    index = self.widget.currentImageIndex
-
+                    if element.cb_import.isChecked():
+                        checked_image_count = checked_image_count + 1
+                except ValueError:
+                    print("element.cb_import.isChecked() => pb")
+            self.widget.init_upload(checked_image_count)
+            if self.check_thread_timer == None:
+                self.check_thread_timer = QTimer()
+            self.check_thread_timer.stop()
+            self.check_thread_timer.setInterval(TIMESTAMP_STATUSBAR)
+            self.check_thread_timer.timeout.connect(self.update_status_bar)
+            self.check_thread_timer.start(TIMESTAMP_STATUSBAR)
+            self.widget.current_image_index = 0
+            for element in self.widget.current_upload:
+                if element.cb_import.isChecked():
+                    print("for element in self.widget.current_upload:")
+                    path = self.widget.current_directory_path
+                    session = self.session
+                    index = self.widget.current_image_index
                     thread = QThread()
                     self.widget.threads.append(thread)
                     process = ProcessImageUpload(element, self.widget, path, session, index)
                     self.widget.workers.append(process)
                     self.widget.workers[index].moveToThread(self.widget.threads[index])
                     self.widget.threads[index].started.connect(self.widget.workers[index].process)
-                    self.widget.currentImageIndex = self.widget.currentImageIndex + 1
-
+                    self.widget.current_image_index = self.widget.current_image_index + 1
             self.widget.threads[0].start()
-
-        except:
+        except ValueError:
             traceback.print_exc()
 
-    def updateStatusBar(self):
-        if not self.widget.updateUploadingStatus():
-            self.checkThreadTimer.stop()
+
+    '''
+        def update_status_bar
+    '''
+    def update_status_bar(self):
+        if not self.widget.update_uploading_status():
+            self.check_thread_timer.stop()
 
