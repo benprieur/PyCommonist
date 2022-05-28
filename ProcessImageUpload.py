@@ -67,7 +67,14 @@ class ProcessImageUpload(QObject):
             file = {'file':(file_name, open(FILE_PATH, 'rb'), 'multipart/form-data')}
             http_ret = self.session.post(URL, files=file, data=params_4)
             print(http_ret)
-            result_upload_image = http_ret.json()['upload']['result']
+            if 'upload' in http_ret.json():
+                result_upload_image = http_ret.json()['upload']['result']
+            else:
+                result_upload_image = ""
+                element.cb_import.setChecked(False)
+                self.widget.set_upload_status(False)
+                element.lbl_upload_result.setText("Failed")
+                return
             print(result_upload_image)
             element.lbl_upload_result.setText(result_upload_image)
             self.widget.set_upload_status(True)

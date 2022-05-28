@@ -210,6 +210,7 @@ class PyCommonist(QWidget):
             if hasattr(self, 'current_upload') is False:
                 self.btn_import.setEnabled(True)
                 return
+            print("Bug BPR " + str(len(self.current_upload)))
             if len(self.current_upload) == 0:
                 self.btn_import.setEnabled(True)
                 return
