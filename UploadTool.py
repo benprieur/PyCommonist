@@ -69,6 +69,7 @@ class UploadTool:
             print(http_ret.content)
             print(http_ret.json()['clientlogin']['status'])
             if http_ret.json()['clientlogin']['status'] != 'PASS':
+                self.widget.btn_import.setEnabled(True)
                 self.widget.set_status("Client login failed")
                 return
             checked_image_count = 0

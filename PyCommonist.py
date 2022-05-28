@@ -57,7 +57,6 @@ class PyCommonist(QWidget):
 
     def __init__(self):
         super(PyCommonist, self).__init__()
-        current_directory_path = ''
         self.init_ui()
         self.threads = []
         self.workers = []
@@ -207,9 +206,12 @@ class PyCommonist(QWidget):
     '''
     def on_click_import(self):
         try:
+            self.btn_import.setEnabled(False)
             if hasattr(self, 'current_upload') is False:
+                self.btn_import.setEnabled(True)
                 return
             if len(self.current_upload) == 0:
+                self.btn_import.setEnabled(True)
                 return
             empty_descriptions = 0 # verify all fields are set
             empty_categories = 0
@@ -234,7 +236,7 @@ class PyCommonist(QWidget):
                 self.tool = UploadTool()
             self.tool.upload_images(self)
         except ValueError:
-            #KeyboardInterrupt
+            self.btn_import.setEnabled(True)
             traceback.print_exc()
 
     '''
@@ -592,3 +594,6 @@ class PyCommonist(QWidget):
                 message = message + "; "
             message = message + "{} upload(s) failed!".format(failures)
         self.set_status(message)
+        self.btn_import.setEnabled(True)
+
+        

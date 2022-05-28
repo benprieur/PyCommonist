@@ -128,6 +128,7 @@ class SuggestCompletion(QObject):
     class SearchBox
 '''
 class SearchBox(QLineEdit):
+
     def __init__(self, parent=None):
         super(SearchBox, self).__init__(parent)
         self.completer = SuggestCompletion(self)
