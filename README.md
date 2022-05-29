@@ -10,7 +10,7 @@ To install and run it:
 * `pip install -r requirements.txt`
 * `python3 main.py`
 
-![Screenshot](img/screenshot0.png "Screenshot")
+![Screenshot](img/screenshot V0.2 2022-05-29 "Screenshot vgit 0.2")
 
 
 [Project history (in French)](History.md)
