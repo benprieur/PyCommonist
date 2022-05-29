@@ -29,6 +29,6 @@ STYLE_STATUSBAR = "border: 1px solid black;"
 TIMESTAMP_STATUSBAR = 2000 # 2 seconds
 IMPORT_BUTTON_NO_IMAGE="No selected image"
 IMPORT_BUTTON_N_IMAGES="Import {0} image(s)"
-PYCOMMONIST_VERSION='0.2'
+PYCOMMONIST_VERSION='0.3'
 
 
