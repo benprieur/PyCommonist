@@ -22,11 +22,11 @@ class LeftFrameConfig:
     license = _config["license"]
     language = _config["language"]
 
+
 '''
     class RightFrameConfig
 '''
 class RightFrameConfig:
     _config = load_config_as_dict("config/general.yaml")["right_frame"]
-
     default_image_sort = _config["default_image_sort"]
 

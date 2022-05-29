@@ -15,10 +15,8 @@ from constants import URL
 '''
 class ProcessImageUpload(QObject):
 
-    '''
-        def __init__
-    '''
     def __init__(self, element, widget, path, session, index):
+        """ __init__ """
         QObject.__init__(self)
         self.element = element
         self.widget = widget
@@ -26,12 +24,9 @@ class ProcessImageUpload(QObject):
         self.session = session
         self.index = index
 
-
-    '''
-        def process
-    '''
     @pyqtSlot()
     def process(self):
+        """ process """
         print("process is running")
         print(str(QThread.currentThreadId().__int__()))
         self.widget.clear_status()
@@ -85,11 +80,8 @@ class ProcessImageUpload(QObject):
             self.widget.set_upload_status(False)
         self.run_next_thread()
 
-
-    '''
-        run_next_thread
-    '''
     def run_next_thread(self):
+        """ run_next_thread """
         if self.index < self.widget.number_images_checked - 1:
             print("Start next process")
             timer = QTimer()
@@ -100,10 +92,8 @@ class ProcessImageUpload(QObject):
             print("Call Clean threads")
             self.widget.clean_threads()
 
-    '''
-        get_text
-    '''
     def get_text(self, element, widget):
+        """ get_text """
         location = element.lineEditLocation.text()
         if location != '':
             location = location.replace(",", "|")

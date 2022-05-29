@@ -14,8 +14,7 @@ from PyQt5.QtNetwork import QNetworkAccessManager
 from PyQt5.QtNetwork import QNetworkRequest
 from PyQt5.QtNetwork import QNetworkReply
 from PyQt5.QtGui import QPalette
-from constants import WIDTH_WIDGET_RIGHT , \
-                      WIDTH_WIDGET
+from constants import WIDTH_WIDGET_RIGHT
 
 
 ''' 
@@ -24,6 +23,7 @@ from constants import WIDTH_WIDGET_RIGHT , \
 class SuggestCompletion(QObject):
 
     def __init__(self, parent):
+        """ __init__ """
         QObject.__init__(self, parent)
         self.parent = parent
         self.editor = parent
@@ -52,6 +52,7 @@ class SuggestCompletion(QObject):
         self.network_manager.finished.connect(self.handle_network_data)
 
     def eventFilter(self, obj, event):
+        """ eventFilter """
         if obj != self.popup:
             return False
         if event.type() == QEvent.MouseButtonPress:
@@ -78,6 +79,7 @@ class SuggestCompletion(QObject):
         return False
 
     def show_completion(self, choices):
+        """ show_completion """
         if not choices:
             return
         palette = self.editor.palette()
@@ -95,6 +97,7 @@ class SuggestCompletion(QObject):
         self.popup.show()
 
     def done_completion(self):
+        """ done_completion """
         self.timer.stop()
         self.popup.hide()
         self.editor.setFocus()
@@ -104,6 +107,7 @@ class SuggestCompletion(QObject):
             QMetaObject.invokeMethod(self.editor, 'returnPressed')
 
     def auto_suggest(self):
+        """ auto_suggest """
         text = self.editor.text()
         req = "https://commons.wikimedia.org/w/api.php?action=query&list=prefixsearch&format=json"
         req += "&pssearch=" + "Category:" + text
@@ -111,9 +115,11 @@ class SuggestCompletion(QObject):
         self.network_manager.get(QNetworkRequest(url))
 
     def prevent_suggest(self):
+        """ prevent_suggest """
         self.timer.stop()
 
     def handle_network_data(self, network_reply):
+        """ handle_network_data """
         choices = []
         if network_reply.error() == QNetworkReply.NoError:
             data = json.loads(network_reply.readAll().data())
@@ -130,6 +136,7 @@ class SuggestCompletion(QObject):
 class SearchBox(QLineEdit):
 
     def __init__(self, parent=None):
+        """ __init__ """
         super(SearchBox, self).__init__(parent)
         self.completer = SuggestCompletion(self)
         self.setFixedWidth(round(WIDTH_WIDGET_RIGHT / 2))

@@ -3,11 +3,8 @@
 '''
 import os
 
-
-'''
-    get_files
-'''
-def get_files(path):    
+def get_files(path):
+    """ get_files """ 
     if os.path.exists(path):
         os.chdir(path)
         files = (os.listdir(path))
@@ -19,3 +16,4 @@ def get_files(path):
             for key, value in result.items():
                 items[key] = value
     return items
+    

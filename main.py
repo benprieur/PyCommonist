@@ -1,14 +1,13 @@
 import sys
 from PyQt5.QtWidgets import QApplication
-from PyCommonist import PyCommonist
 from PyQt5.QtGui import QIcon
-
+from PyCommonist import PyCommonist
 
 def main():
+    """ main """ 
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon('img/Logo PyCommonist.svg'))
-
-    ex = PyCommonist()
+    instance = PyCommonist()
     sys.exit(app.exec_())
 
 

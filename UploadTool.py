@@ -23,10 +23,8 @@ class UploadTool:
     login = ""
     password = ""
 
-    '''
-        def upload_images
-    '''
     def upload_images(self, w):
+        """ upload_images """
         try:
             self.widget = w
             self.widget.clear_status()
@@ -104,11 +102,8 @@ class UploadTool:
         except ValueError:
             traceback.print_exc()
 
-
-    '''
-        def update_status_bar
-    '''
     def update_status_bar(self):
+        """ update_status_bar """
         if not self.widget.update_uploading_status():
             self.check_thread_timer.stop()
 
