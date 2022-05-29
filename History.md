@@ -24,7 +24,10 @@
   * affichage du nombre d'images traitées pendant l'upload
 * 10 mai 2022 : User:Romainbar
   * affichage du nombre d'images prêtes à être importées dans le bouton d'import
-* 27 mai 2022 : User:Benoît Prieur
+* 28 mai 2022 : User:Benoît Prieur
   * reprise de la mise en forme selon PEP8 (pas parfait encore, pylint sous VS Code)
   * ajout d'une version de PyCommonist
   * augmentation de la largeur de l'auto-complétion
+* 29 mai 2022 : User:Benoît Prieur
+  * suite PEP8
+  * contrôle de la non-utilisation du nom de fichier (localement et distant, sur Wikimedia Commons)
