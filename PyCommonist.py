@@ -131,17 +131,22 @@ class PyCommonist(QWidget):
                         print("A problem with EXIF data reading")
                     dt_timestamp = None
                     try:
-                        dt_timestamp = tags['EXIF DateTimeOriginal'] # 2021:01:13 14:48:44
+                        if 'EXIF DateTimeOriginal' in tags:
+                            dt_timestamp = tags['EXIF DateTimeOriginal'] # 2021:01:13 14:48:44
                     except ValueError:
                         print("A problem with EXIF data reading")
                     print (dt_timestamp)
-                    dt_timestamp = str(dt_timestamp)
-                    index_space = dt_timestamp.find(" ")
-                    current_exif_image.date = dt_timestamp[0:index_space].replace(":", "-")
-                    current_exif_image.time = dt_timestamp[index_space+1:]
-
                     self.exif_image_collection.append(current_exif_image)
-                    print(current_exif_image)
+                    if dt_timestamp != None:
+                        dt_timestamp = str(dt_timestamp)
+                        index_space = dt_timestamp.find(" ")
+                        current_exif_image.date = dt_timestamp[0:index_space].replace(":", "-")
+                        current_exif_image.time = dt_timestamp[index_space+1:]
+                        print(current_exif_image)
+                    else:
+                        current_exif_image.date = ''
+                        current_exif_image.time = ''
+                        print(current_exif_image)
             self.generate_right_frame()
         except ValueError:
             print("Something bad happened inside loadMediaFromCurrentFolder function")

@@ -31,12 +31,15 @@ class UploadTool:
             self.login = self.widget.line_edit_user_name.text()
             self.password = self.widget.line_edit_password.text()
             if len(self.login) == 0:
+                self.widget.btn_import.setEnabled(True)
                 self.widget.set_status("Login is not filled")
                 return
             if len(self.password) == 0:
+                self.widget.btn_import.setEnabled(True)
                 self.widget.set_status("Password is not filled")
                 return
             if len(self.widget.current_upload) == 0:
+                self.widget.btn_import.setEnabled(True)
                 self.widget.set_status("No image selected for upload")
                 return
             print("Clean lists")
