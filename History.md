@@ -31,3 +31,6 @@
 * 29 mai 2022 : User:Benoît Prieur
   * suite PEP8
   * contrôle de la non-utilisation du nom de fichier (localement et distant, sur Wikimedia Commons)
+* 29 mai 2022 : User:Romainbar
+  * affichage de l'image dans Preview (macOS) en cliquant dessus
+

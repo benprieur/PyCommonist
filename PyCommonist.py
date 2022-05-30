@@ -8,9 +8,9 @@ import requests
 from os.path import isfile
 from os.path import join
 import re
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSize, QProcess
 from PyQt5.Qt import QDir
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QHBoxLayout, \
     QFrame, \
     QSplitter, \
@@ -256,6 +256,12 @@ class PyCommonist(QWidget):
         except ValueError:
             self.btn_import.setEnabled(True)
             traceback.print_exc()
+
+    def on_click_preview_image(self, image_widget):
+        """ Open clicked thumbnail with Preview """
+        process = QProcess()
+        process.start('open', ['-a', 'Preview', image_widget.full_file_path])
+        process.waitForFinished(-1)
 
     def clean_threads(self):
         """ clean_threads """
@@ -504,13 +510,17 @@ class PyCommonist(QWidget):
             local_left_layout.addRow(lbl_date_time, line_edit_date_time)
             local_widget.line_edit_date_time = line_edit_date_time
             copy_action.triggered.connect(lambda state, w=local_widget: self.copy_image_info(w))
-            paste_action.triggered.connect(lambda state, w=local_widget: self.pasteImageInfo(w, False))
-            paste_with_numbering_action.triggered.connect(lambda state, w=local_widget: self.pasteImageInfo(w, True))
-            label = QLabel()
+            paste_action.triggered.connect(lambda state, w=local_widget: self.paste_image_info(w, False))
+            paste_with_numbering_action.triggered.connect(lambda state, w=local_widget: self.paste_image_info(w, True))
+            thumbnail = QPushButton()
             pixmap = QPixmap(current_exif_image.full_file_path)
-            pixmap_resize = pixmap.scaledToWidth(IMAGE_DIMENSION, Qt.FastTransformation)
-            label.setPixmap(pixmap_resize)
-            local_layout.addWidget(label)
+            pixmap_resized = pixmap.scaledToWidth(IMAGE_DIMENSION, Qt.FastTransformation)
+            pixmap_icon = QIcon(pixmap_resized)
+            thumbnail.setFlat(True)
+            thumbnail.setIcon(pixmap_icon)
+            thumbnail.setIconSize(QSize(IMAGE_DIMENSION, IMAGE_DIMENSION))
+            thumbnail.clicked.connect(lambda state, w=local_widget: self.on_click_preview_image(w))
+            local_layout.addWidget(thumbnail)
             local_widget.full_file_path = current_exif_image.full_file_path
             self.update()
 
