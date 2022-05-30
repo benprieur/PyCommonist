@@ -1,6 +1,8 @@
 # PyCommonist
 
-PyCommonist is coded in Python/PyQt5. It is inspired by excellent software [Commonist](https://commons.wikimedia.org/wiki/Commons:Commonist/fr). Its usage is to easily upload images to Wikimedia Commons. Current version is 0.2 (May 2022).
+PyCommonist is coded in Python/PyQt5. It is inspired by excellent software [Commonist](https://commons.wikimedia.org/wiki/Commons:Commonist/fr). Its usage is to easily upload images to Wikimedia Commons. 
+
+Current version is 1.0 (30 May 2022).
 
 To install and run it:
 * `git clone https://github.com/benprieur/PyCommonist.git`
