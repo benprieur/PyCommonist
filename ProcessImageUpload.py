@@ -1,6 +1,7 @@
 '''
     ProcessImageUpload.py
 '''
+import os.path
 import traceback
 from PyQt5.QtCore import QThread
 from PyQt5.QtCore import QObject
@@ -59,7 +60,12 @@ class ProcessImageUpload(QObject):
             "text": text
         }
         try:
-            file = {'file':(file_name, open(FILE_PATH, 'rb'), 'multipart/form-data')}
+            if os.path.isfile(FILE_PATH):
+                file = {'file':(file_name, open(FILE_PATH, 'rb'), 'multipart/form-data')}
+            else:
+                element.lbl_upload_result.setText("FAILED")
+                self.widget.set_upload_status(False)
+                return
             http_ret = self.session.post(URL, files=file, data=params_4)
             print(http_ret)
             if 'upload' in http_ret.json():
