@@ -33,4 +33,6 @@
   * contrôle de la non-utilisation du nom de fichier (localement et distant, sur Wikimedia Commons)
 * 29 mai 2022 : User:Romainbar
   * affichage de l'image dans Preview (macOS) en cliquant dessus
+* 6 juin 2022 : User:Romainbar
+  * menu contextuel d'une image: option pour la supprimer de la liste
 

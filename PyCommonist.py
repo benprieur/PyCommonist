@@ -10,7 +10,7 @@ from os.path import join
 import re
 from PyQt5.QtCore import Qt, QSize, QProcess
 from PyQt5.Qt import QDir
-from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtGui import QPixmap, QIcon, QCursor
 from PyQt5.QtWidgets import QHBoxLayout, \
     QFrame, \
     QSplitter, \
@@ -263,6 +263,29 @@ class PyCommonist(QWidget):
         process.start('open', ['-a', 'Preview', image_widget.full_file_path])
         process.waitForFinished(-1)
 
+    def on_thumbnail_context_menu(self, image_widget):
+        """ Open context menu on thumbnail right-click """
+        menu = QMenu()
+        removeAction = menu.addAction('Remove Image From List')
+
+        action = menu.exec_(QCursor.pos())
+        full_file_path = image_widget.full_file_path
+        if action == removeAction:
+            for i in range(self.scroll_layout.count()):
+                item = self.scroll_layout.itemAt(i)
+                widget = item.widget()
+                if widget.full_file_path == full_file_path:
+                    # delete widget to remove it from list
+                    widget.deleteLater()
+                    # also remove image from collection and widget from upload list
+                    removedImage = next((e for e in self.exif_image_collection if e.full_file_path == full_file_path), None)
+                    self.exif_image_collection.remove(removedImage)
+                    removedWidget = next((w for w in self.current_upload if w.full_file_path == full_file_path), None)
+                    self.current_upload.remove(removedWidget)
+                    # refresh import button
+                    self.on_toggle_import()
+                    break
+
     def clean_threads(self):
         """ clean_threads """
         try:
@@ -426,19 +449,26 @@ class PyCommonist(QWidget):
             child = layout.takeAt(0)
             if child.widget():
                 child.widget().deleteLater()
+
+        # sort images using selected order
         if self.image_sort_order == "exif_date":
             self.exif_image_collection.sort(key=lambda image: image.date + ' ' + image.time)
             self.btn_toggle_image_sort.setText("Images sorted by date")
         else:
             self.exif_image_collection.sort(key=lambda image: image.filename)
             self.btn_toggle_image_sort.setText("Images sorted by name")
+
+        # build widget for each image
         for current_exif_image in self.exif_image_collection:
+            # create widget and its layout
             local_widget = ImageUpload()
             local_layout = QHBoxLayout()
             local_layout.setAlignment(Qt.AlignRight)
             local_widget.setLayout(local_layout)
             self.scroll_layout.addWidget(local_widget)
             self.current_upload.append(local_widget)
+
+            # configure widget
             local_left_widget = QWidget()
             local_left_layout = QFormLayout()
             local_left_layout.setAlignment(Qt.AlignRight)
@@ -512,6 +542,8 @@ class PyCommonist(QWidget):
             copy_action.triggered.connect(lambda state, w=local_widget: self.copy_image_info(w))
             paste_action.triggered.connect(lambda state, w=local_widget: self.paste_image_info(w, False))
             paste_with_numbering_action.triggered.connect(lambda state, w=local_widget: self.paste_image_info(w, True))
+
+            # push button displaying thumbnail
             thumbnail = QPushButton()
             pixmap = QPixmap(current_exif_image.full_file_path)
             pixmap_resized = pixmap.scaledToWidth(IMAGE_DIMENSION, Qt.FastTransformation)
@@ -522,6 +554,10 @@ class PyCommonist(QWidget):
             thumbnail.clicked.connect(lambda state, w=local_widget: self.on_click_preview_image(w))
             local_layout.addWidget(thumbnail)
             local_widget.full_file_path = current_exif_image.full_file_path
+            # push button context menu
+            thumbnail.setContextMenuPolicy(Qt.CustomContextMenu)
+            thumbnail.customContextMenuRequested.connect(lambda state, w=local_widget: self.on_thumbnail_context_menu(w))
+
             self.update()
 
     def copy_image_info(self, image_widget):
