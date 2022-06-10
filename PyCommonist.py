@@ -46,8 +46,13 @@ from constants import VERTICAL_TOP_SIZE, \
     STYLE_IMPORT_BUTTON, \
     STYLE_IMPORT_STATUS, \
     STYLE_STATUSBAR, \
+    CHECK_BUTTON_ALL, \
+    CHECK_BUTTON_NONE, \
     IMPORT_BUTTON_NO_IMAGE, \
     IMPORT_BUTTON_N_IMAGES, \
+    RELOAD_BUTTON, \
+    SORT_BUTTON_BY_DATE, \
+    SORT_BUTTON_BY_NAME, \
     PYCOMMONIST_VERSION
 
 
@@ -425,13 +430,13 @@ class PyCommonist(QWidget):
         import_command_widget = QWidget()
         import_command_layout = QHBoxLayout()
         import_command_widget.setLayout(import_command_layout)
-        self.btn_toggle_image_sort = QPushButton("Images sorted by name")
+        self.btn_toggle_image_sort = QPushButton(SORT_BUTTON_BY_NAME)
         self.btn_toggle_image_sort.clicked.connect(self.btn_toggle_image_sort_order)
-        self.btn_import_check_none = QPushButton("Check None")
+        self.btn_import_check_none = QPushButton(CHECK_BUTTON_NONE)
         self.btn_import_check_none.clicked.connect(self.btn_select_no_image)
-        self.btn_import_check_all = QPushButton("Check All")
+        self.btn_import_check_all = QPushButton(CHECK_BUTTON_ALL)
         self.btn_import_check_all.clicked.connect(self.btn_select_all_images)
-        self.btn_reload_folder = QPushButton("Reload Folder")
+        self.btn_reload_folder = QPushButton(RELOAD_BUTTON)
         self.btn_reload_folder.clicked.connect(self.load_media_from_current_folder)
         import_command_layout.addWidget(self.btn_toggle_image_sort)
         import_command_layout.addWidget(self.btn_import_check_none)
@@ -450,13 +455,15 @@ class PyCommonist(QWidget):
             if child.widget():
                 child.widget().deleteLater()
 
-        # sort images using selected order
+        # sort images using selected order and update button with image count
+        image_count = len(self.exif_image_collection)
+        formatted_image_count = " ({})".format(image_count)
         if self.image_sort_order == "exif_date":
             self.exif_image_collection.sort(key=lambda image: image.date + ' ' + image.time)
-            self.btn_toggle_image_sort.setText("Images sorted by date")
+            self.btn_toggle_image_sort.setText(SORT_BUTTON_BY_DATE + formatted_image_count)
         else:
             self.exif_image_collection.sort(key=lambda image: image.filename)
-            self.btn_toggle_image_sort.setText("Images sorted by name")
+            self.btn_toggle_image_sort.setText(SORT_BUTTON_BY_NAME + formatted_image_count)
 
         # build widget for each image
         for current_exif_image in self.exif_image_collection:

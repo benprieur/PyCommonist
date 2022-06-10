@@ -35,4 +35,6 @@
   * affichage de l'image dans Preview (macOS) en cliquant dessus
 * 6 juin 2022 : User:Romainbar
   * menu contextuel d'une image: option pour la supprimer de la liste
+* 10 juin 2022 : User:Romainbar
+  * ajout du nombre d'images dans le bouton de tri
 
