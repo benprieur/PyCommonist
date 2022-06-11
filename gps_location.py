@@ -37,7 +37,6 @@ def get_exif_location(exif_data):
     if str(gps_direction_ref) == "T": # Real North
         try:
             tab = str(gps_direction).split('/')
-            print(tab)
             tab[0] = int(tab[0])
             tab[1] = int(tab[1])
             heading = tab[0]/tab[1]

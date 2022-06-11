@@ -42,11 +42,10 @@ class UploadTool:
                 self.widget.btn_import.setEnabled(True)
                 self.widget.set_status("No image selected for upload")
                 return
-            print("Clean lists")
             self.widget.threads.clear()
             self.widget.workers.clear()
             self.session = requests.Session()
-            print(self.session)
+            print("UploadTool.py-40 session: " + str(self.session))
             params_1 = {
                 "action": "query",
                 "meta": "tokens",
@@ -54,10 +53,8 @@ class UploadTool:
                 "format": "json"
             }
             http_ret = self.session.get(url=URL, params=params_1)
-            data = http_ret.json()
-            print(data)
-            login_token = data["query"]["tokens"]["logintoken"]
-            print(login_token)
+            print("UploadTool.py-50 http ret (1): " + str(http_ret.json()))
+            login_token = http_ret.json()["query"]["tokens"]["logintoken"]
             params_2 = {
                 'action': "clientlogin",
                 'username': self.login,
@@ -67,8 +64,7 @@ class UploadTool:
                 'format': "json"
             }
             http_ret = self.session.post(URL, data=params_2)
-            print(http_ret.content)
-            print(http_ret.json()['clientlogin']['status'])
+            print("UploadTool.py-60 http ret (2): " + str(http_ret.json()))
             if http_ret.json()['clientlogin']['status'] != 'PASS':
                 self.widget.btn_import.setEnabled(True)
                 self.widget.set_status("Client login failed")
@@ -79,9 +75,9 @@ class UploadTool:
                     if element.cb_import.isChecked():
                         checked_image_count = checked_image_count + 1
                 except ValueError:
-                    print("element.cb_import.isChecked() => pb")
+                    print("UploadTool.pu-70: element.cb_import.isChecked(")
             self.widget.init_upload(checked_image_count)
-            if self.check_thread_timer == None:
+            if self.check_thread_timer is None:
                 self.check_thread_timer = QTimer()
             self.check_thread_timer.stop()
             self.check_thread_timer.setInterval(TIMESTAMP_STATUSBAR)
@@ -90,7 +86,6 @@ class UploadTool:
             self.widget.current_image_index = 0
             for element in self.widget.current_upload:
                 if element.cb_import.isChecked():
-                    print("for element in self.widget.current_upload:")
                     path = self.widget.current_directory_path
                     session = self.session
                     index = self.widget.current_image_index
@@ -109,4 +104,3 @@ class UploadTool:
         """ update_status_bar """
         if not self.widget.update_uploading_status():
             self.check_thread_timer.stop()
-

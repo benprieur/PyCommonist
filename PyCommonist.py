@@ -94,9 +94,8 @@ class PyCommonist(QWidget):
         try:
             current_index = selected.indexes()[0]
             self.current_directory_path = self.model_tree.filePath(current_index)
-            print(self.current_directory_path)
-        except:
-            print("Something bad happened inside on_select_folder function")
+            print("PyCommonist.py-90 directory: " + str(self.current_directory_path))
+        except ValueError:
             traceback.print_exc()
 
         self.load_media_from_current_folder()
@@ -125,7 +124,7 @@ class PyCommonist(QWidget):
                         f_exif = open(full_file_path, 'rb')
                         tags = exifread.process_file(f_exif)
                     except ValueError:
-                        print("A problem with EXIF data reading: ")
+                        print("PyCommonist.py-120: problem EXIF data reading.")
                     '''
                         'GPS GPSLatitude', 'GPS GPSLongitude'] # [45, 49, 339/25] [4, 55, 716/25]
                         'GPS GPSImgDirection' 'GPS GPSLatitudeRef'
@@ -133,13 +132,13 @@ class PyCommonist(QWidget):
                     try:
                         current_exif_image.lat, current_exif_image.long, current_exif_image.heading = get_exif_location(tags)
                     except ValueError:
-                        print("A problem with EXIF data reading")
+                        print("PyCommonist.py-130: problem EXIF data reading.")
                     dt_timestamp = None
                     try:
                         if 'EXIF DateTimeOriginal' in tags:
                             dt_timestamp = tags['EXIF DateTimeOriginal'] # 2021:01:13 14:48:44
                     except ValueError:
-                        print("A problem with EXIF data reading")
+                        print("PyCommonist.py-140: problem EXIF data reading.")
                     print (dt_timestamp)
                     self.exif_image_collection.append(current_exif_image)
                     if dt_timestamp != None:
@@ -147,14 +146,12 @@ class PyCommonist(QWidget):
                         index_space = dt_timestamp.find(" ")
                         current_exif_image.date = dt_timestamp[0:index_space].replace(":", "-")
                         current_exif_image.time = dt_timestamp[index_space+1:]
-                        print(current_exif_image)
                     else:
                         current_exif_image.date = ''
                         current_exif_image.time = ''
-                        print(current_exif_image)
             self.generate_right_frame()
         except ValueError:
-            print("Something bad happened inside loadMediaFromCurrentFolder function")
+            print("Something bad happened inside loadMediaFromCurrentFolder function.")
             traceback.print_exc()
 
     def btn_toggle_image_sort_order(self):
@@ -209,7 +206,6 @@ class PyCommonist(QWidget):
             if hasattr(self, 'current_upload') is False:
                 self.btn_import.setEnabled(True)
                 return
-            print("Bug BPR " + str(len(self.current_upload)))
             if len(self.current_upload) == 0: # No image is selected to be uploaded
                 self.btn_import.setEnabled(True)
                 return
@@ -228,7 +224,7 @@ class PyCommonist(QWidget):
                 file_name = element.line_edit_file_name.text()
                 file_names.append(file_name)
             if self.is_unique_values_array(file_names) is False:  # Local file names ok?
-                print("At least two files locally have the same name")
+                print("PyCommonist.py-220: at least two files locally have the same name.")
                 self.btn_import.setEnabled(True)
                 message = QMessageBox()
                 message.setWindowTitle('Problem with local file names')
@@ -239,7 +235,7 @@ class PyCommonist(QWidget):
                 response = requests.get('https://commons.wikimedia.org/wiki/File:' + file_name)
                 if response.status_code == 200:
                     self.btn_import.setEnabled(True)
-                    print("File name already exists on Wikimedia Commons")
+                    print("PyCommonist.py-230: file name already exists on Wikimedia Commons.")
                     message = QMessageBox()
                     message.setWindowTitle('File name already exists on Wikimedia Commons')
                     message.setText(file_name + ': file name already exists on Wikimedia Commons')
@@ -294,14 +290,12 @@ class PyCommonist(QWidget):
     def clean_threads(self):
         """ clean_threads """
         try:
-            print("Clean threads properly")
-
             for thread in self.threads:
-                print("Current thread proper deletion")
+                print("PyCommonist.py-290: current thread proper deletion.")
                 thread.quit()
                 thread.wait()
         except ValueError:
-            print("A problem with clean_threads")
+            print("PyCommonist.py-290: problem with cleaning threads.")
 
     def generate_splitter(self):
         """ generate_splitter """
@@ -448,8 +442,6 @@ class PyCommonist(QWidget):
         """ generate_right_frame """
         self.current_upload = []
         layout = self.scroll_layout
-        print(layout)
-        print(layout.count())
         while layout.count():
             child = layout.takeAt(0)
             if child.widget():

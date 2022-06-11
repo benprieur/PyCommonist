@@ -28,8 +28,7 @@ class ProcessImageUpload(QObject):
     @pyqtSlot()
     def process(self):
         """ process """
-        print("process is running")
-        print(str(QThread.currentThreadId().__int__()))
+        print("ImageUpload.py-30: process is running")
         self.widget.clear_status()
         element = self.element
         path = self.path
@@ -45,13 +44,10 @@ class ProcessImageUpload(QObject):
             "format":"json"
         }
         http_ret = self.session.get(url=URL, params=params_3)
-        data = http_ret.json()
-        print(data)
-        CSRF_TOKEN = data["query"]["tokens"]["csrftoken"]
-        print(CSRF_TOKEN)
+        print("ProcessImageUpload-40 http ret (3): " + str(http_ret.json()))
+        CSRF_TOKEN = http_ret.json()["query"]["tokens"]["csrftoken"]
         # Step 4: Post request to upload a file directly
         try:
-            print("Bug dot:" + FILE_PATH)
             if os.path.isfile(FILE_PATH):
                 file = {'file':(file_name, open(FILE_PATH, 'rb'), 'multipart/form-data')}
             else:
@@ -73,7 +69,7 @@ class ProcessImageUpload(QObject):
                 element.lbl_upload_result.setText("FAILED")
                 self.widget.set_upload_status(False)
                 return
-            print("ProcessImageUpload.py-76 logical file name to be send: " + file_name)
+            print("ProcessImageUpload.py-70 logical file name to be send: " + str(file_name))
             params_4 = {
                 "action": "upload",
                 "filename": file_name,
@@ -84,8 +80,7 @@ class ProcessImageUpload(QObject):
                 "text": text
             }
             http_ret = self.session.post(URL, files=file, data=params_4)
-            print(http_ret)
-            print(http_ret.json())
+            print("ProcessImageUpload-83 http ret (4): " + str(http_ret.json()))
             if 'upload' in http_ret.json():
                 result_upload_image = http_ret.json()['upload']['result']
             else:
@@ -106,13 +101,11 @@ class ProcessImageUpload(QObject):
     def run_next_thread(self):
         """ run_next_thread """
         if self.index < self.widget.number_images_checked - 1:
-            print("Start next process")
             timer = QTimer()
             timer.setInterval(6) # To avoid a 502 error (first test ok with 10)
             timer.start()
             self.widget.threads[self.index + 1].start()
         elif self.index == self.widget.number_images_checked - 1:
-            print("Call Clean threads")
             self.widget.clean_threads()
 
     def get_text(self, element, widget):
@@ -121,8 +114,6 @@ class ProcessImageUpload(QObject):
         if location != '':
             location = location.replace(",", "|")
             location = '{{Location dec|''' + location + '''}}\n'''
-        print(widget.line_edit_categories.text())
-        print(element.line_edit_categories.text())
         cat_text = widget.line_edit_categories.text() + '|' + element.line_edit_categories.text()
         cat_text = cat_text.replace("| ", "|")
         cat_text = cat_text.replace(" | ", "|")
