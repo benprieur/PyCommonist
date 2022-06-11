@@ -50,24 +50,42 @@ class ProcessImageUpload(QObject):
         CSRF_TOKEN = data["query"]["tokens"]["csrftoken"]
         print(CSRF_TOKEN)
         # Step 4: Post request to upload a file directly
-        params_4 = {
-            "action": "upload",
-            "filename": file_name,
-            "format": "json",
-            "token": CSRF_TOKEN,
-            "ignorewarnings": 1,
-            "comment": "PyCommonist upload: " + file_name,
-            "text": text
-        }
         try:
+            print("Bug dot:" + FILE_PATH)
             if os.path.isfile(FILE_PATH):
                 file = {'file':(file_name, open(FILE_PATH, 'rb'), 'multipart/form-data')}
             else:
                 element.lbl_upload_result.setText("FAILED")
                 self.widget.set_upload_status(False)
                 return
+            # Manage dot in new filename (according physical file name)            
+            physical_array = FILE_PATH.split('.')
+            if len(physical_array) > 0:
+                physical_ext = physical_array[-1]
+                logical_array = file_name.split('.')
+                if len(logical_array) > 1:
+                    logical_ext = logical_array[-1]
+                    if logical_ext != physical_ext:
+                        file_name = str(file_name) + "." + str(physical_ext)
+                else:
+                    file_name = str(file_name) + "." + str(physical_ext)
+            else:
+                element.lbl_upload_result.setText("FAILED")
+                self.widget.set_upload_status(False)
+                return
+            print("ProcessImageUpload.py-76 logical file name to be send: " + file_name)
+            params_4 = {
+                "action": "upload",
+                "filename": file_name,
+                "format": "json",
+                "token": CSRF_TOKEN,
+                "ignorewarnings": 1,
+                "comment": "PyCommonist upload: " + file_name,
+                "text": text
+            }
             http_ret = self.session.post(URL, files=file, data=params_4)
             print(http_ret)
+            print(http_ret.json())
             if 'upload' in http_ret.json():
                 result_upload_image = http_ret.json()['upload']['result']
             else:
@@ -76,7 +94,6 @@ class ProcessImageUpload(QObject):
                 self.widget.set_upload_status(False)
                 element.lbl_upload_result.setText("Failed")
                 return
-            print(result_upload_image)
             element.lbl_upload_result.setText(result_upload_image)
             self.widget.set_upload_status(True)
             element.cb_import.setChecked(False)
