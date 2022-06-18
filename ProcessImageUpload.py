@@ -37,17 +37,17 @@ class ProcessImageUpload(QObject):
         file_name = element.line_edit_file_name.text()
         real_file_name = element.lbl_real_file_name.text()
         FILE_PATH = path + '/' + real_file_name
-        # Step 3: Obtain a CSRF token
-        params_3 = {
-            "action": "query",
-            "meta":"tokens",
-            "format":"json"
-        }
-        http_ret = self.session.get(url=URL, params=params_3)
-        print("ProcessImageUpload-40 http ret (3): " + str(http_ret.json()))
-        CSRF_TOKEN = http_ret.json()["query"]["tokens"]["csrftoken"]
-        # Step 4: Post request to upload a file directly
         try:
+            # Step 3: Obtain a CSRF token
+            query_tokens_params = {
+                "action": "query",
+                "meta":"tokens",
+                "format":"json"
+            }
+            http_ret = self.session.get(url=URL, params=query_tokens_params)
+            print("ProcessImageUpload-40 http ret (3): " + str(http_ret.json()))
+            CSRF_TOKEN = http_ret.json()["query"]["tokens"]["csrftoken"]
+            # Step 4: Post request to upload a file directly
             if os.path.isfile(FILE_PATH):
                 file = {'file':(file_name, open(FILE_PATH, 'rb'), 'multipart/form-data')}
             else:
@@ -92,7 +92,7 @@ class ProcessImageUpload(QObject):
             element.lbl_upload_result.setText(result_upload_image)
             self.widget.set_upload_status(True)
             element.cb_import.setChecked(False)
-        except ValueError:
+        except Exception:
             traceback.print_exc()
             element.lbl_upload_result.setText("FAILED")
             self.widget.set_upload_status(False)
