@@ -2,6 +2,7 @@
     ProcessImageUpload.py
 '''
 import os.path
+import re
 import traceback
 from PyQt5.QtCore import QThread
 from PyQt5.QtCore import QObject
@@ -128,7 +129,12 @@ class ProcessImageUpload(QObject):
         catFinalText = ''
         for category in categories:
             if category:
-                catFinalText = catFinalText + "[[Category:" + category + "]]\n"
+                # check whether it is a template (starts with {{, ends with }})
+                if re.match('^\{\{.*\}\}$', category):
+                    catFinalText = catFinalText + category + "\n"
+                else:
+                    # add brackets ([[Category:category]])
+                    catFinalText = catFinalText + "[[Category:" + category + "]]\n"
         description = widget.line_edit_description.toPlainText()  + element.line_edit_description.toPlainText()
         language = widget.line_edit_language.text()
         if language:
