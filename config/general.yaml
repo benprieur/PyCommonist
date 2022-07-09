@@ -1,9 +1,9 @@
 left_frame:
-    username:   "Benoît Prieur"
+    username:   "Username"
     source:     "{{own}}"
-    author:     "{{User:Benoît Prieur/Credit}}"
-    categories: "Photographs by Benoît Prieur|2022 images by Benoît Prieur|Auvergne-Rhône-Alpes photographs taken on 2022-05-27|Images of Pérouges by Benoît Prieur|2022 in Pérouges|May 2022 in Ain"
-    license:    "{{self|cc-by-sa-4.0}}"
+    author:     "Author"
+    categories: "July 2022 in Ain|2022 in Montluel"
+    license:    "{{self|cc-zero}"
     language:   "fr"
 
 right_frame:
