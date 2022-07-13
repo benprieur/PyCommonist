@@ -3,7 +3,7 @@ left_frame:
     source:     "{{own}}"
     author:     "Author"
     categories: "July 2022 in Ain|2022 in Montluel"
-    license:    "{{self|cc-zero}"
+    license:    "{{self|cc-zero}}"
     language:   "fr"
 
 right_frame:

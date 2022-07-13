@@ -87,7 +87,6 @@ class ProcessImageUpload(QObject):
             else:
                 result_upload_image = ""
                 element.cb_import.setChecked(False)
-                self.widget.set_upload_status(False)
                 element.lbl_upload_result.setText("Failed")
                 return
             element.lbl_upload_result.setText(result_upload_image)
