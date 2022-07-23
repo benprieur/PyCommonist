@@ -295,6 +295,8 @@ class PyCommonist(QWidget):
                 self.current_upload.remove(removedWidget)
                 # refresh import button
                 self.on_toggle_import()
+                # refresh sort button
+                self.update_sort_button()
                 break
 
 
@@ -449,6 +451,14 @@ class PyCommonist(QWidget):
         import_command_layout.addWidget(self.btn_reload_folder)
         self.layout_right.addWidget(import_command_widget)
 
+    def update_sort_button(self):
+        image_count = len(self.exif_image_collection)
+        formatted_image_count = " ({})".format(image_count)
+        if self.image_sort_order == "exif_date":
+            self.btn_toggle_image_sort.setText(SORT_BUTTON_BY_DATE + formatted_image_count)
+        else:
+            self.btn_toggle_image_sort.setText(SORT_BUTTON_BY_NAME + formatted_image_count)
+
     def generate_right_frame(self):
         """ generate_right_frame """
         self.current_upload = []
@@ -459,14 +469,11 @@ class PyCommonist(QWidget):
                 child.widget().deleteLater()
 
         # sort images using selected order and update button with image count
-        image_count = len(self.exif_image_collection)
-        formatted_image_count = " ({})".format(image_count)
         if self.image_sort_order == "exif_date":
             self.exif_image_collection.sort(key=lambda image: image.date + ' ' + image.time)
-            self.btn_toggle_image_sort.setText(SORT_BUTTON_BY_DATE + formatted_image_count)
         else:
             self.exif_image_collection.sort(key=lambda image: image.filename)
-            self.btn_toggle_image_sort.setText(SORT_BUTTON_BY_NAME + formatted_image_count)
+        self.update_sort_button()
 
         # build widget for each image
         for current_exif_image in self.exif_image_collection:
