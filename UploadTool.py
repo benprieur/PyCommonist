@@ -25,8 +25,8 @@ class UploadTool:
 
     def upload_images(self, w):
         """ upload_images """
+        self.widget = w
         try:
-            self.widget = w
             self.widget.clear_status()
             self.login = self.widget.line_edit_user_name.text()
             self.password = self.widget.line_edit_password.text()
@@ -83,20 +83,23 @@ class UploadTool:
             self.check_thread_timer.setInterval(TIMESTAMP_STATUSBAR)
             self.check_thread_timer.timeout.connect(self.update_status_bar)
             self.check_thread_timer.start(TIMESTAMP_STATUSBAR)
-            self.widget.current_image_index = 0
+
+            image_index = 0
             for element in self.widget.current_upload:
                 if element.cb_import.isChecked():
                     path = self.widget.current_directory_path
                     session = self.session
-                    index = self.widget.current_image_index
+                    index = image_index
                     thread = QThread()
                     self.widget.threads.append(thread)
                     process = ProcessImageUpload(element, self.widget, path, session, index)
                     self.widget.workers.append(process)
                     self.widget.workers[index].moveToThread(self.widget.threads[index])
                     self.widget.threads[index].started.connect(self.widget.workers[index].process)
-                    self.widget.current_image_index = self.widget.current_image_index + 1
-            self.widget.threads[0].start()
+                    image_index = image_index + 1
+
+            if image_index > 0:
+                self.widget.threads[0].start()
         except ValueError:
             traceback.print_exc()
 
