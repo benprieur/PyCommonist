@@ -81,6 +81,7 @@ class ProcessImageUpload(QObject):
                 "text": text
             }
             http_ret = self.session.post(URL, files=file, data=params_4)
+            print(str(http_ret))
             print("ProcessImageUpload-83 http ret (4): " + str(http_ret.json()))
             if 'upload' in http_ret.json():
                 result_upload_image = http_ret.json()['upload']['result']
