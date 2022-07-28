@@ -35,6 +35,7 @@ from ImageUpload import ImageUpload
 from config import LeftFrameConfig
 from config import RightFrameConfig
 from EXIFImage import EXIFImage
+from send2trash import send2trash
 
 from constants import VERTICAL_TOP_SIZE, \
     VERTICAL_BOTTOM_SIZE, \
@@ -192,6 +193,7 @@ class PyCommonist(QWidget):
             self.btn_import.setText(IMPORT_BUTTON_NO_IMAGE)
         else:
             self.btn_import.setText(IMPORT_BUTTON_N_IMAGES.format(selected_imports))
+            self.btn_import.setEnabled(True)
 
     def is_unique_values_array(self, mylist):
         """ is_unique_values_array """
@@ -268,25 +270,36 @@ class PyCommonist(QWidget):
     def on_thumbnail_context_menu(self, image_widget):
         """ Open context menu on thumbnail right-click """
         menu = QMenu()
+        deleteAction = menu.addAction('Move Image to Trash')
         removeAction = menu.addAction('Remove Image From List')
 
         action = menu.exec_(QCursor.pos())
-        full_file_path = image_widget.full_file_path
-        if action == removeAction:
-            for i in range(self.scroll_layout.count()):
-                item = self.scroll_layout.itemAt(i)
-                widget = item.widget()
-                if widget.full_file_path == full_file_path:
-                    # delete widget to remove it from list
-                    widget.deleteLater()
-                    # also remove image from collection and widget from upload list
-                    removedImage = next((e for e in self.exif_image_collection if e.full_file_path == full_file_path), None)
-                    self.exif_image_collection.remove(removedImage)
-                    removedWidget = next((w for w in self.current_upload if w.full_file_path == full_file_path), None)
-                    self.current_upload.remove(removedWidget)
-                    # refresh import button
-                    self.on_toggle_import()
-                    break
+        file_path = image_widget.full_file_path
+        if action == deleteAction:
+            send2trash(file_path)
+            self.remove_file_from_list(file_path)
+        elif action == removeAction:
+            self.remove_file_from_list(file_path)
+
+
+    def remove_file_from_list(self, file_path):
+        for i in range(self.scroll_layout.count()):
+            item = self.scroll_layout.itemAt(i)
+            widget = item.widget()
+            if widget.full_file_path == file_path:
+                # delete widget to remove it from list
+                widget.deleteLater()
+                # also remove image from collection and widget from upload list
+                removedImage = next((e for e in self.exif_image_collection if e.full_file_path == file_path), None)
+                self.exif_image_collection.remove(removedImage)
+                removedWidget = next((w for w in self.current_upload if w.full_file_path == file_path), None)
+                self.current_upload.remove(removedWidget)
+                # refresh import button
+                self.on_toggle_import()
+                # refresh sort button
+                self.update_sort_button()
+                break
+
 
     def clean_threads(self):
         """ clean_threads """
@@ -439,6 +452,14 @@ class PyCommonist(QWidget):
         import_command_layout.addWidget(self.btn_reload_folder)
         self.layout_right.addWidget(import_command_widget)
 
+    def update_sort_button(self):
+        image_count = len(self.exif_image_collection)
+        formatted_image_count = " ({})".format(image_count)
+        if self.image_sort_order == "exif_date":
+            self.btn_toggle_image_sort.setText(SORT_BUTTON_BY_DATE + formatted_image_count)
+        else:
+            self.btn_toggle_image_sort.setText(SORT_BUTTON_BY_NAME + formatted_image_count)
+
     def generate_right_frame(self):
         """ generate_right_frame """
         self.current_upload = []
@@ -449,14 +470,11 @@ class PyCommonist(QWidget):
                 child.widget().deleteLater()
 
         # sort images using selected order and update button with image count
-        image_count = len(self.exif_image_collection)
-        formatted_image_count = " ({})".format(image_count)
         if self.image_sort_order == "exif_date":
             self.exif_image_collection.sort(key=lambda image: image.date + ' ' + image.time)
-            self.btn_toggle_image_sort.setText(SORT_BUTTON_BY_DATE + formatted_image_count)
         else:
             self.exif_image_collection.sort(key=lambda image: image.filename)
-            self.btn_toggle_image_sort.setText(SORT_BUTTON_BY_NAME + formatted_image_count)
+        self.update_sort_button()
 
         # build widget for each image
         for current_exif_image in self.exif_image_collection:

@@ -39,4 +39,6 @@
   * ajout du nombre d'images dans le bouton de tri
 * 19 juin 2022 : User:Romainbar
   * support des templates dans la liste des catégories
+* 23 juillet 2022 : User:Romainbar
+  * menu contextuel d'une image: option pour la déplacer dans la corbeille
 
