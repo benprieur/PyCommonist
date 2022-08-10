@@ -85,13 +85,13 @@ class ProcessImageUpload(QObject):
             print("ProcessImageUpload-83 http ret (4): " + str(http_ret.json()))
             if 'upload' in http_ret.json():
                 result_upload_image = http_ret.json()['upload']['result']
-            else: # Second attempt
-                result_upload_image = ""
+                element.lbl_upload_result.setText(result_upload_image)
+                self.widget.set_upload_status(True)
                 element.cb_import.setChecked(False)
-                element.lbl_upload_result.setText("Failed")
-            element.lbl_upload_result.setText(result_upload_image)
-            self.widget.set_upload_status(True)
-            element.cb_import.setChecked(False)
+            else: # Second attempt
+                element.lbl_upload_result.setText("FAILED")
+                self.widget.set_upload_status(False)
+                element.cb_import.setChecked(False)
         except Exception:
             traceback.print_exc()
             element.lbl_upload_result.setText("FAILED")
