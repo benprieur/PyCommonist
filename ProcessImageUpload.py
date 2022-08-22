@@ -138,6 +138,12 @@ class ProcessImageUpload(QObject):
         language = widget.line_edit_language.text()
         if language:
             description = "{{" + language + "|1=" + description + "}}"
+
+        # addtional templates
+        additional_templates = element.line_edit_templates.text()
+        if additional_templates != '':
+            additional_templates = additional_templates + "\n"
+
         text = \
 """== {{int:filedesc}} ==
 {{Information
@@ -147,7 +153,7 @@ class ProcessImageUpload(QObject):
 """|Date = """ + element.line_edit_date_time.text() + "\n" + \
 """|Permission =
 |other versions =
-}}\n""" + location + "\n" + \
+}}\n""" + location + "\n" + additional_templates + \
 """== {{int:license-header}} == \n""" + widget.line_edit_license.text() + "\n\n" + catFinalText
         return text
 

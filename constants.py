@@ -1,3 +1,6 @@
+
+PYCOMMONIST_VERSION='1.0'
+
 '''
     Window sizes
 '''
@@ -27,6 +30,10 @@ STYLE_STATUSBAR = "border: 1px solid black;"
     PyCommonist special values
 '''
 TIMESTAMP_STATUSBAR = 2000 # 2 seconds
+
+'''
+    User interface texts
+'''
 CHECK_BUTTON_ALL="Check All"
 CHECK_BUTTON_NONE="Check None"
 IMPORT_BUTTON_NO_IMAGE="No selected image"
@@ -34,6 +41,10 @@ IMPORT_BUTTON_N_IMAGES="Import {0} image(s)"
 RELOAD_BUTTON="Reload Folder"
 SORT_BUTTON_BY_DATE="Images sorted by date"
 SORT_BUTTON_BY_NAME="Images sorted by name"
-PYCOMMONIST_VERSION='1.0'
-
+IMAGE_NAME="Name: "
+IMAGE_DESCRIPTION="Description: "
+IMAGE_CATEGORIES="Categories: "
+IMAGE_LOCATION="Location: "
+IMAGE_DATE_TIME="Date Time: "
+IMAGE_TEMPLATES="Templates: "
 

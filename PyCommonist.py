@@ -54,6 +54,12 @@ from constants import VERTICAL_TOP_SIZE, \
     RELOAD_BUTTON, \
     SORT_BUTTON_BY_DATE, \
     SORT_BUTTON_BY_NAME, \
+    IMAGE_NAME, \
+    IMAGE_DESCRIPTION, \
+    IMAGE_CATEGORIES, \
+    IMAGE_LOCATION, \
+    IMAGE_DATE_TIME, \
+    IMAGE_TEMPLATES, \
     PYCOMMONIST_VERSION
 
 
@@ -69,6 +75,7 @@ class PyCommonist(QWidget):
         self.copied_name = ''
         self.copied_description = ''
         self.copied_categories = ''
+        self.copied_templates = ''
         self.upload_failures = 0
         self.upload_failures = 0
         self.upload_status_dots = 0
@@ -509,7 +516,7 @@ class PyCommonist(QWidget):
             local_widget.cb_import = cb_import
             local_widget.lbl_upload_result = lbl_upload_result
             local_widget.btn_copy_paste = btn_copy_paste
-            lbl_file_name = QLabel("Name: ")
+            lbl_file_name = QLabel(IMAGE_NAME)
             lbl_file_name.setAlignment(Qt.AlignLeft)
             line_edit_file_name = QLineEdit()
             line_edit_file_name.setFixedWidth(WIDTH_WIDGET_RIGHT)
@@ -522,13 +529,13 @@ class PyCommonist(QWidget):
             lbl_real_file_name.setText(current_exif_image.filename)
             local_widget.lbl_real_file_name = lbl_real_file_name
             local_widget.lbl_real_file_name.isVisible = False
-            lbl_description = QLabel("Description: ")
+            lbl_description = QLabel(IMAGE_DESCRIPTION)
             lbl_description.setAlignment(Qt.AlignLeft)
             line_edit_description = QPlainTextEdit()
             line_edit_description.setFixedWidth(WIDTH_WIDGET_RIGHT)
             local_left_layout.addRow(lbl_description, line_edit_description)
             local_widget.line_edit_description = line_edit_description
-            lbl_categories = QLabel("Categories: ")
+            lbl_categories = QLabel(IMAGE_CATEGORIES)
             search_box_category = SearchBox()
             search_box_category.setFixedWidth(WIDTH_WIDGET_RIGHT)
             local_left_layout.addRow(lbl_categories, search_box_category)
@@ -538,7 +545,7 @@ class PyCommonist(QWidget):
             local_left_layout.addRow(QLabel(""), line_edit_categories)
             local_widget.line_edit_categories = line_edit_categories
             local_widget.searchBoxCategory.returnPressed.connect(local_widget.on_pressed)
-            lbl_location = QLabel("Location: ")
+            lbl_location = QLabel(IMAGE_LOCATION)
             lbl_location.setAlignment(Qt.AlignLeft)
             line_edit_location = QLineEdit()
             line_edit_location.setFixedWidth(WIDTH_WIDGET_RIGHT)
@@ -549,7 +556,9 @@ class PyCommonist(QWidget):
             line_edit_location.setAlignment(Qt.AlignLeft)
             local_left_layout.addRow(lbl_location, line_edit_location)
             local_widget.lineEditLocation = line_edit_location
-            lbl_date_time = QLabel("Date Time: ")
+
+            # date time
+            lbl_date_time = QLabel(IMAGE_DATE_TIME)
             lbl_date_time.setAlignment(Qt.AlignLeft)
             line_edit_date_time = QLineEdit()
             line_edit_date_time.setFixedWidth(WIDTH_WIDGET_RIGHT)
@@ -557,6 +566,17 @@ class PyCommonist(QWidget):
             line_edit_date_time.setAlignment(Qt.AlignLeft)
             local_left_layout.addRow(lbl_date_time, line_edit_date_time)
             local_widget.line_edit_date_time = line_edit_date_time
+
+            # additional templates
+            lbl_templates = QLabel(IMAGE_TEMPLATES)
+            lbl_templates.setAlignment(Qt.AlignLeft)
+            line_edit_templates = QLineEdit()
+            line_edit_templates.setFixedWidth(WIDTH_WIDGET_RIGHT)
+            line_edit_templates.setAlignment(Qt.AlignLeft)
+            local_left_layout.addRow(lbl_templates, line_edit_templates)
+            local_widget.line_edit_templates = line_edit_templates
+
+            # copy/paste actions
             copy_action.triggered.connect(lambda state, w=local_widget: self.copy_image_info(w))
             paste_action.triggered.connect(lambda state, w=local_widget: self.paste_image_info(w, False))
             paste_with_numbering_action.triggered.connect(lambda state, w=local_widget: self.paste_image_info(w, True))
@@ -586,6 +606,7 @@ class PyCommonist(QWidget):
         self.copied_name = image_widget.line_edit_file_name.text()
         self.copied_description = image_widget.line_edit_description.toPlainText()
         self.copied_categories = image_widget.line_edit_categories.text()
+        self.copied_templates = image_widget.line_edit_templates.text()
 
     def paste_image_info(self, image_widget, increase_number):
         """ paste_image_info """
@@ -603,6 +624,7 @@ class PyCommonist(QWidget):
         image_widget.line_edit_file_name.setText(name)
         image_widget.line_edit_description.setPlainText(self.copied_description)
         image_widget.line_edit_categories.setText(self.copied_categories)
+        image_widget.line_edit_templates.setText(self.copied_templates)
 
     def clear_status(self):
         """ clear_status """

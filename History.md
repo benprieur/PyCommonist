@@ -41,4 +41,6 @@
   * support des templates dans la liste des catégories
 * 23 juillet 2022 : User:Romainbar
   * menu contextuel d'une image: option pour la déplacer dans la corbeille
+* 22 août 2022 : User:Romainbar
+  * nouvelle case de saisie pour les images: modèles additionnels, par exemple pour {{Palissy|type=|}}
 
