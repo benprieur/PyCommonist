@@ -8,6 +8,7 @@ import requests
 from os.path import isfile
 from os.path import join
 import re
+import webbrowser
 from PyQt5.QtCore import Qt, QSize, QProcess
 from PyQt5.Qt import QDir
 from PyQt5.QtGui import QPixmap, QIcon, QCursor
@@ -20,8 +21,9 @@ from PyQt5.QtWidgets import QHBoxLayout, \
     QPlainTextEdit, \
     QVBoxLayout, \
     QFileSystemModel, \
-    QTreeView, \
     QScrollArea, \
+    QStyle, \
+    QTreeView, \
     QWidget, \
     QCheckBox, \
     QPushButton, \
@@ -267,6 +269,19 @@ class PyCommonist(QWidget):
         except ValueError:
             self.btn_import.setEnabled(True)
             traceback.print_exc()
+
+    def on_click_clear_location(self, image_widget):
+        """ Clear location """
+        image_widget.lineEditLocation.setText("")
+
+    def on_click_view_location(self, image_widget):
+        """ View location in web browser """
+        loc = image_widget.lineEditLocation.text()
+        if loc:
+            numbers = re.findall("\d+\.\d+", loc)
+            if len(numbers) == 2:
+                url = "https://www.openstreetmap.org/search?query={}%2C{}".format(numbers[0], numbers[1])
+                webbrowser.open(url)
 
     def on_click_preview_image(self, image_widget):
         """ Open clicked thumbnail with Preview """
@@ -545,16 +560,35 @@ class PyCommonist(QWidget):
             local_left_layout.addRow(QLabel(""), line_edit_categories)
             local_widget.line_edit_categories = line_edit_categories
             local_widget.searchBoxCategory.returnPressed.connect(local_widget.on_pressed)
+
+            # location
             lbl_location = QLabel(IMAGE_LOCATION)
             lbl_location.setAlignment(Qt.AlignLeft)
+
             line_edit_location = QLineEdit()
-            line_edit_location.setFixedWidth(WIDTH_WIDGET_RIGHT)
+            line_edit_location.setFixedWidth(WIDTH_WIDGET_RIGHT - 80)
             if current_exif_image.lat is None or current_exif_image.long is None:
                 line_edit_location.setText('')
             else:
                 line_edit_location.setText(str(current_exif_image.lat) + '|' + str(current_exif_image.long) + "|heading:" + str(current_exif_image.heading))
             line_edit_location.setAlignment(Qt.AlignLeft)
-            local_left_layout.addRow(lbl_location, line_edit_location)
+
+            btn_clear_location = QPushButton("")
+            btn_clear_location.setFixedWidth(25)
+            btn_clear_location.setIcon(self.style().standardIcon(getattr(QStyle, "SP_DialogCancelButton")))
+            btn_clear_location.clicked.connect(lambda state, w=local_widget: self.on_click_clear_location(w))
+
+            btn_view_location = QPushButton("")
+            btn_view_location.setFixedWidth(25)
+            btn_view_location.setIcon(self.style().standardIcon(getattr(QStyle, "SP_FileDialogContentsView")))
+            btn_view_location.clicked.connect(lambda state, w=local_widget: self.on_click_view_location(w))
+
+            location_layout = QHBoxLayout()
+            location_layout.addWidget(line_edit_location)
+            location_layout.addWidget(btn_clear_location)
+            location_layout.addWidget(btn_view_location)
+
+            local_left_layout.addRow(lbl_location, location_layout)
             local_widget.lineEditLocation = line_edit_location
 
             # date time
