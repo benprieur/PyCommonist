@@ -278,8 +278,8 @@ class PyCommonist(QWidget):
         """ View location in web browser """
         loc = image_widget.lineEditLocation.text()
         if loc:
-            numbers = re.findall("\d+\.\d+", loc)
-            if len(numbers) == 2:
+            numbers = re.findall("\d+\.?\d*", loc)
+            if len(numbers) >= 2:
                 url = "https://www.openstreetmap.org/search?query={}%2C{}".format(numbers[0], numbers[1])
                 webbrowser.open(url)
 
