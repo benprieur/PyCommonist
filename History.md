@@ -45,5 +45,7 @@
   * nouvelle case de saisie pour les images: modèles additionnels, par exemple pour {{Palissy|type=|}}
 * 14 octobre 2022 : User:Romainbar
   * bouton pour ouvrir la localisation géographique dans OpenStreetMap et bouton pour l'effacer
+* 17 novembre 2022 : User:Romainbar
+  * ajout du format vidéo OGV
 
 

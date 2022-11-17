@@ -122,6 +122,7 @@ class PyCommonist(QWidget):
                 full_file_path = os.path.join(self.current_directory_path, file)
                 if full_file_path.upper().endswith(".JPEG") or \
                    full_file_path.upper().endswith(".JPG") or \
+                   full_file_path.upper().endswith(".OGV") or \
                    full_file_path.upper().endswith(".SVG") or \
                    full_file_path.upper().endswith(".WEBM") or \
                    full_file_path.upper().endswith(".PNG"):
@@ -617,7 +618,7 @@ class PyCommonist(QWidget):
 
             # push button displaying thumbnail
             thumbnail = QPushButton()
-            if current_exif_image.full_file_path.upper().endswith(".WEBM"):
+            if current_exif_image.full_file_path.upper().endswith(".OGV") or current_exif_image.full_file_path.upper().endswith(".WEBM"):
                 pixmap = QPixmap('img/Logo PyCommonist.svg')
             else:
                 pixmap = QPixmap(current_exif_image.full_file_path)
