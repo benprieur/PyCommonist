@@ -16,6 +16,8 @@ from constants import TIMESTAMP_STATUSBAR
 '''
     class UploadTool
 '''
+
+
 class UploadTool:
     session = None
     widget = None
@@ -52,7 +54,21 @@ class UploadTool:
                 "type": "login",
                 "format": "json"
             }
-            http_ret = self.session.get(url=URL, params=params_1)
+            try:
+                http_ret = self.session.get(url=URL, params=params_1)
+            except requests.exceptions.ConnectionError:
+                print("UploadTool.py-60: ConnectionError.")
+                return
+            except requests.exceptions.Timeout:
+                print("UploadTool.py-63: Timeout.")
+                return
+            except requests.exceptions.TooManyRedirects:
+                print("UploadTool.py-66: TooManyRedirects.")
+                return
+            except requests.exceptions.RequestException:
+                print("UploadTool.py-69: RequestException.")
+                return
+
             print("UploadTool.py-50 http ret (1): " + str(http_ret.json()))
             login_token = http_ret.json()["query"]["tokens"]["logintoken"]
             params_2 = {
@@ -92,10 +108,13 @@ class UploadTool:
                     index = image_index
                     thread = QThread()
                     self.widget.threads.append(thread)
-                    process = ProcessImageUpload(element, self.widget, path, session, index)
+                    process = ProcessImageUpload(
+                        element, self.widget, path, session, index)
                     self.widget.workers.append(process)
-                    self.widget.workers[index].moveToThread(self.widget.threads[index])
-                    self.widget.threads[index].started.connect(self.widget.workers[index].process)
+                    self.widget.workers[index].moveToThread(
+                        self.widget.threads[index])
+                    self.widget.threads[index].started.connect(
+                        self.widget.workers[index].process)
                     image_index = image_index + 1
 
             if image_index > 0:

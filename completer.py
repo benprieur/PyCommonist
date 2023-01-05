@@ -20,6 +20,8 @@ from constants import WIDTH_WIDGET_RIGHT
 ''' 
     class SuggestCompletion
 '''
+
+
 class SuggestCompletion(QObject):
 
     def __init__(self, parent):
@@ -90,9 +92,10 @@ class SuggestCompletion(QObject):
             item = QTreeWidgetItem(self.popup)
             item.setText(0, choice)
         self.popup.setCurrentItem(self.popup.topLevelItem(0))
-        #self.popup.resizeColumnToContents(0)
+        # self.popup.resizeColumnToContents(0)
         self.popup.setUpdatesEnabled(True)
-        self.popup.move(self.editor.mapToGlobal(QPoint(0, self.editor.height())))
+        self.popup.move(self.editor.mapToGlobal(
+            QPoint(0, self.editor.height())))
         self.popup.setFocus()
         self.popup.show()
 
@@ -133,6 +136,8 @@ class SuggestCompletion(QObject):
 ''' 
     class SearchBox
 '''
+
+
 class SearchBox(QLineEdit):
 
     def __init__(self, parent=None):

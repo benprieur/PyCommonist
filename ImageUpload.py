@@ -7,14 +7,16 @@ from PyQt5.QtWidgets import QWidget
 ''' 
     class ImageUpload
 '''
+
+
 class ImageUpload(QWidget):
 
     def __init__(self):
-        """ __init__ """ 
+        """ __init__ """
         super(ImageUpload, self).__init__()
 
     def on_pressed(self):
-        """ on_pressed """ 
+        """ on_pressed """
         content = str(self.line_edit_categories.text())
         searchbox = str(self.searchBoxCategory.text())
         if content == "":
