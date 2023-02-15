@@ -6,4 +6,5 @@ class EXIFImage:
     date = ''
     time = ''
     full_file_path = ''
-    
+    filesize = ''
+ 

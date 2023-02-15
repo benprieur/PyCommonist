@@ -46,5 +46,6 @@ IMAGE_DESCRIPTION="Description: "
 IMAGE_CATEGORIES="Categories: "
 IMAGE_LOCATION="Location: "
 IMAGE_DATE_TIME="Date Time: "
+IMAGE_SIZE="Size: "
 IMAGE_TEMPLATES="Templates: "
 

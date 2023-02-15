@@ -47,5 +47,7 @@
   * bouton pour ouvrir la localisation géographique dans OpenStreetMap et bouton pour l'effacer
 * 17 novembre 2022 : User:Romainbar
   * ajout du format vidéo OGV
+* 15 février 2023 : User:Romainbar
+  * affichage de la taille de l'image en mégabytes (après la date)
 
 

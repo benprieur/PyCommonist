@@ -61,6 +61,7 @@ from constants import VERTICAL_TOP_SIZE, \
     IMAGE_CATEGORIES, \
     IMAGE_LOCATION, \
     IMAGE_DATE_TIME, \
+    IMAGE_SIZE, \
     IMAGE_TEMPLATES, \
     PYCOMMONIST_VERSION
 
@@ -136,6 +137,8 @@ class PyCommonist(QWidget):
                         current_exif_image = EXIFImage()
                         current_exif_image.full_file_path = full_file_path
                         current_exif_image.filename = file
+                        filesize = os.path.getsize(full_file_path)
+                        current_exif_image.filesize = "%.1f MB" % (filesize / 1e6)
                         tags = None
 
                         try:
@@ -627,6 +630,7 @@ class PyCommonist(QWidget):
                 line_edit_location.setText(str(current_exif_image.lat) + '|' + str(
                     current_exif_image.long) + "|heading:" + str(current_exif_image.heading))
             line_edit_location.setAlignment(Qt.AlignLeft)
+            local_widget.lineEditLocation = line_edit_location
 
             btn_clear_location = QPushButton("")
             btn_clear_location.setFixedWidth(25)
@@ -648,18 +652,26 @@ class PyCommonist(QWidget):
             location_layout.addWidget(btn_view_location)
 
             local_left_layout.addRow(lbl_location, location_layout)
-            local_widget.lineEditLocation = line_edit_location
 
             # date time
             lbl_date_time = QLabel(IMAGE_DATE_TIME)
             lbl_date_time.setAlignment(Qt.AlignLeft)
             line_edit_date_time = QLineEdit()
-            line_edit_date_time.setFixedWidth(WIDTH_WIDGET_RIGHT)
+            line_edit_date_time.setFixedWidth(WIDTH_WIDGET_RIGHT - 100)
             line_edit_date_time.setText(
                 current_exif_image.date + ' ' + current_exif_image.time)
             line_edit_date_time.setAlignment(Qt.AlignLeft)
-            local_left_layout.addRow(lbl_date_time, line_edit_date_time)
             local_widget.line_edit_date_time = line_edit_date_time
+
+            # size
+            lbl_image_size = QLabel(IMAGE_SIZE + current_exif_image.filesize)
+            lbl_image_size.setAlignment(Qt.AlignLeft)
+
+            date_size_layout = QHBoxLayout()
+            date_size_layout.addWidget(line_edit_date_time)
+            date_size_layout.addSpacing(5)
+            date_size_layout.addWidget(lbl_image_size)
+            local_left_layout.addRow(lbl_date_time, date_size_layout)
 
             # additional templates
             lbl_templates = QLabel(IMAGE_TEMPLATES)

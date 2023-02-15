@@ -74,7 +74,7 @@ class ProcessImageUpload(QObject):
                 self.widget.set_upload_status(False)
                 return
             print(
-                "ProcessImageUpload.py-70 logical file name to be send: " + str(file_name))
+                "ProcessImageUpload.py-70 logical file name to be sent: " + str(file_name))
             params_4 = {
                 "action": "upload",
                 "filename": file_name,
