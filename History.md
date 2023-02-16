@@ -49,5 +49,7 @@
   * ajout du format vidéo OGV
 * 15 février 2023 : User:Romainbar
   * affichage de la taille de l'image en mégabytes (après la date)
+* 16 février 2023 : User:Romainbar
+  * menu contextuel d'une image: option pour éditer dans Gimp
 
 

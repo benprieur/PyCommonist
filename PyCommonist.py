@@ -9,6 +9,8 @@ from os.path import isfile
 from os.path import join
 import re
 import webbrowser
+import platform
+import subprocess
 from PyQt5.QtCore import Qt, QSize, QProcess
 from PyQt5.Qt import QDir
 from PyQt5.QtGui import QPixmap, QIcon, QCursor
@@ -63,6 +65,9 @@ from constants import VERTICAL_TOP_SIZE, \
     IMAGE_DATE_TIME, \
     IMAGE_SIZE, \
     IMAGE_TEMPLATES, \
+    MENU_DELETE_IMAGE, \
+    MENU_REMOVE_IMAGE, \
+    MENU_EDIT_IMAGE_GIMP, \
     PYCOMMONIST_VERSION
 
 
@@ -336,8 +341,9 @@ class PyCommonist(QWidget):
     def on_thumbnail_context_menu(self, image_widget):
         """ Open context menu on thumbnail right-click """
         menu = QMenu()
-        deleteAction = menu.addAction('Move Image to Trash')
-        removeAction = menu.addAction('Remove Image From List')
+        deleteAction = menu.addAction(MENU_DELETE_IMAGE)
+        removeAction = menu.addAction(MENU_REMOVE_IMAGE)
+        editAction = menu.addAction(MENU_EDIT_IMAGE_GIMP)
 
         action = menu.exec_(QCursor.pos())
         file_path = image_widget.full_file_path
@@ -346,6 +352,14 @@ class PyCommonist(QWidget):
             self.remove_file_from_list(file_path)
         elif action == removeAction:
             self.remove_file_from_list(file_path)
+        elif action == editAction:
+            if platform.system() == 'Darwin':
+                gimpPath = subprocess.check_output(["find", "/Applications", "-type", "f", "-perm", "+111", "-name", "gimp", "-print", "-quit"])
+                gimpPath = gimpPath.decode('UTF-8').strip()
+                if gimpPath.endswith("gimp"):
+                    subprocess.Popen([gimpPath, image_widget.full_file_path])
+                else:
+                    print("PyCommonist.py-362: gimp not found '{}'.".format(gimpPath))
 
     def remove_file_from_list(self, file_path):
         for i in range(self.scroll_layout.count()):

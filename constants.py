@@ -48,4 +48,7 @@ IMAGE_LOCATION="Location: "
 IMAGE_DATE_TIME="Date Time: "
 IMAGE_SIZE="Size: "
 IMAGE_TEMPLATES="Templates: "
+MENU_DELETE_IMAGE="Move Image to Trash"
+MENU_REMOVE_IMAGE="Remove Image From List"
+MENU_EDIT_IMAGE_GIMP="Edit Image in Gimp"
 
