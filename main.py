@@ -1,6 +1,6 @@
 import sys
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtGui import QIcon
+from PyQt6.QtWidgets import QApplication
+from PyQt6.QtGui import QIcon
 from PyCommonist import PyCommonist
 
 
@@ -9,7 +9,7 @@ def main():
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon('img/Logo PyCommonist.svg'))
     instance = PyCommonist()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 
 if __name__ == '__main__':

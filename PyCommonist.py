@@ -11,10 +11,9 @@ import re
 import webbrowser
 import platform
 import subprocess
-from PyQt5.QtCore import Qt, QSize, QProcess
-from PyQt5.Qt import QDir
-from PyQt5.QtGui import QPixmap, QIcon, QCursor
-from PyQt5.QtWidgets import QHBoxLayout, \
+from PyQt6.QtCore import Qt, QSize, QProcess, QDir
+from PyQt6.QtGui import QPixmap, QIcon, QCursor, QFileSystemModel
+from PyQt6.QtWidgets import QHBoxLayout, \
     QFrame, \
     QSplitter, \
     QFormLayout, \
@@ -22,7 +21,6 @@ from PyQt5.QtWidgets import QHBoxLayout, \
     QLineEdit, \
     QPlainTextEdit, \
     QVBoxLayout, \
-    QFileSystemModel, \
     QScrollArea, \
     QStyle, \
     QTreeView, \
@@ -301,14 +299,14 @@ class PyCommonist(QWidget):
 
             if empty_descriptions > 0:  # Description ok?
                 confirmation = QMessageBox.question(self, 'Incomplete Descriptions', 'There are %s image(s) without description, continue upload?' %
-                                                    empty_descriptions, QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-                if confirmation == QMessageBox.No:
+                                                    empty_descriptions, QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No, QMessageBox.StandardButton.No)
+                if confirmation == QMessageBox.StandardButton.No:
                     self.btn_import.setEnabled(True)
                     return
             if empty_categories > 0:  # Categories ok?
                 confirmation = QMessageBox.question(self, 'Incomplete Categories', 'There are %s image(s) without category, continue upload?' %
-                                                    empty_categories, QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-                if confirmation == QMessageBox.No:
+                                                    empty_categories, QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No, QMessageBox.StandardButton.No)
+                if confirmation == QMessageBox.StandardButton.No:
                     self.btn_import.setEnabled(True)
                     return
             if self.tool is None:
@@ -396,7 +394,7 @@ class PyCommonist(QWidget):
         vbox = QVBoxLayout()
         hbox = QHBoxLayout()
         self.left_top_frame = QFrame()
-        self.left_top_frame.setFrameShape(QFrame.StyledPanel)
+        self.left_top_frame.setFrameShape(QFrame.Shape.StyledPanel)
         self.right_widget = QWidget()
         self.right_widget.resize(300, 300)
         self.layout_right = QVBoxLayout()
@@ -409,13 +407,13 @@ class PyCommonist(QWidget):
         self.scroll_layout = QVBoxLayout(self.scroll_content)
         self.scroll_content.setLayout(self.scroll_layout)
         self.scroll.setWidget(self.scroll_content)
-        self.splitter_left = QSplitter(Qt.Vertical)
+        self.splitter_left = QSplitter(Qt.Orientation.Vertical)
         self.left_botton_frame = QFrame()
-        self.left_botton_frame.setFrameShape(QFrame.StyledPanel)
+        self.left_botton_frame.setFrameShape(QFrame.Shape.StyledPanel)
         self.splitter_left.addWidget(self.left_top_frame)
         self.splitter_left.addWidget(self.left_botton_frame)
         self.splitter_left.setSizes([VERTICAL_TOP_SIZE, VERTICAL_BOTTOM_SIZE])
-        self.splitter_central = QSplitter(Qt.Horizontal)
+        self.splitter_central = QSplitter(Qt.Orientation.Horizontal)
         self.splitter_central.addWidget(self.splitter_left)
         self.splitter_central.addWidget(self.right_widget)
         self.splitter_central.setSizes(
@@ -430,60 +428,60 @@ class PyCommonist(QWidget):
     def generate_left_top_frame(self):
         """ generate_left_top_frame """
         self.layout_left_top = QFormLayout()
-        self.layout_left_top.setFormAlignment(Qt.AlignTop)
+        self.layout_left_top.setFormAlignment(Qt.AlignmentFlag.AlignTop)
         self.lbl_user_name = QLabel("Username: ")
-        self.lbl_user_name.setAlignment(Qt.AlignLeft)
+        self.lbl_user_name.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.line_edit_user_name = QLineEdit()
         self.line_edit_user_name.setText(LeftFrameConfig.username)
         self.line_edit_user_name.setFixedWidth(WIDTH_WIDGET)
-        self.line_edit_user_name.setAlignment(Qt.AlignLeft)
+        self.line_edit_user_name.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.layout_left_top.addRow(
             self.lbl_user_name, self.line_edit_user_name)
         self.lbl_password = QLabel("Password: ")
-        self.lbl_password.setAlignment(Qt.AlignLeft)
+        self.lbl_password.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.line_edit_password = QLineEdit()
         self.line_edit_password.setFixedWidth(WIDTH_WIDGET)
-        self.line_edit_password.setAlignment(Qt.AlignLeft)
-        self.line_edit_password.setEchoMode(QLineEdit.Password)
+        self.line_edit_password.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.line_edit_password.setEchoMode(QLineEdit.EchoMode.Password)
         self.layout_left_top.addRow(self.lbl_password, self.line_edit_password)
         self.lbl_source = QLabel("Source: ")
-        self.lbl_source.setAlignment(Qt.AlignLeft)
+        self.lbl_source.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.line_edit_source = QLineEdit()
         self.line_edit_source.setFixedWidth(WIDTH_WIDGET)
         self.line_edit_source.setText(LeftFrameConfig.source)
-        self.line_edit_source.setAlignment(Qt.AlignLeft)
+        self.line_edit_source.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.layout_left_top.addRow(self.lbl_source, self.line_edit_source)
         self.lblAuthor = QLabel("Author: ")
-        self.lblAuthor.setAlignment(Qt.AlignLeft)
+        self.lblAuthor.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.line_edit_author = QLineEdit()
         self.line_edit_author.setFixedWidth(WIDTH_WIDGET)
         self.line_edit_author.setText(LeftFrameConfig.author)
-        self.line_edit_author.setAlignment(Qt.AlignLeft)
+        self.line_edit_author.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.layout_left_top.addRow(self.lblAuthor, self.line_edit_author)
         self.lbl_categories = QLabel("Categories: ")
-        self.lbl_categories.setAlignment(Qt.AlignLeft)
+        self.lbl_categories.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.line_edit_categories = QLineEdit()
         self.line_edit_categories.setText(LeftFrameConfig.categories)
         self.line_edit_categories.setFixedWidth(WIDTH_WIDGET)
-        self.line_edit_categories.setAlignment(Qt.AlignLeft)
+        self.line_edit_categories.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.layout_left_top.addRow(
             self.lbl_categories, self.line_edit_categories)
         self.lbl_license = QLabel("License: ")
-        self.lbl_license.setAlignment(Qt.AlignLeft)
+        self.lbl_license.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.line_edit_license = QLineEdit()
         self.line_edit_license.setFixedWidth(WIDTH_WIDGET)
         self.line_edit_license.setText(LeftFrameConfig.license)
-        self.line_edit_license.setAlignment(Qt.AlignLeft)
+        self.line_edit_license.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.layout_left_top.addRow(self.lbl_license, self.line_edit_license)
         self.lbl_language = QLabel("Language code: ")
-        self.lbl_language.setAlignment(Qt.AlignLeft)
+        self.lbl_language.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.line_edit_language = QLineEdit()
         self.line_edit_language.setFixedWidth(WIDTH_WIDGET)
         self.line_edit_language.setText(LeftFrameConfig.language)
-        self.line_edit_language.setAlignment(Qt.AlignLeft)
+        self.line_edit_language.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.layout_left_top.addRow(self.lbl_language, self.line_edit_language)
         self.lbl_description = QLabel("Description: ")
-        self.lbl_description.setAlignment(Qt.AlignLeft)
+        self.lbl_description.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.line_edit_description = QPlainTextEdit()
         self.line_edit_description.setFixedWidth(WIDTH_WIDGET)
         self.layout_left_top.addRow(
@@ -506,7 +504,7 @@ class PyCommonist(QWidget):
         self.layout_left_bottom = QVBoxLayout()
         self.model_tree = QFileSystemModel()
         self.model_tree.setRootPath(QDir.currentPath())
-        self.model_tree.setFilter(QDir.Dirs)  # Only directories
+        self.model_tree.setFilter(QDir.Filter.Dirs)  # Only directories
         self.tree_left_bottom = QTreeView()
         self.tree_left_bottom.setModel(self.model_tree)
         self.tree_left_bottom.setAnimated(False)
@@ -570,7 +568,7 @@ class PyCommonist(QWidget):
             # create widget and its layout
             local_widget = ImageUpload()
             local_layout = QHBoxLayout()
-            local_layout.setAlignment(Qt.AlignRight)
+            local_layout.setAlignment(Qt.AlignmentFlag.AlignRight)
             local_widget.setLayout(local_layout)
             self.scroll_layout.addWidget(local_widget)
             self.current_upload.append(local_widget)
@@ -578,7 +576,7 @@ class PyCommonist(QWidget):
             # configure widget
             local_left_widget = QWidget()
             local_left_layout = QFormLayout()
-            local_left_layout.setAlignment(Qt.AlignRight)
+            local_left_layout.setAlignment(Qt.AlignmentFlag.AlignRight)
             local_left_widget.setLayout(local_left_layout)
             local_layout.addWidget(local_left_widget)
             cb_import = QCheckBox("Import")
@@ -601,11 +599,11 @@ class PyCommonist(QWidget):
             local_widget.lbl_upload_result = lbl_upload_result
             local_widget.btn_copy_paste = btn_copy_paste
             lbl_file_name = QLabel(IMAGE_NAME)
-            lbl_file_name.setAlignment(Qt.AlignLeft)
+            lbl_file_name.setAlignment(Qt.AlignmentFlag.AlignLeft)
             line_edit_file_name = QLineEdit()
             line_edit_file_name.setFixedWidth(WIDTH_WIDGET_RIGHT)
             line_edit_file_name.setText(current_exif_image.filename)
-            line_edit_file_name.setAlignment(Qt.AlignLeft)
+            line_edit_file_name.setAlignment(Qt.AlignmentFlag.AlignLeft)
             line_edit_file_name.textChanged.connect(
                 lambda state, w=cb_import: w.setChecked(True))
             local_left_layout.addRow(lbl_file_name, line_edit_file_name)
@@ -615,7 +613,7 @@ class PyCommonist(QWidget):
             local_widget.lbl_real_file_name = lbl_real_file_name
             local_widget.lbl_real_file_name.isVisible = False
             lbl_description = QLabel(IMAGE_DESCRIPTION)
-            lbl_description.setAlignment(Qt.AlignLeft)
+            lbl_description.setAlignment(Qt.AlignmentFlag.AlignLeft)
             line_edit_description = QPlainTextEdit()
             line_edit_description.setFixedWidth(WIDTH_WIDGET_RIGHT)
             local_left_layout.addRow(lbl_description, line_edit_description)
@@ -634,7 +632,7 @@ class PyCommonist(QWidget):
 
             # location
             lbl_location = QLabel(IMAGE_LOCATION)
-            lbl_location.setAlignment(Qt.AlignLeft)
+            lbl_location.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
             line_edit_location = QLineEdit()
             line_edit_location.setFixedWidth(WIDTH_WIDGET_RIGHT - 80)
@@ -643,20 +641,18 @@ class PyCommonist(QWidget):
             else:
                 line_edit_location.setText(str(current_exif_image.lat) + '|' + str(
                     current_exif_image.long) + "|heading:" + str(current_exif_image.heading))
-            line_edit_location.setAlignment(Qt.AlignLeft)
+            line_edit_location.setAlignment(Qt.AlignmentFlag.AlignLeft)
             local_widget.lineEditLocation = line_edit_location
 
             btn_clear_location = QPushButton("")
             btn_clear_location.setFixedWidth(25)
-            btn_clear_location.setIcon(self.style().standardIcon(
-                getattr(QStyle, "SP_DialogCancelButton")))
+            btn_clear_location.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_DialogCancelButton))
             btn_clear_location.clicked.connect(
                 lambda state, w=local_widget: self.on_click_clear_location(w))
 
             btn_view_location = QPushButton("")
             btn_view_location.setFixedWidth(25)
-            btn_view_location.setIcon(self.style().standardIcon(
-                getattr(QStyle, "SP_FileDialogContentsView")))
+            btn_view_location.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_FileDialogContentsView))
             btn_view_location.clicked.connect(
                 lambda state, w=local_widget: self.on_click_view_location(w))
 
@@ -669,17 +665,17 @@ class PyCommonist(QWidget):
 
             # date time
             lbl_date_time = QLabel(IMAGE_DATE_TIME)
-            lbl_date_time.setAlignment(Qt.AlignLeft)
+            lbl_date_time.setAlignment(Qt.AlignmentFlag.AlignLeft)
             line_edit_date_time = QLineEdit()
             line_edit_date_time.setFixedWidth(WIDTH_WIDGET_RIGHT - 100)
             line_edit_date_time.setText(
                 current_exif_image.date + ' ' + current_exif_image.time)
-            line_edit_date_time.setAlignment(Qt.AlignLeft)
+            line_edit_date_time.setAlignment(Qt.AlignmentFlag.AlignLeft)
             local_widget.line_edit_date_time = line_edit_date_time
 
             # size
             lbl_image_size = QLabel(IMAGE_SIZE + current_exif_image.filesize)
-            lbl_image_size.setAlignment(Qt.AlignLeft)
+            lbl_image_size.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
             date_size_layout = QHBoxLayout()
             date_size_layout.addWidget(line_edit_date_time)
@@ -689,10 +685,10 @@ class PyCommonist(QWidget):
 
             # additional templates
             lbl_templates = QLabel(IMAGE_TEMPLATES)
-            lbl_templates.setAlignment(Qt.AlignLeft)
+            lbl_templates.setAlignment(Qt.AlignmentFlag.AlignLeft)
             line_edit_templates = QLineEdit()
             line_edit_templates.setFixedWidth(WIDTH_WIDGET_RIGHT)
-            line_edit_templates.setAlignment(Qt.AlignLeft)
+            line_edit_templates.setAlignment(Qt.AlignmentFlag.AlignLeft)
             local_left_layout.addRow(lbl_templates, line_edit_templates)
             local_widget.line_edit_templates = line_edit_templates
 
@@ -710,8 +706,7 @@ class PyCommonist(QWidget):
                 pixmap = QPixmap('img/Logo PyCommonist.svg')
             else:
                 pixmap = QPixmap(current_exif_image.full_file_path)
-            pixmap_resized = pixmap.scaledToWidth(
-                IMAGE_DIMENSION, Qt.FastTransformation)
+            pixmap_resized = pixmap.scaled(IMAGE_DIMENSION, IMAGE_DIMENSION, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.FastTransformation)
             pixmap_icon = QIcon(pixmap_resized)
             thumbnail.setFlat(True)
             thumbnail.setIcon(pixmap_icon)
@@ -721,7 +716,7 @@ class PyCommonist(QWidget):
             local_layout.addWidget(thumbnail)
             local_widget.full_file_path = current_exif_image.full_file_path
             # push button context menu
-            thumbnail.setContextMenuPolicy(Qt.CustomContextMenu)
+            thumbnail.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
             thumbnail.customContextMenuRequested.connect(
                 lambda state, w=local_widget: self.on_thumbnail_context_menu(w))
 

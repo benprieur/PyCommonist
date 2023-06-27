@@ -1,19 +1,20 @@
 import json
-from PyQt5.QtCore import Qt
-from PyQt5.QtCore import QUrl
-from PyQt5.QtCore import QObject
-from PyQt5.QtCore import QTimer
-from PyQt5.QtCore import QEvent
-from PyQt5.QtCore import QPoint
-from PyQt5.QtCore import QMetaObject
-from PyQt5.QtWidgets import QTreeWidget
-from PyQt5.QtWidgets import QLineEdit
-from PyQt5.QtWidgets import QFrame
-from PyQt5.QtWidgets import QTreeWidgetItem
-from PyQt5.QtNetwork import QNetworkAccessManager
-from PyQt5.QtNetwork import QNetworkRequest
-from PyQt5.QtNetwork import QNetworkReply
-from PyQt5.QtGui import QPalette
+from PyQt6.QtCore import Qt
+from PyQt6.QtCore import QUrl
+from PyQt6.QtCore import QObject
+from PyQt6.QtCore import QTimer
+from PyQt6.QtCore import QEvent
+from PyQt6.QtCore import QPoint
+from PyQt6.QtCore import QMetaObject
+from PyQt6.QtWidgets import QTreeWidget
+from PyQt6.QtWidgets import QLineEdit
+from PyQt6.QtWidgets import QFrame
+from PyQt6.QtWidgets import QTreeWidgetItem
+from PyQt6.QtWidgets import QAbstractItemView
+from PyQt6.QtNetwork import QNetworkAccessManager
+from PyQt6.QtNetwork import QNetworkRequest
+from PyQt6.QtNetwork import QNetworkReply
+from PyQt6.QtGui import QPalette
 from constants import WIDTH_WIDGET_RIGHT
 
 
@@ -30,17 +31,18 @@ class SuggestCompletion(QObject):
         self.parent = parent
         self.editor = parent
         self.popup = QTreeWidget()
-        self.popup.setWindowFlags(Qt.Popup)
+        self.popup.setWindowFlags(Qt.WindowType.Popup)
         self.popup.setFocusProxy(self.parent)
         self.popup.setMouseTracking(True)
         self.popup.setColumnCount(1)
         self.popup.setFixedWidth(WIDTH_WIDGET_RIGHT)
         self.popup.setUniformRowHeights(True)
         self.popup.setRootIsDecorated(False)
-        self.popup.setEditTriggers(QTreeWidget.NoEditTriggers)
-        self.popup.setSelectionBehavior(QTreeWidget.SelectRows)
-        self.popup.setFrameStyle(QFrame.Box | QFrame.Plain)
-        self.popup.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.popup.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.popup.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.popup.setFrameStyle(QFrame.Shape.Box) 
+        self.popup.setLineWidth(1) # | QFrame Plain
+        self.popup.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.popup.header().hide()
         self.timer = None
         self.timer = QTimer(self)
@@ -57,11 +59,11 @@ class SuggestCompletion(QObject):
         """ eventFilter """
         if obj != self.popup:
             return False
-        if event.type() == QEvent.MouseButtonPress:
+        if event.type() == QEvent.Type.MouseButtonPress:
             self.popup.hide()
             self.editor.setFocus()
             return True
-        if event.type() == QEvent.KeyPress:
+        if event.type() == QEvent.Type.KeyPress:
             consumed = False
             key = event.key()
             if key in [Qt.Key_Enter, Qt.Key_Return]:

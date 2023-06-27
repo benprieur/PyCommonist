@@ -1,7 +1,7 @@
 ''' 
     ImageUpload.py
 '''
-from PyQt5.QtWidgets import QWidget
+from PyQt6.QtWidgets import QWidget
 
 
 ''' 
