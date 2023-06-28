@@ -66,7 +66,7 @@ class SuggestCompletion(QObject):
         if event.type() == QEvent.Type.KeyPress:
             consumed = False
             key = event.key()
-            if key in [Qt.Key_Enter, Qt.Key_Return]:
+            if key in [Qt.Key.Key_Enter, Qt.Key.Key_Return]: #
                 self.done_completion()
                 consumed = True
             elif key == Qt.Key_Escape:
