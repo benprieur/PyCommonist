@@ -69,11 +69,11 @@ class SuggestCompletion(QObject):
             if key in [Qt.Key.Key_Enter, Qt.Key.Key_Return]: #
                 self.done_completion()
                 consumed = True
-            elif key == Qt.Key_Escape:
+            elif key == Qt.Key.Key_Escape:
                 self.editor.setFocus()
                 self.popup.hide()
                 consumed = True
-            elif key in [Qt.Key_Up, Qt.Key_Down, Qt.Key_Home, Qt.Key_End, Qt.Key_PageUp, Qt.Key_PageDown]:
+            elif key in [Qt.Key.Key_Up, Qt.Key.Key_Down, Qt.Key.Key_Home, Qt.Key.Key_End, Qt.Key.Key_PageUp, Qt.Key.Key_PageDown]:
                 pass
             else:
                 self.editor.setFocus()
