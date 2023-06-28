@@ -87,7 +87,7 @@ class SuggestCompletion(QObject):
         if not choices:
             return
         palette = self.editor.palette()
-        palette.color(QPalette.Disabled, QPalette.WindowText)
+        palette.color(QPalette.ColorGroup.Disabled, QPalette.ColorRole.WindowText)
         self.popup.setUpdatesEnabled(False)
         self.popup.clear()
         for choice in choices:
@@ -126,7 +126,7 @@ class SuggestCompletion(QObject):
     def handle_network_data(self, network_reply):
         """ handle_network_data """
         choices = []
-        if network_reply.error() == QNetworkReply.NoError:
+        if network_reply.error() == QNetworkReply.NetworkError.NoError:
             data = json.loads(network_reply.readAll().data())
             for location in data['query']['prefixsearch']:
                 choice = location['title']
