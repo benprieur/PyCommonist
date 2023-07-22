@@ -51,5 +51,6 @@
   * affichage de la taille de l'image en mégabytes (après la date)
 * 16 février 2023 : User:Romainbar
   * menu contextuel d'une image: option pour éditer dans Gimp
-
+* Juillet 2023 : User:Benoît Prieur
+  * migration de PyQt5 à PyQt6
 
